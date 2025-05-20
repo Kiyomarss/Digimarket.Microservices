@@ -1,0 +1,65 @@
+﻿version: "3.6"
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.52
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"       # UI: http://localhost:16686
+      - "14250:14250"
+      - "14268:14268"
+      - "14269:14269"
+      - "9411:9411"         # برای سازگاری با Zipkin
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"       # پورت اصلی برای ارتباط اپ‌ها با RabbitMQ
+      - "15672:15672"     # پنل مدیریتی: http://localhost:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  api:
+    image: sample/api
+    build:
+      context: .
+      dockerfile: src/Dockerfile.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Outbox;
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=remote
+      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Username=guest
+      - RabbitMq__Password=guest
+    ports:
+      - "5000:80"
+    depends_on:
+      - jaeger
+      - rabbitmq
+
+  service:
+    image: sample/worker
+    build:
+      context: ./src
+      dockerfile: Dockerfile.worker
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Outbox;
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=remote
+      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Username=guest
+      - RabbitMq__Password=guest
+    depends_on:
+      - jaeger
+      - rabbitmq
