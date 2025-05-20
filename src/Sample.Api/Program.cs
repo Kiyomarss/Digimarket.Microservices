@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using Carter;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Logging;
@@ -29,7 +30,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
-builder.Services.AddControllers();
+builder.Services.AddCarter();
 
 builder.Services.AddDbContext<RegistrationDbContext>(x =>
 {
@@ -97,8 +98,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.MapCarter();
 
 app.Run();
