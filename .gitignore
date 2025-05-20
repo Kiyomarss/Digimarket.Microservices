@@ -13,7 +13,7 @@ packages
 
 src/logs/*
 
-**/*.sln*
+
 bin
 obj
 _ReSharper*
