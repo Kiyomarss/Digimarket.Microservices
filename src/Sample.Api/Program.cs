@@ -1,9 +1,10 @@
 using System.Diagnostics;
 using System.Reflection;
+using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions.Handler;
 using Carter;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
-using MassTransit.Logging;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
@@ -31,6 +32,14 @@ builder.Host.UseSerilog();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 builder.Services.AddCarter();
+
+var assembly = typeof(Program).Assembly;
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssembly(assembly);
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+});
 
 builder.Services.AddDbContext<RegistrationDbContext>(x =>
 {
@@ -86,6 +95,15 @@ builder.Services.AddMassTransit(x =>
         cfg.AutoStart = true;
     });
 });
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    //options.InstanceName = "Basket";
+});
+
+//Cross-Cutting Services
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
