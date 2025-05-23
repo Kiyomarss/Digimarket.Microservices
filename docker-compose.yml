@@ -24,14 +24,14 @@ services:
       - RABBITMQ_DEFAULT_PASS=guest
 
   api:
-    image: sample/api
+    image: ordering/api
     build:
       context: .
       dockerfile: src/Dockerfile.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Outbox;
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Order;
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=remote
@@ -46,13 +46,13 @@ services:
       - rabbitmq
 
   service:
-    image: sample/worker
+    image: ordering/worker
     build:
       context: ./src
       dockerfile: Dockerfile.worker
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Outbox;
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Order;
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=remote
