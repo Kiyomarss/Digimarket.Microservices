@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Sample.Worker-1CF756F5-CA47-4A27-A26F-6828A2C36AC7</UserSecretsId>
-    <RootNamespace>Sample.Worker</RootNamespace>
+    <UserSecretsId>dotnet-Ordering.Worker-1CF756F5-CA47-4A27-A26F-6828A2C36AC7</UserSecretsId>
+    <RootNamespace>Ordering.Worker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["Ordering/Ordering.Api/Ordering.Api.csproj", "Ordering/Ordering.Api/"]
+COPY ["Ordering/Ordering.Components/Ordering.Components.csproj", "Ordering/Ordering.Components/"]
+RUN dotnet restore "Ordering/Ordering.Api/Ordering.Api.csproj"
+
+COPY . .
+RUN dotnet publish -c Release -o /app Ordering/Ordering.Api/Ordering.Api.csproj
+
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-
 WORKDIR /app
-
-COPY ../publish ./
-
+COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Ordering.Api.dll"]

@@ -1,11 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Ordering.Worker/Ordering.Worker.csproj", "Ordering.Worker/"]
-COPY ["Ordering.Components/Ordering.Components.csproj", "Ordering.Components/"]
-RUN dotnet restore "Ordering.Worker/Ordering.Worker.csproj"
+COPY ["Ordering/Ordering.Worker/Ordering.Worker.csproj", "Ordering/Ordering.Worker/"]
+COPY ["Ordering/Ordering.Components/Ordering.Components.csproj", "Ordering/Ordering.Components/"]
+RUN dotnet restore "Ordering/Ordering.Worker/Ordering.Worker.csproj"
 
 COPY . .
-RUN dotnet publish -c Release -o /app Ordering.Worker/Ordering.Worker.csproj 
+RUN dotnet publish -c Release -o /app Ordering/Ordering.Worker/Ordering.Worker.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS publish
 WORKDIR /app
