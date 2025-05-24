@@ -8,8 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F702A1B5-25E3-4D80-8674-164C7A455DF8}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
-		src\Dockerfile.worker = src\Dockerfile.worker
-		src\Dockerfile.api = src\Dockerfile.api
+		src\Dockerfile.Ordering.api = src\Dockerfile.Ordering.api
+		src\Dockerfile.Ordering.worker = src\Dockerfile.Ordering.worker
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{B84D5A65-D1A4-4FA1-AD9D-82265C15FE6A}"
@@ -23,9 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.API", "src\Catalog\Catalog.API\Catalog.API.csproj", "{3FA6CF68-6279-4CEE-8BEF-32803C568883}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ordering", "Ordering", "{A1D895E4-EB54-488E-B03E-E5E35ADE38BA}"
-	ProjectSection(SolutionItems) = preProject
-		src\Ordering\Ordering.Worker\Ordering.Worker.csproj = src\Ordering\Ordering.Worker\Ordering.Worker.csproj
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Api", "src\Ordering\Ordering.Api\Ordering.Api.csproj", "{4CBC4633-91C0-4AA8-8B9F-2FB2C89AF912}"
 EndProject

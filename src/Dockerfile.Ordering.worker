@@ -7,7 +7,7 @@ RUN dotnet restore "Ordering/Ordering.Worker/Ordering.Worker.csproj"
 COPY . .
 RUN dotnet publish -c Release -o /app Ordering/Ordering.Worker/Ordering.Worker.csproj
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Ordering.Worker.dll"]

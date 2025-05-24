@@ -26,8 +26,8 @@ services:
   api:
     image: ordering/api
     build:
-      context: .
-      dockerfile: src/Dockerfile.api
+      context: ./src
+      dockerfile: Dockerfile.Ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -49,7 +49,7 @@ services:
     image: ordering/worker
     build:
       context: ./src
-      dockerfile: Dockerfile.worker
+      dockerfile: Dockerfile.Ordering.worker
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Order;
