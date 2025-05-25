@@ -2,7 +2,7 @@ using MassTransit;
 
 namespace Ordering.Components.StateMachines;
 
-public class OrdersState :
+public class OrderState :
     SagaStateMachineInstance
 {
     public string CurrentState { get; set; } = null!;

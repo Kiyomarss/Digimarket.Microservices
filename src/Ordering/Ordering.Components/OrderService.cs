@@ -20,7 +20,7 @@ public class OrderService : IOrderService
     {
         var entity = new Order
         {
-            OrderId = NewId.NextGuid(),
+            Id = NewId.NextGuid(),
             Date = DateTime.UtcNow,
             Customer = "kiyomarss",
             Items = orderItems
@@ -30,7 +30,7 @@ public class OrderService : IOrderService
 
         await _publishEndpoint.Publish(new OrderSubmitted
         {
-            RegistrationId = entity.OrderId,
+            RegistrationId = entity.Id,
             RegistrationDate = entity.Date,
             Customer = entity.Customer,
         });

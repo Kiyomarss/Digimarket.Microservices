@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Ordering.Components.StateMachines;
 
 public class OrderStateMap :
-    SagaClassMap<OrdersState>
+    SagaClassMap<OrderState>
 {
-    protected override void Configure(EntityTypeBuilder<OrdersState> entity, ModelBuilder model)
+    protected override void Configure(EntityTypeBuilder<OrderState> entity, ModelBuilder model)
     {
         entity.Property(x => x.CurrentState);
         

@@ -75,7 +75,7 @@ var host = Host.CreateDefaultBuilder(args)
             x.AddConsumer<SendOrderEmailConsumer>();
             x.AddConsumer<AddEventAttendeeConsumer>();
             x.AddConsumer<ValidateOrdersConsumer, ValidateOrdeConsumerDefinition>();
-            x.AddSagaStateMachine<OrderStateMachine, OrdersState, OrdersStateDefinition>()
+            x.AddSagaStateMachine<OrderStateMachine, OrderState, OrdersStateDefinition>()
                 .EntityFrameworkRepository(r =>
                 {
                     r.ExistingDbContext<OrderDbContext>();

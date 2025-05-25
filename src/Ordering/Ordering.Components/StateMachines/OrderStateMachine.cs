@@ -4,7 +4,7 @@ using Ordering.Components.Contracts;
 namespace Ordering.Components.StateMachines;
 
 public class OrderStateMachine :
-    MassTransitStateMachine<OrdersState>
+    MassTransitStateMachine<OrderState>
 {
     public OrderStateMachine()
     {

@@ -19,7 +19,7 @@ public class StoreOrderEndpoints : ICarterModule
 
                             var result = new
                             {
-                                RegistrationId = orders.OrderId,
+                                RegistrationId = orders.Id,
                                 RegistrationDate = orders.Date,
                                 orders.Customer,
                             };

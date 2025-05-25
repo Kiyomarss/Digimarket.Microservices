@@ -2,7 +2,7 @@ namespace Ordering.Components;
 
 public class Order
 {
-    public Guid OrderId { get; set; }
+    public Guid Id { get; set; }
     public DateTime Date { get; set; }
     
     public List<OrderItem> Items { get; set; } = new();

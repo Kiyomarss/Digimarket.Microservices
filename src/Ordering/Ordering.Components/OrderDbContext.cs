@@ -16,7 +16,9 @@ public class OrderDbContext : SagaDbContext
     {
         get { yield return new OrderStateMap(); }
     }
-
+    
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -28,21 +30,38 @@ public class OrderDbContext : SagaDbContext
         modelBuilder.AddOutboxStateEntity();
     }
 
-    static void MapRegistration(ModelBuilder modelBuilder)
+    private static void MapRegistration(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<OrderWrapper>(entity =>
+        // نگاشت Order
+        modelBuilder.Entity<Order>(entity =>
         {
             entity.ToTable("orders");
+            entity.HasKey(o => o.Id);
 
-            entity.HasKey(e => e.Id);
+            entity.Property(o => o.Date).IsRequired();
+            entity.Property(o => o.Customer)
+                  .HasMaxLength(64)
+                  .IsRequired();
 
-            entity.Property(e => e.Data)
-                  .HasColumnName("data")
-                  .HasColumnType("jsonb")
-                  .HasConversion(
-                                 v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
-                                 v => JsonSerializer.Deserialize<Order>(v, new JsonSerializerOptions())!
-                                );
+            entity.HasMany(o => o.Items)
+                  .WithOne(oi => oi.Order)
+                  .HasForeignKey(oi => oi.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // نگاشت OrderItem
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.ToTable("order_items");
+            entity.HasKey(oi => oi.Id);
+
+            entity.Property(oi => oi.ProductId).IsRequired();
+            entity.Property(oi => oi.ProductName)
+                  .HasMaxLength(200)
+                  .IsRequired();
+            entity.Property(oi => oi.Quantity).IsRequired();
+            entity.Property(oi => oi.Price).IsRequired();
         });
     }
+    
 }
