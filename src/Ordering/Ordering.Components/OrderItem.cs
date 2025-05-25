@@ -4,7 +4,6 @@ namespace Ordering.Components;
 
 public class OrderItem
 {
-    [JsonConstructor]
     internal OrderItem(Guid productId, string productName, int quantity, decimal price)
     {
         ProductId = productId;
@@ -13,11 +12,13 @@ public class OrderItem
         Price = price;
     }
 
+    public OrderItem() { }
+
     public Guid Id { get; set; }
     public Guid OrderId { get; set; }   
-    public Guid ProductId { get; private set; } = default!;
-    public string ProductName { get; private set; } = default!;
-    public int Quantity { get; private set; } = default!;
-    public decimal Price { get; private set; } = default!;
+    public Guid ProductId { get; set; } = default!;
+    public string ProductName { get; set; } = default!;
+    public int Quantity { get; set; } = default!;
+    public decimal Price { get; set; } = default!;
     public Order Order { get; set; } = default!;
 }

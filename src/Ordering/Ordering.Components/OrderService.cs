@@ -16,14 +16,24 @@ public class OrderService : IOrderService
         _publishEndpoint = publishEndpoint;
     }
 
-    public async Task<Order> SubmitOrders(List<OrderItem> orderItems)
+    public async Task<Order> SubmitOrders(List<OrderItemDto> orderItemDtos)
     {
+        var orderId = NewId.NextGuid();
+        
         var entity = new Order
         {
-            Id = NewId.NextGuid(),
+            Id = orderId,
             Date = DateTime.UtcNow,
             Customer = "kiyomarss",
-            Items = orderItems
+            Items = orderItemDtos.Select(dto => new OrderItem
+            {
+                Id = NewId.NextGuid(),
+                OrderId = orderId,
+                ProductId = dto.ProductId,
+                ProductName = dto.ProductName,
+                Quantity = dto.Quantity,
+                Price = dto.Price
+            }).ToList()
         };
 
         await _dbContext.Set<Order>().AddAsync(entity);

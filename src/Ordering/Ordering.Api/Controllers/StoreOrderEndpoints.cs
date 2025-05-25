@@ -1,9 +1,8 @@
 using Carter;
 using Ordering.Components;
+using Ordering.Components.Contracts;
 
 namespace Ordering.Api.Controllers;
-
-public record OrderRequest(List<OrderItem> OrderItems);
 
 public class StoreOrderEndpoints : ICarterModule
 {
