@@ -6,7 +6,7 @@ using Ordering.Components.Services;
 namespace Ordering.Components.Consumers;
 
 public class ValidateOrdersConsumer :
-    IConsumer<AddEventAttendee>
+    IConsumer<PaymentValidated>
 {
     readonly ILogger<ValidateOrdersConsumer> _logger;
     readonly IOrderValidationService _validationService;
@@ -17,8 +17,8 @@ public class ValidateOrdersConsumer :
         _validationService = validationService;
     }
 
-    public async Task Consume(ConsumeContext<AddEventAttendee> context)
+    public async Task Consume(ConsumeContext<PaymentValidated> context)
     {
-        await _validationService.ValidateOrders(context.Message.RegistrationId);
+        await _validationService.ValidateOrders(context.Message.Id);
     }
 }

@@ -38,10 +38,10 @@ public class OrderService : IOrderService
 
         await _dbContext.Set<Order>().AddAsync(entity);
 
-        await _publishEndpoint.Publish(new OrderSubmitted
+        await _publishEndpoint.Publish(new OrderInitiated
         {
-            RegistrationId = entity.Id,
-            RegistrationDate = entity.Date,
+            Id = entity.Id,
+            Date = entity.Date,
             Customer = entity.Customer,
         });
 

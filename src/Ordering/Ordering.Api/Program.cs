@@ -4,7 +4,6 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
 using Carter;
 using MassTransit;
-using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;

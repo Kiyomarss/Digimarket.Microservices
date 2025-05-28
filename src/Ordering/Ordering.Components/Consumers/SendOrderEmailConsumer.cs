@@ -5,7 +5,7 @@ using Ordering.Components.Contracts;
 namespace Ordering.Components.Consumers;
 
 public class SendOrderEmailConsumer :
-    IConsumer<SendRegistrationEmail>
+    IConsumer<InventoryReduced>
 {
     readonly ILogger<SendOrderEmailConsumer> _logger;
 
@@ -14,10 +14,9 @@ public class SendOrderEmailConsumer :
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<SendRegistrationEmail> context)
+    public Task Consume(ConsumeContext<InventoryReduced> context)
     {
-        _logger.LogInformation("Notifying Member {MemberId} that they registered for event {EventId} on {RegistrationDate}", context.Message.Customer,
-            context.Message.EventId, context.Message.RegistrationDate);
+        _logger.LogInformation("Notifying Member {MemberId} that they registered for event {EventId} on {RegistrationDate}", context.Message.RegistrationDate);
 
         return Task.CompletedTask;
     }

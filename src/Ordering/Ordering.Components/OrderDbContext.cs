@@ -32,7 +32,6 @@ public class OrderDbContext : SagaDbContext
 
     private static void MapRegistration(ModelBuilder modelBuilder)
     {
-        // نگاشت Order
         modelBuilder.Entity<Order>(entity =>
         {
             entity.ToTable("orders");
@@ -49,7 +48,6 @@ public class OrderDbContext : SagaDbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // نگاشت OrderItem
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.ToTable("order_items");
