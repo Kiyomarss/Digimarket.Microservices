@@ -25,7 +25,7 @@ Log.Logger = new LoggerConfiguration()
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddDbContext<CatalogDbContext>(x =>
+        services.AddDbContext<ProductDbContext>(x =>
         {
             var connectionString = hostContext.Configuration.GetConnectionString("Default");
 
@@ -58,10 +58,10 @@ var host = Host.CreateDefaultBuilder(args)
                 });
         });
 
-        services.AddScoped<ICatalogValidationService, CatalogValidationService>();
+        services.AddScoped<IProductValidationService, ProductValidationService>();
         services.AddMassTransit(x =>
         {
-            x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
+            x.AddEntityFrameworkOutbox<ProductDbContext>(o =>
             {
                 o.UsePostgres();
 

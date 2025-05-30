@@ -1,0 +1,62 @@
+using Catalog.Components.Contracts;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+
+namespace Catalog.Components;
+
+public class ProductService : IProductService
+{
+    readonly ProductDbContext _dbContext;
+    readonly IPublishEndpoint _publishEndpoint;
+
+    public ProductService(ProductDbContext dbContext, IPublishEndpoint publishEndpoint)
+    {
+        _dbContext = dbContext;
+        _publishEndpoint = publishEndpoint;
+    }
+
+    public async Task<Product> SubmitCatalogs()
+    {
+        var entity = new Product
+        {
+            Id = Guid.NewGuid(),
+            Name = $"Test Product {Guid.NewGuid().ToString()[..5]}",
+            Description = "This is a fake product for testing.",
+            Price = 99.99m,
+            AvailableStock = 100,
+            Images = new List<ProductImage>
+            {
+                new ProductImage
+                {
+                    Id = Guid.NewGuid(),
+                    Url = "https://via.placeholder.com/150",
+                    AltText = "Test Image",
+                    ProductId = Guid.Empty // مقداردهی می‌شه بعد از SaveChanges
+                }
+            },
+            Categories = new List<Category>
+            {
+                new Category
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test Category",
+                    ProductId = Guid.Empty // مقداردهی می‌شه بعد از SaveChanges
+                }
+            }
+        };
+
+        await _dbContext.Set<Product>().AddAsync(entity);
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            throw new DuplicateProductException("Duplicate registration", exception);
+        }
+
+        return entity;
+    }
+}

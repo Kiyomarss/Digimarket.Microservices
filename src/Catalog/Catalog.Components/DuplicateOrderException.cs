@@ -1,18 +1,18 @@
 namespace Catalog.Components;
 
 [Serializable]
-public class DuplicateCatalogException :
+public class DuplicateProductException :
     Exception
 {
-    public DuplicateCatalogException()
+    public DuplicateProductException()
     {
     }
 
-    public DuplicateCatalogException(string? message) : base(message)
+    public DuplicateProductException(string? message) : base(message)
     {
     }
 
-    public DuplicateCatalogException(string? message, Exception? innerException) : base(message, innerException)
+    public DuplicateProductException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
 }

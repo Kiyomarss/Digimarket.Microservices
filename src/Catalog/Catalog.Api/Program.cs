@@ -28,7 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddCarter();
 
@@ -40,21 +40,21 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
-builder.Services.AddDbContext<CatalogDbContext>(x =>
+builder.Services.AddDbContext<ProductDbContext>(x =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Default");
 
     x.UseNpgsql(connectionString, options =>
     {
         options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-        options.MigrationsHistoryTable($"__{nameof(CatalogDbContext)}");
+        options.MigrationsHistoryTable($"__{nameof(ProductDbContext)}");
 
         options.EnableRetryOnFailure(5);
         options.MinBatchSize(1);
     });
 });
 
-builder.Services.AddHostedService<RecreateDatabaseHostedService<CatalogDbContext>>();
+builder.Services.AddHostedService<RecreateDatabaseHostedService<ProductDbContext>>();
 
 builder.Services.AddOpenTelemetry().WithTracing(x =>
 {
@@ -81,7 +81,7 @@ builder.Services.AddOpenTelemetry().WithTracing(x =>
 });
 builder.Services.AddMassTransit(x =>
 {
-    x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
+    x.AddEntityFrameworkOutbox<ProductDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);
 

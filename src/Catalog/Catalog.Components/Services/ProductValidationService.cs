@@ -3,12 +3,12 @@ using MassTransit;
 
 namespace Catalog.Components.Services;
 
-public class CatalogValidationService :
-    ICatalogValidationService
+public class ProductValidationService :
+    IProductValidationService
 {
     readonly IPublishEndpoint _publishEndpoint;
 
-    public CatalogValidationService(IPublishEndpoint publishEndpoint)
+    public ProductValidationService(IPublishEndpoint publishEndpoint)
     {
         _publishEndpoint = publishEndpoint;
     }

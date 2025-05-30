@@ -10,22 +10,20 @@ public class StoreCatalogEndpoints : ICarterModule
     {
         app.MapPost("/StoreCatalog", async (
                         CatalogRequest request,
-                        ICatalogService CatalogsService) =>
+                        IProductService CatalogsService) =>
                     {
                         try
                         {
-                            var Catalogs = await CatalogsService.SubmitCatalogs(request.CatalogItems);
+                            var Catalogs = await CatalogsService.SubmitCatalogs();
 
                             var result = new
                             {
-                                RegistrationId = Catalogs.Id,
-                                RegistrationDate = Catalogs.Date,
-                                Catalogs.Customer,
+                                RegistrationId = Catalogs.Id
                             };
 
                             return Results.Ok(result);
                         }
-                        catch (DuplicateCatalogException)
+                        catch (DuplicateProductException)
                         {
                             return Results.Conflict(new
                             {

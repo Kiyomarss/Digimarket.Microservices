@@ -1,6 +1,6 @@
 namespace Catalog.Components.Services;
 
-public interface ICatalogValidationService
+public interface IProductValidationService
 {
     Task ValidateCatalogs(Guid registrationId);
 }
