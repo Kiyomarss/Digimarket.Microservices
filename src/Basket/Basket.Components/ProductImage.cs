@@ -1,11 +1,11 @@
-﻿namespace Catalog.Components;
+﻿namespace Basket.Components;
 
 public class ProductImage
 {
     public Guid Id { get; set; }
     
     public Guid ProductId { get; set; }
-    public Product Product { get; set; } = default!;
+    public ShoppingCart ShoppingCart { get; set; } = default!;
     
     public string Url { get; set; } = default!;
     public string? AltText { get; set; }
