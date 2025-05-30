@@ -48,9 +48,9 @@ public class ProductDbContext : DbContext
             entity.Property(p => p.AvailableStock)
                   .IsRequired();
 
-            entity.HasMany(p => p.Categories)
-                  .WithOne(c => c.Product)
-                  .HasForeignKey(c => c.ProductId)
+            entity.HasOne(p => p.Category)
+                  .WithMany()
+                  .HasForeignKey(c => c.CategoryId)
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(p => p.Images)

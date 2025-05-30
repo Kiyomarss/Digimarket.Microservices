@@ -35,15 +35,8 @@ public class ProductService : IProductService
                     ProductId = Guid.Empty // مقداردهی می‌شه بعد از SaveChanges
                 }
             },
-            Categories = new List<Category>
-            {
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Test Category",
-                    ProductId = Guid.Empty // مقداردهی می‌شه بعد از SaveChanges
-                }
-            }
+            CategoryId = new Guid("d56be165-fe7d-460c-ad0a-016d90a31dbc"), // فقط شناسه دسته‌بندی استفاده می‌شود
+
         };
 
         await _dbContext.Set<Product>().AddAsync(entity);
