@@ -10,7 +10,8 @@ public class Product
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;
     public decimal Price { get; set; }
-    public int AvailableStock { get; set; }
+    public int StockQuantity { get; set; }    
+    public int ReservedQuantity { get; set; }
 
     public List<ProductImage> Images { get; set; } = new();
 }

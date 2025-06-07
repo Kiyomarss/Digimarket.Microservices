@@ -24,7 +24,7 @@ public class ProductService : IProductService
             Name = $"Test Product {Guid.NewGuid().ToString()[..5]}",
             Description = "This is a fake product for testing.",
             Price = 99.99m,
-            AvailableStock = 100,
+            StockQuantity = 100,
             Images = new List<ProductImage>
             {
                 new ProductImage

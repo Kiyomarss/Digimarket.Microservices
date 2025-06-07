@@ -5,7 +5,7 @@ using Ordering.Components.Contracts;
 namespace Ordering.Components.Consumers;
 
 public class AddEventAttendeeConsumer :
-    IConsumer<PaymentValidated>
+    IConsumer<NotifyOrderConsumer>
 {
     readonly ILogger<AddEventAttendeeConsumer> _logger;
 
@@ -14,9 +14,9 @@ public class AddEventAttendeeConsumer :
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<PaymentValidated> context)
+    public Task Consume(ConsumeContext<NotifyOrderConsumer> context)
     {
-        _logger.LogInformation("Adding Member {MemberId} as an attendee for event {EventId}", context.Message.Customer);
+        _logger.LogInformation("Adding Member {MemberId} as an attendee for event {EventId}");
 
         return Task.CompletedTask;
     }

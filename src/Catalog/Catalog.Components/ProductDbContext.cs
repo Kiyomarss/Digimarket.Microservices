@@ -45,7 +45,10 @@ public class ProductDbContext : DbContext
             entity.Property(p => p.Price)
                   .IsRequired();
 
-            entity.Property(p => p.AvailableStock)
+            entity.Property(p => p.StockQuantity)
+                  .IsRequired();
+            
+            entity.Property(p => p.ReservedQuantity)
                   .IsRequired();
 
             entity.HasOne(p => p.Category)
