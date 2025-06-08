@@ -1,96 +1,130 @@
-using System;
 using System.Diagnostics;
+using System.Reflection;
+using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions.Handler;
+using Carter;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Ordering.Api;
 using Ordering.Components;
-using Ordering.Components.Consumers;
-using Ordering.Components.Services;
-using Ordering.Components.StateMachines;
-using Quartz;
 using Serilog;
 using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
-             .MinimumLevel.Information()
-             .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
-             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
-             .Enrich.FromLogContext()
-             .WriteTo.Console()
-             .CreateLogger();
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
 
-var host = Host.CreateDefaultBuilder(args)
-               .ConfigureServices((hostContext, services) =>
-               {
-                   services.AddDbContext<OrderDbContext>(x =>
-                   {
-                       var connectionString = hostContext.Configuration.GetConnectionString("Default");
-                       x.UseNpgsql(connectionString, options => { options.MinBatchSize(1); });
-                   });
+var builder = WebApplication.CreateBuilder(args);
 
-                   services.AddOpenTelemetry().WithTracing(x =>
-                   {
-                       x.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                                                           .AddService("service")
-                                                           .AddTelemetrySdk()
-                                                           .AddEnvironmentVariableDetector())
-                        .AddSource("MassTransit")
-                        .AddJaegerExporter(o =>
-                        {
-                            o.AgentHost = HostMetadataCache.IsRunningInContainer ? "jaeger" : "localhost";
-                            o.AgentPort = 6831;
-                            o.MaxPayloadSizeInBytes = 4096;
-                            o.ExportProcessorType = ExportProcessorType.Batch;
-                            o.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>
-                            {
-                                MaxQueueSize = 2048, ScheduledDelayMilliseconds = 5000, ExporterTimeoutMilliseconds = 30000, MaxExportBatchSize = 512,
-                            };
-                        });
-                   });
+builder.Host.UseSerilog();
 
-                   services.AddScoped<IOrderValidationService, OrderValidationService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
-                   services.AddQuartz();
-                   services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddCarter();
 
-                   services.AddMassTransit(x =>
-                   {
-                       x.AddEntityFrameworkOutbox<OrderDbContext>(o =>
-                       {
-                           o.UsePostgres();
-                           o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-                       });
+var assembly = typeof(Program).Assembly;
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssembly(assembly);
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+});
 
-                       x.SetKebabCaseEndpointNameFormatter();
+builder.Services.AddDbContext<OrderDbContext>(x =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Default");
 
-                       x.AddConsumer<NotifyOrderConsumer>();
-                       x.AddConsumer<SendOrderEmailConsumer>();
-                       x.AddConsumer<AddEventAttendeeConsumer>();
-                       x.AddConsumer<ValidateOrdersConsumer, ValidateOrdeConsumerDefinition>();
+    x.UseNpgsql(connectionString, options =>
+    {
+        options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+        options.MigrationsHistoryTable($"__{nameof(OrderDbContext)}");
 
-                       x.AddSagaStateMachine<OrderStateMachine, OrderState, OrdersStateDefinition>()
-                        .EntityFrameworkRepository(r =>
-                        {
-                            r.ExistingDbContext<OrderDbContext>();
-                            r.UsePostgres();
-                        });
+        options.EnableRetryOnFailure(5);
+        options.MinBatchSize(1);
+    });
+});
 
-                       x.AddQuartzConsumers();
+builder.Services.AddHostedService<RecreateDatabaseHostedService<OrderDbContext>>();
 
-                       x.UsingRabbitMq((context, cfg) =>
-                       {
-                           cfg.Host("rabbitmq://localhost");
-                           cfg.UseMessageScheduler(new Uri("queue:quartz"));
-                           cfg.ConfigureEndpoints(context);
-                       });
-                   });
-               })
-               .UseSerilog()
-               .Build();
+// ————— پیکربندی OpenTelemetry —————
+builder.Services.AddOpenTelemetry().WithTracing(x =>
+{
+    x.SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService("api")
+            .AddTelemetrySdk()
+            .AddEnvironmentVariableDetector())
+        .AddSource("MassTransit")
+        .AddAspNetCoreInstrumentation()
+        .AddJaegerExporter(o =>
+        {
+            o.AgentHost = HostMetadataCache.IsRunningInContainer ? "jaeger" : "localhost";
+            o.AgentPort = 6831;
+            o.MaxPayloadSizeInBytes = 4096;
+            o.ExportProcessorType = ExportProcessorType.Batch;
+            o.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>
+            {
+                MaxQueueSize = 2048,
+                ScheduledDelayMilliseconds = 5000,
+                ExporterTimeoutMilliseconds = 30000,
+                MaxExportBatchSize = 512,
+            };
+        });
+});
 
-await host.RunAsync();
+// ————— پیکربندی MassTransit + RabbitMQ —————
+builder.Services.AddMassTransit(x =>
+{
+    // Outbox (اختیاری، اگر توی API از EF Outbox استفاده می‌کنید)
+    x.AddEntityFrameworkOutbox<OrderDbContext>(o =>
+    {
+        o.QueryDelay = TimeSpan.FromSeconds(1);
+        o.UsePostgres();
+        o.UseBusOutbox();
+    });
+
+    // تنها Transport: RabbitMQ
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        // حتماً آدرس و احراز هویت را متناسب با محیط خودتون تنظیم کنید:
+        cfg.Host("rabbitmq://localhost", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        // ساخت خودکار Queue/Exchange بر اساس Convention
+        cfg.ConfigureEndpoints(context);
+    });
+});
+// —————————————————————————————————————————————
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.MapCarter();
+
+app.Run();

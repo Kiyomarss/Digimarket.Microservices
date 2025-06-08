@@ -5,6 +5,8 @@ namespace Ordering.Components.StateMachines
 {
     public class OrderStateMachine : MassTransitStateMachine<OrderState>
     {
+        private static readonly Uri QuartzSchedulerUri = new("queue:quartz");
+
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -111,9 +113,7 @@ namespace Ordering.Components.StateMachines
                     .TransitionTo(Processing)
             );
         }
-
-        private static readonly Uri QuartzSchedulerUri = new Uri("queue:quartz");
-
+        
         public State WaitingForPayment { get; private set; } = null!;
         public State WaitingForProcessing { get; private set; } = null!;
         public State Processing { get; private set; } = null!;
