@@ -24,6 +24,7 @@ public class OrderService : IOrderService
         {
             Id = orderId,
             Date = DateTime.UtcNow,
+            State = "kiyomarss",
             Customer = "kiyomarss",
             Items = orderItemDtos.Select(dto => new OrderItem
             {
@@ -56,4 +57,15 @@ public class OrderService : IOrderService
 
         return entity;
     }
+    public async Task SubmitOrders2(Guid orderId)
+    {
+        var order = await _dbContext.Set<Order>().FirstOrDefaultAsync();
+
+        if (order == null)
+            throw new Exception("No orders found in database.");
+
+        await _publishEndpoint.Publish(new PaymentCompleted(order.Id));        
+        await _dbContext.SaveChangesAsync();
+    }
+
 }

@@ -68,16 +68,9 @@ var builder = Host.CreateDefaultBuilder(args)
 
                           x.SetKebabCaseEndpointNameFormatter();
 
+                          x.AddConsumer<OrderStatusChangedConsumer>();
                           x.AddConsumer<OrderReadyToProcessConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
-                          x.AddConsumer<NotifyOrderConsumer>();
                           x.AddConsumer<SendOrderEmailConsumer>();
-                          x.AddConsumer<AddEventAttendeeConsumer>();
                           x.AddConsumer<ValidateOrdersConsumer, ValidateOrdeConsumerDefinition>();
 
                           x.AddSagaStateMachine<OrderStateMachine, OrderState, OrdersStateDefinition>()

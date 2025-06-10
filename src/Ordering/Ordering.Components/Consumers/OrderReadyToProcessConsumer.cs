@@ -5,7 +5,7 @@ using Ordering.Components.Contracts;
 namespace Ordering.Components.Consumers;
 
 public class OrderReadyToProcessConsumer :
-    IConsumer<OrderReadyToProcess>
+    IConsumer<ProcessingStarted>
 {
     readonly ILogger<OrderReadyToProcessConsumer> _logger;
 
@@ -14,7 +14,7 @@ public class OrderReadyToProcessConsumer :
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<OrderReadyToProcess> context)
+    public Task Consume(ConsumeContext<ProcessingStarted> context)
     {
         _logger.LogInformation("Member {MemberId} registered for event {EventId} on {RegistrationDate}");
 

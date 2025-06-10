@@ -38,6 +38,9 @@ public class OrderDbContext : SagaDbContext
             entity.HasKey(o => o.Id);
 
             entity.Property(o => o.Date).IsRequired();
+            entity.Property(o => o.State)
+                  .HasMaxLength(64);
+                  
             entity.Property(o => o.Customer)
                   .HasMaxLength(64)
                   .IsRequired();

@@ -12,7 +12,7 @@ namespace Ordering.Components.StateMachines
             InstanceState(x => x.CurrentState);
 
             Event(() => OrderInitiated, x => x.CorrelateById(m => m.Message.Id));
-            Event(() => PaymentCompleted, x => x.CorrelateById(m => m.Message.Id));
+            Event(() => PaymentCompleted, x => x.CorrelateById(m => m.Message.CorrelationId));
             Event(() => InventoryReduced, x => x.CorrelateById(m => m.Message.Id));
             Event(() => BasketRemoved, x => x.CorrelateById(m => m.Message.Id));
             Event(() => SendReminder, x => x.CorrelateById(m => m.Message.Id));
@@ -36,16 +36,20 @@ namespace Ordering.Components.StateMachines
                         );
                         
                         var scheduledReminder = await context.ScheduleSend(
-                            DateTime.UtcNow.AddMinutes(10),
+                            DateTime.UtcNow.AddMinutes(1),
                             new SendReminder(orderId)
                         );
                         context.Saga.ReminderScheduleTokenId = scheduledReminder.TokenId;
 
                         var scheduledCancel = await context.ScheduleSend(
-                            DateTime.UtcNow.AddMinutes(15),
+                            DateTime.UtcNow.AddMinutes(2),
                             new CancelOrder(orderId)
                         );
                         context.Saga.CancelScheduleTokenId = scheduledCancel.TokenId;
+                        await context.Publish(new OrderStatusChanged
+                        {
+                            Id = context.Saga.CorrelationId, OrderState = WaitingForPayment.Name
+                        });
                     })
                     .TransitionTo(WaitingForPayment)
             );
@@ -55,7 +59,7 @@ namespace Ordering.Components.StateMachines
                     .Then(context =>
                     {
                         context.Saga.IsPaymentValidated = true;
-                        context.Saga.PaymentReference = context.Message.TransactionId;
+                        context.Saga.PaymentReference = context.Message.CorrelationId;
                     })
                     .ThenAsync(async context =>
                     {
@@ -73,19 +77,9 @@ namespace Ordering.Components.StateMachines
                             context.Saga.CancelScheduleTokenId = null;
                         }
 
-                        await context.Publish(new OrderReadyToProcess(context.Saga.CorrelationId));
-                        await context.Raise(ProcessingStarted);
+                        await context.Publish(new ProcessingStarted(context.Saga.CorrelationId));
                     })
                     .TransitionTo(WaitingForProcessing)
-            );
-
-            During(WaitingForPayment,
-                When(SendReminder)
-                    .ThenAsync(async context =>
-                    {
-                        await context.Publish(new SendSmsReminder(context.Saga.CorrelationId));
-                        context.Saga.IsReminderSent = true;
-                    })
             );
 
             During(WaitingForPayment,
@@ -93,25 +87,21 @@ namespace Ordering.Components.StateMachines
                     .ThenAsync(async context =>
                     {
                         await context.Publish(new ReleaseInventory(context.Saga.CorrelationId));
-                        await context.Publish(new CancelOrderNotification(context.Saga.CorrelationId));
                     })
                     .TransitionTo(Cancelled)
             );
 
             During(WaitingForProcessing,
-                When(InventoryReduced)
-                    .Then(context => context.Saga.IsInventoryReduced = true)
-                    .ThenAsync(CheckAndFinalize),
-
-                When(BasketRemoved)
-                    .Then(context => context.Saga.IsBasketRemoved = true)
-                    .ThenAsync(CheckAndFinalize)
-            );
-
-            During(WaitingForProcessing,
-                When(ProcessingStarted)
-                    .TransitionTo(Processing)
-            );
+                   When(ProcessingStarted)
+                       .ThenAsync(async context =>
+                       {
+                           await context.Publish(new OrderStatusChanged
+                           {
+                               Id = context.Saga.CorrelationId, OrderState = Processing.Name
+                           });
+                       })
+                       .TransitionTo(Processing)
+                  );
         }
         
         public State WaitingForPayment { get; private set; } = null!;
@@ -125,16 +115,6 @@ namespace Ordering.Components.StateMachines
         public Event<BasketRemoved> BasketRemoved { get; private set; } = null!;
         public Event<SendReminder> SendReminder { get; private set; } = null!;
         public Event<CancelOrder> CancelOrder { get; private set; } = null!;
-        public Event<OrderReadyToProcess> ProcessingStarted { get; private set; } = null!;
-
-        private async Task CheckAndFinalize(BehaviorContext<OrderState> context)
-        {
-            var saga = context.Saga;
-            if (saga.IsInventoryReduced && saga.IsBasketRemoved)
-            {
-                await context.Publish(new OrderReadyToProcess(saga.CorrelationId));
-                await context.Raise(ProcessingStarted);
-            }
-        }
+        public Event<ProcessingStarted> ProcessingStarted { get; private set; } = null!;
     }
 }
