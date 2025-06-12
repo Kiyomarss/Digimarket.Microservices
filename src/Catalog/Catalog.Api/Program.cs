@@ -15,20 +15,20 @@ using Serilog;
 using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .CreateLogger();
+             .MinimumLevel.Information()
+             .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
+             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+             .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+             .Enrich.FromLogContext()
+             .WriteTo.Console()
+             .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, Catalog.Components.ProductService>();
 
 builder.Services.AddCarter();
 
@@ -107,6 +107,8 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddGrpc();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -114,6 +116,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGrpcService<ProductServiceImpl>();
 
 app.MapCarter();
 

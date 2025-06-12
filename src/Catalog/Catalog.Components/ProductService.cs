@@ -25,6 +25,7 @@ public class ProductService : IProductService
             Description = "This is a fake product for testing.",
             Price = 99.99m,
             StockQuantity = 100,
+            ReservedQuantity = 25,
             Images = new List<ProductImage>
             {
                 new ProductImage

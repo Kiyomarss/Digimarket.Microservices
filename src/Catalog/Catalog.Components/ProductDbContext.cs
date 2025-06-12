@@ -11,7 +11,7 @@ public class ProductDbContext : DbContext
     public ProductDbContext(DbContextOptions<ProductDbContext> options)
         : base(options) { }
     
-    public DbSet<Product> Catalogs { get; set; }
+    public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Category> Categores { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -92,5 +92,4 @@ public class ProductDbContext : DbContext
                   .HasMaxLength(200);
         });
     }
-    
 }

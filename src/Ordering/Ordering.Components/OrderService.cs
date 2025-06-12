@@ -2,6 +2,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Ordering.Components.Contracts;
+using Product.Grpc;
 
 namespace Ordering.Components;
 
@@ -9,11 +10,13 @@ public class OrderService : IOrderService
 {
     readonly OrderDbContext _dbContext;
     readonly IPublishEndpoint _publishEndpoint;
+    private readonly ProductService.ProductServiceClient _productClient;
 
-    public OrderService(OrderDbContext dbContext, IPublishEndpoint publishEndpoint)
+    public OrderService(OrderDbContext dbContext, IPublishEndpoint publishEndpoint, ProductService.ProductServiceClient productClient)
     {
         _dbContext = dbContext;
         _publishEndpoint = publishEndpoint;
+        _productClient = productClient;
     }
 
     public async Task<Order> SubmitOrders(List<OrderItemDto> orderItemDtos)
@@ -64,8 +67,19 @@ public class OrderService : IOrderService
         if (order == null)
             throw new Exception("No orders found in database.");
 
-        await _publishEndpoint.Publish(new PaymentCompleted(order.Id));        
+        await _publishEndpoint.Publish(new PaymentCompleted(order.Id));
+        var a = await TryReserveProduct(order.Id, 10);
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task<bool> TryReserveProduct(Guid productId, int quantity)
+    {
+        var response = await _productClient.ReserveProductAsync(new ReserveProductRequest
+        {
+            ProductId = productId.ToString(),
+            Quantity = quantity
+        });
+
+        return response.Success;
+    }
 }

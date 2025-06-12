@@ -13,6 +13,7 @@ using Ordering.Api;
 using Ordering.Components;
 using Serilog;
 using Serilog.Events;
+using Product.Grpc;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -111,6 +112,19 @@ builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
+
+//Grpc Services
+builder.Services.AddGrpcClient<ProductService.ProductServiceClient>(options => { options.Address = new Uri(builder.Configuration["GrpcSettings:CatalogUrl"]!); })
+       .ConfigurePrimaryHttpMessageHandler(() =>
+       {
+           var handler = new HttpClientHandler
+           {
+               ServerCertificateCustomValidationCallback =
+                   HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+           };
+
+           return handler;
+       });
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 

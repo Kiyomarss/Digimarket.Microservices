@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Messaging\BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
     <ProjectReference Include="..\Ordering.Components\Ordering.Components.csproj" />
+    <ProjectReference Include="..\Product.GrpcClient\Product.GrpcClient.csproj" />
   </ItemGroup>
 
 </Project>

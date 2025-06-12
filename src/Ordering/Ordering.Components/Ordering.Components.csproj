@@ -20,4 +20,8 @@
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Product.GrpcClient\Product.GrpcClient.csproj" />
+  </ItemGroup>
 </Project>
