@@ -48,7 +48,8 @@ namespace Ordering.Components.StateMachines
                         context.Saga.CancelScheduleTokenId = scheduledCancel.TokenId;
                         await context.Publish(new OrderStatusChanged
                         {
-                            Id = context.Saga.CorrelationId, OrderState = WaitingForPayment.Name
+                            Id = context.Saga.CorrelationId,
+                            OrderState = WaitingForPayment.Name
                         });
                     })
                     .TransitionTo(WaitingForPayment)
@@ -97,7 +98,8 @@ namespace Ordering.Components.StateMachines
                        {
                            await context.Publish(new OrderStatusChanged
                            {
-                               Id = context.Saga.CorrelationId, OrderState = Processing.Name
+                               Id = context.Saga.CorrelationId,
+                               OrderState = Processing.Name
                            });
                        })
                        .TransitionTo(Processing)
