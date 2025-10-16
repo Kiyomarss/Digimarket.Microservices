@@ -25,7 +25,7 @@ Log.Logger = new LoggerConfiguration()
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddDbContext<ProductDbContext>(x =>
+        services.AddDbContext<BasketDbContext>(x =>
         {
             var connectionString = hostContext.Configuration.GetConnectionString("Default");
 
@@ -61,7 +61,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IProductValidationService, ProductValidationService>();
         services.AddMassTransit(x =>
         {
-            x.AddEntityFrameworkOutbox<ProductDbContext>(o =>
+            x.AddEntityFrameworkOutbox<BasketDbContext>(o =>
             {
                 o.UsePostgres();
 
