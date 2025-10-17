@@ -1,15 +1,15 @@
-using Basket.Core.DTO;
+using Catalog.Components.DTO;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Basket.Core.Consumers;
+namespace Catalog.Components.Consumers;
 
-public class SendBasketEmailConsumer :
+public class SendCatalogEmailConsumer :
     IConsumer<InventoryReduced>
 {
-    readonly ILogger<SendBasketEmailConsumer> _logger;
+    readonly ILogger<SendCatalogEmailConsumer> _logger;
 
-    public SendBasketEmailConsumer(ILogger<SendBasketEmailConsumer> logger)
+    public SendCatalogEmailConsumer(ILogger<SendCatalogEmailConsumer> logger)
     {
         _logger = logger;
     }

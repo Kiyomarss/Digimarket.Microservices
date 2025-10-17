@@ -1,4 +1,4 @@
-using Basket.Core.Contracts;
+using Basket.Core.DTO;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
