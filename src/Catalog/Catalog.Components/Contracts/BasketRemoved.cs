@@ -1,6 +1,6 @@
 namespace Catalog.Components.Contracts;
 
-public record BasketRemoved
+public record CatalogRemoved
 {
     public Guid Id { get; init; }
 }

@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Catalog.Worker-1CF756F5-CA47-4A27-A26F-6828A2C36AC7</UserSecretsId>
+    <RootNamespace>Catalog.Worker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

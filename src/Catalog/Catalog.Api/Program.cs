@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Reflection;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
-using Carter;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
@@ -11,26 +10,30 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Catalog.Api;
 using Catalog.Components;
+using Catalog.Components.Repositories;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
-             .MinimumLevel.Information()
-             .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
-             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-             .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
-             .Enrich.FromLogContext()
-             .WriteTo.Console()
-             .CreateLogger();
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-builder.Services.AddScoped<IProductService, Catalog.Components.ProductService>();
+builder.Services.AddScoped<ICatalogItemUpdaterService, CatalogItemUpdaterService>();
+builder.Services.AddScoped<ICatalogItemGetterService, CatalogItemGetterService>();
+builder.Services.AddScoped<ICatalogItemRepository, CatalogItemItemRepository>();
 
-builder.Services.AddCarter();
+builder.Services.AddControllers();
 
 var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
@@ -40,21 +43,21 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
-builder.Services.AddDbContext<ProductDbContext>(x =>
+builder.Services.AddDbContext<CatalogDbContext>(x =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Default");
 
     x.UseNpgsql(connectionString, options =>
     {
         options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-        options.MigrationsHistoryTable($"__{nameof(ProductDbContext)}");
+        options.MigrationsHistoryTable($"__{nameof(CatalogDbContext)}");
 
         options.EnableRetryOnFailure(5);
         options.MinBatchSize(1);
     });
 });
 
-builder.Services.AddHostedService<RecreateDatabaseHostedService<ProductDbContext>>();
+builder.Services.AddHostedService<RecreateDatabaseHostedService<CatalogDbContext>>();
 
 builder.Services.AddOpenTelemetry().WithTracing(x =>
 {
@@ -81,7 +84,7 @@ builder.Services.AddOpenTelemetry().WithTracing(x =>
 });
 builder.Services.AddMassTransit(x =>
 {
-    x.AddEntityFrameworkOutbox<ProductDbContext>(o =>
+    x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);
 
@@ -98,17 +101,54 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    //options.InstanceName = "Basket";
+    //options.InstanceName = "Catalog";
 });
 
 //Cross-Cutting Services
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Hesabdari API",
+        Version = "v1"
+    });
+    
+    options.MapType<Stream>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "binary"
+    });
+    
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Enter the JWT token: Bearer {your_token}",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    };
 
-builder.Services.AddGrpc();
+    options.AddSecurityDefinition("Bearer", securityScheme);
 
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -117,8 +157,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGrpcService<ProductServiceImpl>();
-
-app.MapCarter();
+app.MapControllers();
 
 app.Run();

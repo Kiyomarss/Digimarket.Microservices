@@ -1,3 +1,3 @@
 ﻿namespace Catalog.Components.Contracts;
 
-public record CatalogItemDto(Guid ProductId, string ProductName, int Quantity, decimal Price);
+public record CatalogItemDto(Guid Id, string Name, string Description, int Stock, string? AttributesJson);
