@@ -1,4 +1,5 @@
 ﻿using Basket.Components;
+using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +14,9 @@ public class BasketRepository : IBasketRepository
         _db = dbContext;
     }
     
-    public async Task<Basket> FindBasketByUserId(Guid userId)
+    public async Task<BasketEntity> FindBasketByUserId(Guid userId)
     {
-        return await _db.Set<Basket>()
+        return await _db.Set<BasketEntity>()
                         .Include(b => b.Items)
                         .SingleAsync(x => x.UserId == userId);
     }

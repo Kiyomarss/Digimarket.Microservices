@@ -1,5 +1,4 @@
 using Basket.Core.Consumers;
-using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.ServiceContracts;
 using MassTransit;
 

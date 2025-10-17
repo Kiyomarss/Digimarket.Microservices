@@ -1,4 +1,4 @@
-﻿using Basket.Core;
+﻿using Basket.Core.Domain.Entities;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +9,7 @@ public class BasketDbContext : DbContext
     public BasketDbContext(DbContextOptions<BasketDbContext> options)
         : base(options) { }
     
-    public DbSet<Core.Basket> Basket { get; set; }
+    public DbSet<BasketEntity> Basket { get; set; }
     public DbSet<BasketItem> BasketItem { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,7 +24,7 @@ public class BasketDbContext : DbContext
     
     private static void MapRegistration(ModelBuilder modelBuilder)
     {
-          modelBuilder.Entity<Core.Basket>(entity =>
+          modelBuilder.Entity<BasketEntity>(entity =>
           {
               entity.ToTable("baskets");
               entity.HasKey(x => x.Id);

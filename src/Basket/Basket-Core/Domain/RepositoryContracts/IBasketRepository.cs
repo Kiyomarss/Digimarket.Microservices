@@ -1,8 +1,10 @@
-﻿namespace Basket.Core.Domain.RepositoryContracts;
+﻿using Basket.Core.Domain.Entities;
+
+namespace Basket.Core.Domain.RepositoryContracts;
 
 public interface IBasketRepository
 {
-    Task<Basket> FindBasketByUserId(Guid userId);
+    Task<BasketEntity> FindBasketByUserId(Guid userId);
 
     Task AddItemToBasket(BasketItem item);
     

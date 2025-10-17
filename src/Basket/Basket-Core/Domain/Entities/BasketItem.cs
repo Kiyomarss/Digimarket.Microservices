@@ -1,4 +1,4 @@
-﻿namespace Basket.Core;
+﻿namespace Basket.Core.Domain.Entities;
 
 public class BasketItem
 {
@@ -9,5 +9,5 @@ public class BasketItem
     public int Quantity { get; set; }
 
     public Guid BasketId { get; set; }
-    public Basket Basket { get; set; }
+    public BasketEntity Basket { get; set; }
 }
