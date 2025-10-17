@@ -1,3 +1,5 @@
+using System.Text.Json;
+using Catalog.Components.Contracts;
 using Catalog.Components.Repositories;
 
 namespace Catalog.Components;
@@ -13,6 +15,20 @@ public class CatalogItemUpdaterService : ICatalogItemUpdaterService
 
     public async Task AddItem(Guid catalogId, int quantity)
     {
+    }
+    
+    public async Task AddCatalogItem(CreateCatalogItemDto dto)
+    {
+        var catalogItem = new CatalogItem
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            Stock = dto.Stock,
+            CreatedAt = DateTime.UtcNow,
+            AttributesJson = JsonSerializer.Serialize(dto.Attributes)
+        };
+
+        await _catalogItemRepository.AddCatalogItem(catalogItem);
     }
     
     public async Task RemoveItem(Guid id)

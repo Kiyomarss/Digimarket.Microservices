@@ -1,8 +1,9 @@
+using Catalog.Components.Contracts;
+
 namespace Catalog.Components;
 
 public interface ICatalogItemUpdaterService
 {
-    Task AddItem(Guid catalogId, int quantity);
-
+    Task AddCatalogItem(CreateCatalogItemDto dto);
     Task RemoveItem(Guid id);
 }

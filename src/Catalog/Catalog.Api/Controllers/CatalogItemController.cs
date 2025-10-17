@@ -18,6 +18,14 @@ namespace Catalog.Api.Controllers
             _catalogItemGetterService = catalogItemGetterService;
         }
         
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateCatalogItemDto dto)
+        {
+            await _catalogItemUpdaterService.AddCatalogItem(dto);
+
+            return Ok();
+        }
+        
         //TODO: با وجود اینکه این اکشن فقط داده‌ها را "دریافت" می‌کند، از متد HTTP POST استفاده شده است،
         // زیرا لیست شناسه‌ها (ids) در بدنه درخواست ارسال می‌شود و ممکن است تعداد زیادی مقدار داشته باشد.
         // در HTTP GET نمی‌توان بدنه (body) داشت و ارسال آرایه بزرگ از طریق query string می‌تواند باعث

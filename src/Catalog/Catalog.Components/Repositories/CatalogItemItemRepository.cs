@@ -32,9 +32,9 @@ public class CatalogItemItemRepository : ICatalogItemRepository
         return rowsDeleted > 0;
     }
     
-    public async Task AddItemToCatalog(CatalogItem item)
+    public async Task AddCatalogItem(CatalogItem catalogItem)
     {
-        await _db.Set<CatalogItem>().AddAsync(item);
+        await _db.Set<CatalogItem>().AddAsync(catalogItem);
         await _db.SaveChangesAsync();
     }
 }

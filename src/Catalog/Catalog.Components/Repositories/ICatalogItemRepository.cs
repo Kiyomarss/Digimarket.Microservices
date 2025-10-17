@@ -4,7 +4,7 @@ public interface ICatalogItemRepository
 {
     Task<List<CatalogItem>> GetCatalogItemByIds(List<Guid> catalogItemIds);
     
-    Task AddItemToCatalog(CatalogItem item);
+    Task AddCatalogItem(CatalogItem catalogItem);
     
     Task<CatalogItem?> FindCatalogItemById(Guid id);
 

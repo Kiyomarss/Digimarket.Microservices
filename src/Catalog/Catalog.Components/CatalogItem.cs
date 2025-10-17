@@ -7,6 +7,6 @@ public class CatalogItem
     public string Description { get; set; }
     public int Stock { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     public string? AttributesJson { get; set; }
 }
