@@ -1,16 +1,11 @@
 using System.Diagnostics;
-using System.Reflection;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
-using MassTransit;
 using MassTransit.Metadata;
-using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Catalog.Api;
-using Catalog.Components;
-using Catalog.Components.Repositories;
+using Catalog.Api.StartupExtensions;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -29,12 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-builder.Services.AddScoped<ICatalogItemUpdaterService, CatalogItemUpdaterService>();
-builder.Services.AddScoped<ICatalogItemGetterService, CatalogItemGetterService>();
-builder.Services.AddScoped<ICatalogItemRepository, CatalogItemItemRepository>();
-
-builder.Services.AddControllers();
-
 var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
 {
@@ -43,21 +32,9 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
-builder.Services.AddDbContext<CatalogDbContext>(x =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services.ConfigureServices(builder.Configuration);
 
-    x.UseNpgsql(connectionString, options =>
-    {
-        options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-        options.MigrationsHistoryTable($"__{nameof(CatalogDbContext)}");
-
-        options.EnableRetryOnFailure(5);
-        options.MinBatchSize(1);
-    });
-});
-
-builder.Services.AddHostedService<RecreateDatabaseHostedService<CatalogDbContext>>();
+//builder.Services.AddHostedService<RecreateDatabaseHostedService<CatalogDbContext>>();
 
 builder.Services.AddOpenTelemetry().WithTracing(x =>
 {
@@ -82,27 +59,7 @@ builder.Services.AddOpenTelemetry().WithTracing(x =>
             };
         });
 });
-builder.Services.AddMassTransit(x =>
-{
-    x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
-    {
-        o.QueryDelay = TimeSpan.FromSeconds(1);
 
-        o.UsePostgres();
-        o.UseBusOutbox();
-    });
-
-    x.UsingRabbitMq((_, cfg) =>
-    {
-        cfg.AutoStart = true;
-    });
-});
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    //options.InstanceName = "Catalog";
-});
 
 //Cross-Cutting Services
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
