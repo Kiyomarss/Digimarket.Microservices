@@ -9,19 +9,10 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Catalog.Api.StartupExtensions;
 using Serilog;
-using Serilog.Events;
-
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("MassTransit", LogEventLevel.Debug)
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
 
