@@ -1,16 +1,7 @@
-using System.Diagnostics;
 using Basket.Api.StartupExtensions;
 using BuildingBlocks.Behaviors;
-using BuildingBlocks.Exceptions;
-using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Extensions;
-using MassTransit.Metadata;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +22,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<BasketDbContext>>();
 
 builder.Services.AddOpenTelemetryWithJaeger("Basket API");
-
-//Cross-Cutting Services
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
+builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Basket API");
 
