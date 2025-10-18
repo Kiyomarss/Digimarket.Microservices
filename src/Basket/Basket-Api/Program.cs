@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Basket.Api.StartupExtensions;
 using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions;
 using BuildingBlocks.Exceptions.Handler;
 using MassTransit.Metadata;
 using OpenTelemetry;
@@ -64,47 +65,8 @@ builder.Services.AddOpenTelemetry().WithTracing(x =>
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "Hesabdari API",
-        Version = "v1"
-    });
-    
-    options.MapType<Stream>(() => new OpenApiSchema
-    {
-        Type = "string",
-        Format = "binary"
-    });
-    
-    var securityScheme = new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Description = "Enter the JWT token: Bearer {your_token}",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer",
-        BearerFormat = "JWT"
-    };
+builder.Services.AddSwaggerDocumentation("Basket API");
 
-    options.AddSecurityDefinition("Bearer", securityScheme);
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
-});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
