@@ -13,21 +13,10 @@ public class CatalogDbContext : Microsoft.EntityFrameworkCore.DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        MapRegistration(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CatalogDbContext).Assembly);
 
         modelBuilder.AddInboxStateEntity();
         modelBuilder.AddOutboxMessageEntity();
         modelBuilder.AddOutboxStateEntity();
-    }
-    
-    private static void MapRegistration(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<CatalogItem>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-            entity.Property(x => x.AttributesJson).HasColumnType("jsonb");
-        });
-
     }
 }
