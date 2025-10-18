@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Catalog_Infrastructure.Data.DbContext;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;

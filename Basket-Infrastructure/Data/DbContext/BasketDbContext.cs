@@ -2,9 +2,9 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Basket.Components;
+namespace Basket.Infrastructure.Data.DbContext;
 
-public class BasketDbContext : DbContext
+public class BasketDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public BasketDbContext(DbContextOptions<BasketDbContext> options)
         : base(options) { }

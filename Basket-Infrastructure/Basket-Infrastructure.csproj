@@ -22,4 +22,8 @@
       <ProjectReference Include="..\src\Basket\Basket-Core\Basket-Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\" />
+    </ItemGroup>
+
 </Project>

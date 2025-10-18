@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
-using Basket.Components;
 using Basket.Core.Repositories;
 using Basket.Core;
 using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.Repositories;
 using Basket.Core.ServiceContracts;
+using Basket.Infrastructure.Data.DbContext;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

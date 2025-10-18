@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Basket.Components;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +10,7 @@ using Basket.Core.Consumers;
 using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.ServiceContracts;
 using Basket.Core.Services;
+using Basket.Infrastructure.Data.DbContext;
 using Serilog;
 using Serilog.Events;
 

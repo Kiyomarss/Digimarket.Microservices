@@ -1,6 +1,6 @@
-﻿using Basket.Components;
-using Basket.Core.Domain.Entities;
+﻿using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
+using Basket.Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Basket.Core.Repositories;

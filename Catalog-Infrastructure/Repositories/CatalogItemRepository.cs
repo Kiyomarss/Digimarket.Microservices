@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Catalog_Infrastructure.Data.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Components.Repositories;
 

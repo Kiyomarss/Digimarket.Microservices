@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Catalog_Infrastructure.Data.DbContext;
 using Catalog.Components;
 using Catalog.Components.Repositories;
 using MassTransit;

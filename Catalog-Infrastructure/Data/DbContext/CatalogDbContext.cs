@@ -1,9 +1,10 @@
-﻿using MassTransit;
+﻿using Catalog.Components;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Catalog.Components;
+namespace Catalog_Infrastructure.Data.DbContext;
 
-public class CatalogDbContext : DbContext
+public class CatalogDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public CatalogDbContext(DbContextOptions<CatalogDbContext> options)
         : base(options) { }

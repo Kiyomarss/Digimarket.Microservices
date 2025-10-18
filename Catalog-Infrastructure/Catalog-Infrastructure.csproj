@@ -15,4 +15,8 @@
       <ProjectReference Include="..\src\Catalog\Catalog-Core\Catalog-Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\" />
+    </ItemGroup>
+
 </Project>
