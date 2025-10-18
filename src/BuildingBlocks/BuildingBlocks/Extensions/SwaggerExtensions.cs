@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace BuildingBlocks.Exceptions;
+namespace BuildingBlocks.Extensions;
 
 public static class SwaggerExtensions
 {

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions;
 using BuildingBlocks.Exceptions.Handler;
+using BuildingBlocks.Extensions;
 using MassTransit.Metadata;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
