@@ -30,29 +30,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<BasketDbContext>>();
 
-builder.Services.AddOpenTelemetry().WithTracing(x =>
-{
-    x.SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddService("api")
-            .AddTelemetrySdk()
-            .AddEnvironmentVariableDetector())
-        .AddSource("MassTransit")
-        .AddAspNetCoreInstrumentation()
-        .AddJaegerExporter(o =>
-        {
-            o.AgentHost = HostMetadataCache.IsRunningInContainer ? "jaeger" : "localhost";
-            o.AgentPort = 6831;
-            o.MaxPayloadSizeInBytes = 4096;
-            o.ExportProcessorType = ExportProcessorType.Batch;
-            o.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>
-            {
-                MaxQueueSize = 2048,
-                ScheduledDelayMilliseconds = 5000,
-                ExporterTimeoutMilliseconds = 30000,
-                MaxExportBatchSize = 512,
-            };
-        });
-});
+builder.Services.AddOpenTelemetryWithJaeger("Basket API");
 
 //Cross-Cutting Services
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
