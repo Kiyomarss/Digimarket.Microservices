@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
     <ProjectReference Include="..\Product.GrpcClient\Product.GrpcClient.csproj" />
   </ItemGroup>
 </Project>

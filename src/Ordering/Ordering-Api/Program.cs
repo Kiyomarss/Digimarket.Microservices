@@ -34,7 +34,7 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.ConfigureServices(builder.Configuration);
 
-builder.Services.AddHostedService<RecreateDatabaseHostedService<OrderingDbContext>>();
+//builder.Services.AddHostedService<RecreateDatabaseHostedService<OrderingDbContext>>();
 
 builder.Services.AddOpenTelemetryWithJaeger("Ordering API");
 builder.Services.AddGlobalExceptionHandler();
@@ -86,5 +86,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapControllers();
 
 app.Run();

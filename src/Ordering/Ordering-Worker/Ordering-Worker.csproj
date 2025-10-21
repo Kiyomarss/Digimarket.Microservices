@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
     <ProjectReference Include="..\Ordering-Core\Ordering-Core.csproj" />
   </ItemGroup>
 </Project>

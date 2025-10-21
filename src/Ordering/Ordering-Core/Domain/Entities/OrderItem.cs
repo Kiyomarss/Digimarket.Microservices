@@ -2,7 +2,7 @@
 
 public class OrderItem
 {
-    internal OrderItem(Guid productId, string productName, int quantity, decimal price)
+    internal OrderItem(Guid productId, string productName, int quantity, int price)
     {
         ProductId = productId;
         ProductName = productName;
@@ -12,11 +12,11 @@ public class OrderItem
 
     public OrderItem() { }
 
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public Guid OrderId { get; set; }   
     public Order Order { get; set; } = default!;
     public Guid ProductId { get; set; } = default!;
     public string ProductName { get; set; } = default!;
     public int Quantity { get; set; } = default!;
-    public decimal Price { get; set; } = default!;
+    public int Price { get; set; } = default!;
 }

@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
+using Catalog.Components.Repositories;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Components;
+using Ordering.Components.ServiceContracts;
 
 namespace Basket.Api.StartupExtensions;
 
@@ -35,7 +37,8 @@ public static class ConfigureServicesExtension
         });
 
         // Scoped Services
-        services.AddScoped<OrderService, OrderService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }

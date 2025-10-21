@@ -1,20 +1,16 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Components.Domain.Entities;
 using Ordering.Components.DTO;
 
 namespace Ordering.Components.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {
-        private readonly OrderingDbContext _dbContext;
         private readonly ILogger<OrderStatusChangedConsumer> _logger;
 
-        public OrderStatusChangedConsumer(OrderingDbContext dbContext, ILogger<OrderStatusChangedConsumer> logger)
+        public OrderStatusChangedConsumer(ILogger<OrderStatusChangedConsumer> logger)
         {
-            _dbContext = dbContext;
             _logger = logger;
         }
 
@@ -22,7 +18,7 @@ namespace Ordering.Components.Consumers
         {
             var message = context.Message;
 
-            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == message.Id);
+            var order = new Order();
 
             if (order == null)
             {
@@ -32,8 +28,6 @@ namespace Ordering.Components.Consumers
             }
 
             order.State = message.OrderState;
-
-            await _dbContext.SaveChangesAsync();
         }
     }
 }
