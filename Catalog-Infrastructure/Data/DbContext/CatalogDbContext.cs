@@ -9,7 +9,7 @@ public class CatalogDbContext : Microsoft.EntityFrameworkCore.DbContext
     public CatalogDbContext(DbContextOptions<CatalogDbContext> options)
         : base(options) { }
     
-    public DbSet<CatalogItem> CatalogItem { get; set; }
+    public DbSet<Product> Product { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

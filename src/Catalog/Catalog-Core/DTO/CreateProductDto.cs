@@ -1,6 +1,6 @@
 namespace Catalog.Components.DTO;
 
-public class CreateCatalogItemDto
+public class CreateProductDto
 {
     public string Name { get; set; }
     public string Description { get; set; }

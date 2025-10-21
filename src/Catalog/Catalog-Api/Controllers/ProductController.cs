@@ -5,23 +5,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers
 {
-    public class CatalogItemController : BaseController
+    public class ProductController : BaseController
     {
-        private readonly ICatalogItemUpdaterService _catalogItemUpdaterService;
-        private readonly ICatalogItemGetterService _catalogItemGetterService;
+        private readonly IProductUpdaterService _productUpdaterService;
+        private readonly IProductGetterService _productGetterService;
 
-        public CatalogItemController(
-            ICatalogItemUpdaterService catalogItemUpdaterService,
-            ICatalogItemGetterService catalogItemGetterService)
+        public ProductController(
+            IProductUpdaterService productUpdaterService,
+            IProductGetterService productGetterService)
         {
-            _catalogItemUpdaterService = catalogItemUpdaterService;
-            _catalogItemGetterService = catalogItemGetterService;
+            _productUpdaterService = productUpdaterService;
+            _productGetterService = productGetterService;
         }
         
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCatalogItemDto dto)
+        public async Task<IActionResult> Create(CreateProductDto dto)
         {
-            await _catalogItemUpdaterService.AddCatalogItem(dto);
+            await _productUpdaterService.AddProduct(dto);
 
             return Ok();
         }
@@ -35,7 +35,7 @@ namespace Catalog.Api.Controllers
         [HttpPost("by-ids")]
         public async Task<IActionResult> GetCatalogItemByIds([FromBody] List<Guid> ids)
         {
-            var catalogItem = await _catalogItemGetterService.GetCatalogItemByIds(ids);
+            var catalogItem = await _productGetterService.GetProductByIds(ids);
         
             return Ok(new { CatalogItems = catalogItem });
         }
@@ -43,7 +43,7 @@ namespace Catalog.Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveItem(Guid id)
         {
-            await _catalogItemUpdaterService.RemoveItem(id);
+            await _productUpdaterService.RemoveItem(id);
             return Ok();
         }
     }

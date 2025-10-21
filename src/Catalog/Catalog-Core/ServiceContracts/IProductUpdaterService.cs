@@ -2,8 +2,8 @@ using Catalog.Components.DTO;
 
 namespace Catalog.Components;
 
-public interface ICatalogItemUpdaterService
+public interface IProductUpdaterService
 {
-    Task AddCatalogItem(CreateCatalogItemDto dto);
+    Task AddProduct(CreateProductDto dto);
     Task RemoveItem(Guid id);
 }

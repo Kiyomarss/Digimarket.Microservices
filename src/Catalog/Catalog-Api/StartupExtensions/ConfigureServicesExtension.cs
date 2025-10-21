@@ -52,9 +52,9 @@ public static class ConfigureServicesExtension
         });
 
         // Scoped Services
-        services.AddScoped<ICatalogItemUpdaterService, CatalogItemUpdaterService>();
-        services.AddScoped<ICatalogItemGetterService, CatalogItemGetterService>();
-        services.AddScoped<ICatalogItemRepository, CatalogItemRepository>();
+        services.AddScoped<IProductUpdaterService, ProductUpdaterService>();
+        services.AddScoped<IProductGetterService, ProductGetterService>();
+        services.AddScoped<IProductRepository, ProductRepository>();
 
         return services;
     }
