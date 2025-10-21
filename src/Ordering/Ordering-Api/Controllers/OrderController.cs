@@ -18,7 +18,7 @@ namespace Ordering.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await _orderService.SubmitOrders(new List<OrderItemDto>());
+            await _orderService.CreateOrder(new OrderDto());
 
             return Ok();
         }

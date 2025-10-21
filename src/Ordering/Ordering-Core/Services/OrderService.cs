@@ -5,7 +5,7 @@ using Ordering.Components.DTO;
 using Ordering.Components.ServiceContracts;
 using Product.Grpc;
 
-namespace Ordering.Components;
+namespace Ordering.Components.Services;
 
 public class OrderService : IOrderService
 {
@@ -21,34 +21,27 @@ public class OrderService : IOrderService
         _productClient = productClient;
     }
 
-    public async Task<Order> SubmitOrders(List<OrderItemDto> orderItemDtos)
+    public async Task<Guid> CreateOrder(OrderDto dto)
     {
         var orderId = NewId.NextGuid();
-        
+
         var entity = new Order
         {
             Id = orderId,
-            State = "kiyomarss",
-            Customer = "kiyomarss",
-            Items =
-            [
-                new OrderItem
-                {
-                    Id = NewId.NextGuid(),
-                    OrderId = orderId,
-                    ProductId = NewId.NextGuid(),
-                    ProductName = "dto.ProductName",
-                    Quantity = 8,
-                    Price = 10
-                }
-            ]
+            State = "Init",
+            Customer = dto.Customer,
+            Items = dto.Items.Select(x => new OrderItem
+            {
+                OrderId = orderId,
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                Quantity = x.Quantity,
+                Price = x.Price
+            }).ToList()
         };
 
         await _orderRepository.AddOrder(entity);
 
-
-
-        return entity;
+        return entity.Id;
     }
-
 }

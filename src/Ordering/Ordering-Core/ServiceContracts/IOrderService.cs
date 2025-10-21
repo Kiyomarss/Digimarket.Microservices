@@ -5,5 +5,5 @@ namespace Ordering.Components.ServiceContracts;
 
 public interface IOrderService
 {
-    Task<Order> SubmitOrders(List<OrderItemDto> orderItemDtos);
+    Task<Guid> CreateOrder(OrderDto dto);
 }
