@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Catalog.Components;
 using Catalog.Components.Consumers;
 using Catalog.Components.Services;
 using Serilog;

@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Catalog.Components.Repositories;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering_Infrastructure.Repositories;
 using Ordering.Components;
 using Ordering.Components.ServiceContracts;
 

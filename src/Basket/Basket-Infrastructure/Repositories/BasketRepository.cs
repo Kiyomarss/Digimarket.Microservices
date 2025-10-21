@@ -3,7 +3,7 @@ using Basket.Core.Domain.RepositoryContracts;
 using Basket.Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Basket.Core.Repositories;
+namespace Basket.Infrastructure.Repositories;
 
 public class BasketRepository : IBasketRepository
 {

@@ -1,21 +1,9 @@
-using System.Diagnostics;
-using System.Reflection;
 using Basket.Api.StartupExtensions;
 using BuildingBlocks.Behaviors;
-using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Extensions;
-using Carter;
 using MassTransit;
-using MassTransit.Metadata;
-using Microsoft.EntityFrameworkCore;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Api;
-using Ordering.Components;
 using Serilog;
-using Serilog.Events;
 using Product.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);

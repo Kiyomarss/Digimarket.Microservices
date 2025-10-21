@@ -1,7 +1,8 @@
-﻿using Ordering_Infrastructure.Data.DbContext;
+﻿using Catalog.Components.Repositories;
+using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Components.Domain.Entities;
 
-namespace Catalog.Components.Repositories;
+namespace Ordering_Infrastructure.Repositories;
 
 public class OrderRepository : IOrderRepository
 {

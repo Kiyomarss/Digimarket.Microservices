@@ -1,7 +1,9 @@
 ﻿using Catalog_Infrastructure.Data.DbContext;
+using Catalog.Components;
+using Catalog.Components.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Catalog.Components.Repositories;
+namespace Catalog_Infrastructure.Repositories;
 
 public class ProductRepository : IProductRepository
 {

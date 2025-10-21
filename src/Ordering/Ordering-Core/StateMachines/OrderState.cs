@@ -1,5 +1,4 @@
 using MassTransit;
-using System;
 
 namespace Ordering.Components.StateMachines
 {

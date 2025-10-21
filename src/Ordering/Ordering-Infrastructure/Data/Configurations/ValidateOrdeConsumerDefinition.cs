@@ -1,7 +1,8 @@
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Components.Consumers;
 
-namespace Ordering.Components.Consumers;
+namespace Ordering_Infrastructure.Data.Configurations;
 
 public class ValidateOrdeConsumerDefinition :
     ConsumerDefinition<ValidateOrdersConsumer>

@@ -1,11 +1,8 @@
 using Catalog.Components.Repositories;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Ordering.Components.Domain.Entities;
 using Ordering.Components.DTO;
 using Ordering.Components.ServiceContracts;
-using Ordering.Components.StateMachines.Events;
 using Product.Grpc;
 
 namespace Ordering.Components;

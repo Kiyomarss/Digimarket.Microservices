@@ -1,15 +1,9 @@
 using MassTransit;
-using MassTransit.QuartzIntegration;
 using Quartz;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Ordering.Components;
 using Ordering.Components.Consumers;
 using Ordering.Components.Services;
 using Ordering.Components.StateMachines;
 using Serilog;
-using Serilog.Events;
-using System;
 using System.Diagnostics;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;

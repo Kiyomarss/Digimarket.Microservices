@@ -1,6 +1,4 @@
-﻿using Basket.Core;
-using Basket.Core.Domain.RepositoryContracts;
-using Basket.Core.DTO;
+﻿using Basket.Core.DTO;
 using Basket.Core.ServiceContracts;
 using BuildingBlocks.Controllers;
 using Microsoft.AspNetCore.Mvc;
