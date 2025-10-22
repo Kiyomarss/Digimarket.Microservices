@@ -20,7 +20,7 @@ public class BasketUpdaterService : IBasketUpdaterService
 
         var item = new BasketItem
         {
-            CatalogId = catalogId,
+            ProductId = catalogId,
             Quantity = quantity,
             BasketId = basket.Id
         };

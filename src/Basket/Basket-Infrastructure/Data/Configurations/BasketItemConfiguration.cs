@@ -17,7 +17,7 @@ namespace Basket.Infrastructure.Data.Configurations
                    .HasColumnType("uuid")
                    .HasDefaultValueSql("gen_random_uuid()");
 
-            builder.Property(x => x.CatalogId)
+            builder.Property(x => x.ProductId)
                    .IsRequired()
                    .HasColumnType("uuid");
 
