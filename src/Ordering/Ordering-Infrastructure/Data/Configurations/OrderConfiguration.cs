@@ -4,9 +4,9 @@ using Ordering.Components.Domain.Entities;
 
 namespace Ordering_Infrastructure.Data.Configurations
 {
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public class OrderConfiguration : IEntityTypeConfiguration<Ordering.Components.Domain.Entities.Order>
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
+        public void Configure(EntityTypeBuilder<Ordering.Components.Domain.Entities.Order> builder)
         {
             builder.ToTable("orders");
 

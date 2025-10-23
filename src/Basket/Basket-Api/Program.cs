@@ -1,6 +1,7 @@
 using Basket.Api.StartupExtensions;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
+using Order.Grpc;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,19 @@ builder.Services.AddMediatR(config =>
 });
 
 builder.Services.ConfigureServices(builder.Configuration);
+
+//Grpc Services
+builder.Services.AddGrpcClient<OrderProtoService.OrderProtoServiceClient>(options => { options.Address = new Uri(builder.Configuration["GrpcSettings:OrderUrl"]!); })
+       .ConfigurePrimaryHttpMessageHandler(() =>
+       {
+           var handler = new HttpClientHandler
+           {
+               ServerCertificateCustomValidationCallback =
+                   HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+           };
+
+           return handler;
+       });
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<BasketDbContext>>();
 

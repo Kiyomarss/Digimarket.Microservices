@@ -3,11 +3,13 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Components.Services;
 using Serilog;
 using Product.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddGrpc();
 builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
@@ -74,7 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.MapGrpcService<OrderService2>();
 app.MapControllers();
 
 app.Run();

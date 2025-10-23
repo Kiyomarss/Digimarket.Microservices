@@ -1,6 +1,6 @@
-using Catalog.Components.Repositories;
 using MassTransit;
 using Ordering.Components.Domain.Entities;
+using Ordering.Components.Domain.RepositoryContracts;
 using Ordering.Components.DTO;
 using Ordering.Components.ServiceContracts;
 using Product.Grpc;
@@ -25,7 +25,7 @@ public class OrderService : IOrderService
     {
         var orderId = NewId.NextGuid();
 
-        var entity = new Order
+        var entity = new Domain.Entities.Order
         {
             Id = orderId,
             State = "Init",

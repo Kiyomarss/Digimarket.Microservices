@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "Order.Grpc";
+
+package order;
+
+service OrderProtoService {
+  rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+message OrderItemDto {
+  string productId = 2;
+  int32 quantity = 3;
+}
+
+message CreateOrderRequest {
+  string customer = 1;
+  repeated OrderItemDto items = 2;
+}
+
+message CreateOrderResponse {
+  string orderId = 1;
+}

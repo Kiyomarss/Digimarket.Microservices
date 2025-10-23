@@ -1,8 +1,7 @@
 ﻿using Ordering.Components.Domain.Entities;
-
-namespace Catalog.Components.Repositories;
+namespace Ordering.Components.Domain.RepositoryContracts;
 
 public interface IOrderRepository
 {
-    Task AddOrder(Order order);
+    Task AddOrder(Entities.Order order);
 }

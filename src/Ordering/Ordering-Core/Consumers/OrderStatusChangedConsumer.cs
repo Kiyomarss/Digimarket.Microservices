@@ -18,7 +18,7 @@ namespace Ordering.Components.Consumers
         {
             var message = context.Message;
 
-            var order = new Order();
+            var order = new Domain.Entities.Order();
 
             if (order == null)
             {

@@ -16,7 +16,7 @@ public class OrderingDbContext : SagaDbContext
         get { yield return new OrderStateMap(); }
     }
     
-    public DbSet<Order> Orders { get; set; }
+    public DbSet<Ordering.Components.Domain.Entities.Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
