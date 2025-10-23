@@ -21,16 +21,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Protos\" />
+    <ProjectReference Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\OrderGrpcContracts.csproj" />
   </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\..\Ordering\Ordering-Core\Protos\order.proto" GrpcServices="Client">
-            <Link>Protos\order.proto</Link>
-        </Protobuf>
+        <Protobuf Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\order.proto" GrpcServices="Client" />
     </ItemGroup>
 
 </Project>

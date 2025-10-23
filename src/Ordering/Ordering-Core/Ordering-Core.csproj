@@ -20,13 +20,15 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <ProjectReference Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\OrderGrpcContracts.csproj" />
   </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\order.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\order.proto" GrpcServices="Server" />
     </ItemGroup>
 
-  <ItemGroup>
+
+    <ItemGroup>
     <ProjectReference Include="..\Product.GrpcClient\Product.GrpcClient.csproj" />
   </ItemGroup>
 </Project>
