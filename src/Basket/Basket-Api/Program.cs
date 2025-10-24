@@ -1,4 +1,6 @@
+using System.Reflection;
 using Basket.Api.StartupExtensions;
+using Basket.Core.Services.CheckoutBasket;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using Order.Grpc;
@@ -10,13 +12,7 @@ builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
 
-var assembly = typeof(Program).Assembly;
-builder.Services.AddMediatR(config =>
-{
-    config.RegisterServicesFromAssembly(assembly);
-    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-});
+builder.Services.AddConfiguredMediatR(typeof(CreateOrderHandler));
 
 builder.Services.ConfigureServices(builder.Configuration);
 

@@ -26,8 +26,7 @@
     <ItemGroup>
         <Protobuf Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\order.proto" GrpcServices="Server" />
     </ItemGroup>
-
-
+    
     <ItemGroup>
     <ProjectReference Include="..\Product.GrpcClient\Product.GrpcClient.csproj" />
   </ItemGroup>
