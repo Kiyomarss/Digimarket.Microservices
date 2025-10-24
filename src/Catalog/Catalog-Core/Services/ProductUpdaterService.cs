@@ -25,7 +25,7 @@ public class ProductUpdaterService : IProductUpdaterService
         {
             Name = dto.Name,
             Description = dto.Description,
-            Stock = dto.Stock,
+            Price = dto.Price,
             CreatedAt = DateTime.UtcNow,
             AttributesJson = JsonSerializer.Serialize(dto.Attributes)
         };

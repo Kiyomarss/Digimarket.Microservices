@@ -6,7 +6,7 @@ public class Order
     public DateTime Date { get; set; }
     public string State { get; set; }
     public List<OrderItem> Items { get; set; } = new();
-    public decimal TotalPrice => Items.Sum(x => x.Price * x.Quantity);
+    public long TotalPrice => Items.Sum(x => x.Price * x.Quantity);
     
     public string Customer { get; set; } = null!;
 }

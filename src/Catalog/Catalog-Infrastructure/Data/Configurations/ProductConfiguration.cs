@@ -8,7 +8,7 @@ namespace Catalog_Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.ToTable("catalog_items");
+            builder.ToTable("product");
 
             builder.HasKey(x => x.Id);
 
@@ -26,9 +26,9 @@ namespace Catalog_Infrastructure.Data.Configurations
                    .IsRequired(false)
                    .HasColumnType("text");
 
-            builder.Property(x => x.Stock)
+            builder.Property(x => x.Price)
                    .IsRequired()
-                   .HasColumnType("integer");
+                   .HasColumnType("bigint");
 
             builder.Property(x => x.CreatedAt)
                    .IsRequired()

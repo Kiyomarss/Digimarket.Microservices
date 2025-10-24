@@ -36,7 +36,7 @@ namespace Ordering_Infrastructure.Data.Configurations
 
             builder.Property(x => x.Price)
                    .IsRequired()
-                   .HasColumnType("numeric(18,2)");
+                   .HasColumnType("bigint");
         }
     }
 }

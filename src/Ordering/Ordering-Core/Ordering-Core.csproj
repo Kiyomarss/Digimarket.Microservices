@@ -25,6 +25,7 @@
 
     <ItemGroup>
         <Protobuf Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\order.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\product.proto" GrpcServices="Client" />
     </ItemGroup>
     
     <ItemGroup>

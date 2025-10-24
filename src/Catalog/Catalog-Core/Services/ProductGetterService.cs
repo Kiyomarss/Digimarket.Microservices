@@ -17,6 +17,6 @@ public class ProductGetterService : IProductGetterService
     {
         var catalog = await _productRepository.GetProductByIds(productIds);
         
-        return catalog.Select(x => new ProductDto(x.Id, x.Name, x.Description, x.Stock, x.AttributesJson)).ToList();
+        return catalog.Select(x => new ProductDto(x.Id, x.Name, x.Description, x.Price, x.AttributesJson)).ToList();
     }
 }

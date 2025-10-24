@@ -1,10 +1,12 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using Catalog.Api.StartupExtensions;
+using Catalog.Core.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddGrpc();
 builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
@@ -33,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGrpcService<ProductGrpcService>();
 
 app.MapControllers();
 

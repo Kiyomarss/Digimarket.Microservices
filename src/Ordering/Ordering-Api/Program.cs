@@ -54,19 +54,6 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-//Grpc Services
-builder.Services.AddGrpcClient<ProductService.ProductServiceClient>(options => { options.Address = new Uri(builder.Configuration["GrpcSettings:CatalogUrl"]!); })
-       .ConfigurePrimaryHttpMessageHandler(() =>
-       {
-           var handler = new HttpClientHandler
-           {
-               ServerCertificateCustomValidationCallback =
-                   HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-           };
-
-           return handler;
-       });
-
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -76,7 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapGrpcService<OrderService2>();
+app.MapGrpcService<OrderGrpcService>();
 app.MapControllers();
 
 app.Run();
