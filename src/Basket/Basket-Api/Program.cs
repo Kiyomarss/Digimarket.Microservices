@@ -1,7 +1,5 @@
 using Basket.Api.StartupExtensions;
-using Basket.Core.Services.CheckoutBasket;
 using BuildingBlocks.Extensions;
-using Order.Grpc;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +8,7 @@ builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
 
-builder.Services.AddConfiguredMediatR(typeof(CreateOrderHandler));
-
 builder.Services.ConfigureServices(builder.Configuration);
-
-builder.Services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(builder.Configuration, "GrpcSettings:OrderUrl");
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<BasketDbContext>>();
 

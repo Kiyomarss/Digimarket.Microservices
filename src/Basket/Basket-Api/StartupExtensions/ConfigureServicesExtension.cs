@@ -5,8 +5,10 @@ using Basket.Core.ServiceContracts;
 using Basket.Core.Services.CheckoutBasket;
 using Basket.Infrastructure.Data.DbContext;
 using Basket.Infrastructure.Repositories;
+using BuildingBlocks.Extensions;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Order.Grpc;
 
 namespace Basket.Api.StartupExtensions;
 
@@ -59,6 +61,10 @@ public static class ConfigureServicesExtension
         // Scoped Services
         services.AddScoped<IBasketUpdaterService, BasketUpdaterService>();
         services.AddScoped<IBasketRepository, BasketRepository>();
+        
+        services.AddConfiguredMediatR(typeof(CreateOrderHandler));
+
+        services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(configuration, "GrpcSettings:OrderUrl");
         
         return services;
     }
