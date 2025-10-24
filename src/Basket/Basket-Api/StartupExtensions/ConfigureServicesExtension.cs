@@ -5,6 +5,7 @@ using Basket.Core.ServiceContracts;
 using Basket.Core.Services.CheckoutBasket;
 using Basket.Infrastructure.Data.DbContext;
 using Basket.Infrastructure.Repositories;
+using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,7 @@ public static class ConfigureServicesExtension
         {
             options.Configuration = configuration.GetConnectionString("Redis");
         });
+        services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly));
         

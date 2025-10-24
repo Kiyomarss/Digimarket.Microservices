@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
+using BuildingBlocks.Configurations;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 
 namespace Basket.Infrastructure.Repositories;
 
@@ -14,16 +16,19 @@ public class CachedBasketRepository : IBasketRepository
     private readonly IDistributedCache _cache;
     private readonly DistributedCacheEntryOptions _cacheOptions;
 
-    public CachedBasketRepository(IBasketRepository basketRepository, IDistributedCache cache)
+    public CachedBasketRepository(
+        IBasketRepository basketRepository,
+        IDistributedCache cache,
+        IOptions<CacheSettings> cacheSettings)
     {
         _basketRepository = basketRepository;
         _cache = cache;
 
-        // تنظیمات پیش‌فرض کش (قابل تنظیم از IConfiguration در آینده)
+        var settings = cacheSettings.Value;
         _cacheOptions = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-            SlidingExpiration = TimeSpan.FromMinutes(3)
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(settings.AbsoluteExpirationMinutes),
+            SlidingExpiration = TimeSpan.FromMinutes(settings.SlidingExpirationMinutes)
         };
     }
 
