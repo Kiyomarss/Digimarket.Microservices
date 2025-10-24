@@ -1,6 +1,5 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Ordering.Components.Domain.Entities;
 using Ordering.Components.DTO;
 
 namespace Ordering.Components.Consumers

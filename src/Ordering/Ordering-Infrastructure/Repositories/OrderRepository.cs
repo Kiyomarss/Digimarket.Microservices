@@ -1,5 +1,4 @@
 ﻿using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Components.Domain.Entities;
 using Ordering.Components.Domain.RepositoryContracts;
 
 namespace Ordering_Infrastructure.Repositories;

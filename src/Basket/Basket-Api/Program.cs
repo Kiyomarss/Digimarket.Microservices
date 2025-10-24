@@ -1,7 +1,5 @@
-using System.Reflection;
 using Basket.Api.StartupExtensions;
 using Basket.Core.Services.CheckoutBasket;
-using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using Order.Grpc;
 using Serilog;

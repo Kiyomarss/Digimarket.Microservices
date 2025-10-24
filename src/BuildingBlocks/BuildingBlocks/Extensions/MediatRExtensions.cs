@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using BuildingBlocks.Behaviors;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Extensions

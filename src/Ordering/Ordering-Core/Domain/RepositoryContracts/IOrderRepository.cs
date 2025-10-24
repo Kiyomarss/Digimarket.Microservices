@@ -1,5 +1,4 @@
-﻿using Ordering.Components.Domain.Entities;
-namespace Ordering.Components.Domain.RepositoryContracts;
+﻿namespace Ordering.Components.Domain.RepositoryContracts;
 
 public interface IOrderRepository
 {

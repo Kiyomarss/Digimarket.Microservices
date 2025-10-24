@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Repositories;
-using Ordering.Components;
 using Ordering.Components.Domain.RepositoryContracts;
 using Ordering.Components.ServiceContracts;
 using Ordering.Components.Services;

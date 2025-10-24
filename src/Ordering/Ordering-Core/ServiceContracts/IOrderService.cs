@@ -1,4 +1,3 @@
-using Ordering.Components.Domain.Entities;
 using Ordering.Components.DTO;
 
 namespace Ordering.Components.ServiceContracts;

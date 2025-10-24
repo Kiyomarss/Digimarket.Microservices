@@ -7,7 +7,6 @@ using Basket.Infrastructure.Data.DbContext;
 using Basket.Infrastructure.Repositories;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Order.Grpc;
 
 namespace Basket.Api.StartupExtensions;
 
