@@ -1,6 +1,6 @@
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Components.StateMachines;
+using Ordering.Core.StateMachines;
 
 namespace Ordering_Infrastructure.Data.Configurations;
 

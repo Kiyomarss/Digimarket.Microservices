@@ -1,7 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Ordering.Components.StateMachines;
+using Ordering.Core.StateMachines;
 
 namespace Ordering_Infrastructure.Data.Configurations;
 

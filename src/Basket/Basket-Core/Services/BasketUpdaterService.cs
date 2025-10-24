@@ -2,7 +2,7 @@ using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.ServiceContracts;
 
-namespace Basket.Core;
+namespace Basket.Core.Services;
 
 public class BasketUpdaterService : IBasketUpdaterService
 {

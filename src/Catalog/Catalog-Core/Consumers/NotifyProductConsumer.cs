@@ -1,8 +1,8 @@
-using Catalog.Components.DTO;
+using Catalog.Core.DTO;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Catalog.Components.Consumers;
+namespace Catalog.Core.Consumers;
 
 public class NotifyCatalogConsumer :
     IConsumer<CatalogInitiated>

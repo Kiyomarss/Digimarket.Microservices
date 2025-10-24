@@ -1,5 +1,5 @@
 ﻿using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Components.Domain.RepositoryContracts;
+using Ordering.Core.Domain.RepositoryContracts;
 
 namespace Ordering_Infrastructure.Repositories;
 
@@ -12,9 +12,9 @@ public class OrderRepository : IOrderRepository
         _db = dbContext;
     }
     
-    public async Task AddOrder(Ordering.Components.Domain.Entities.Order order)
+    public async Task AddOrder(Ordering.Core.Domain.Entities.Order order)
     {
-        await _db.Set<Ordering.Components.Domain.Entities.Order>().AddAsync(order);
+        await _db.Set<Ordering.Core.Domain.Entities.Order>().AddAsync(order);
         await _db.SaveChangesAsync();
     }
 }

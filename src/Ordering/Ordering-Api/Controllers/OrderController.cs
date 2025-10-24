@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using Ordering.Components.DTO;
-using Ordering.Components.ServiceContracts;
+using Ordering.Core.DTO;
+using Ordering.Core.ServiceContracts;
 
 namespace Ordering.Api.Controllers
 {

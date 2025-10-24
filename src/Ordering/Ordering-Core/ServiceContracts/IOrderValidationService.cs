@@ -1,4 +1,4 @@
-namespace Ordering.Components.Services;
+namespace Ordering.Core.ServiceContracts;
 
 public interface IOrderValidationService
 {

@@ -1,7 +1,8 @@
-using Catalog.Components.Consumers;
+using Catalog.Core.Consumers;
+using Catalog.Core.ServiceContracts;
 using MassTransit;
 
-namespace Catalog.Components.Services;
+namespace Catalog.Core.Services;
 
 public class ProductValidationService :
     IProductValidationService

@@ -2,7 +2,7 @@ using MassTransit;
 using MassTransit.RetryPolicies;
 using Microsoft.EntityFrameworkCore;
 
-namespace Basket.Api;
+namespace Basket.Api.StartupExtensions;
 
 public class RecreateDatabaseHostedService<TDbContext> :
     IHostedService

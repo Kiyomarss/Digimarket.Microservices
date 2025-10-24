@@ -1,4 +1,4 @@
-﻿namespace Ordering.Components.Domain.RepositoryContracts;
+﻿namespace Ordering.Core.Domain.RepositoryContracts;
 
 public interface IOrderRepository
 {

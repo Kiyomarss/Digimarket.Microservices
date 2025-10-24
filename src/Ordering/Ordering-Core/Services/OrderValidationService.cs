@@ -1,7 +1,8 @@
 using MassTransit;
-using Ordering.Components.Consumers;
+using Ordering.Core.Consumers;
+using Ordering.Core.ServiceContracts;
 
-namespace Ordering.Components.Services;
+namespace Ordering.Core.Services;
 
 public class OrderValidationService :
     IOrderValidationService

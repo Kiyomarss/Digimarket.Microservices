@@ -1,6 +1,6 @@
-﻿using Catalog.Components;
-using BuildingBlocks.Controllers;
-using Catalog.Components.DTO;
+﻿using BuildingBlocks.Controllers;
+using Catalog.Core.DTO;
+using Catalog.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers

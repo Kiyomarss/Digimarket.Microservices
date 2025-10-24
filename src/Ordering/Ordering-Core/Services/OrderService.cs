@@ -1,11 +1,11 @@
 using MassTransit;
-using Ordering.Components.Domain.Entities;
-using Ordering.Components.Domain.RepositoryContracts;
-using Ordering.Components.DTO;
-using Ordering.Components.ServiceContracts;
+using Ordering.Core.Domain.Entities;
+using Ordering.Core.Domain.RepositoryContracts;
+using Ordering.Core.DTO;
+using Ordering.Core.ServiceContracts;
 using Product.Grpc;
 
-namespace Ordering.Components.Services;
+namespace Ordering.Core.Services;
 
 public class OrderService : IOrderService
 {

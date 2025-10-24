@@ -1,9 +1,9 @@
-using Basket.Api.StartupExtensions;
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Components.Services;
+using Ordering.Api.StartupExtensions;
+using Ordering.Core.Services;
 using Serilog;
 using Product.Grpc;
 

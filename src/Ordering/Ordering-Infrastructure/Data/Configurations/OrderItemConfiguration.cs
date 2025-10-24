@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Ordering.Components.Domain.Entities;
+using Ordering.Core.Domain.Entities;
 
 namespace Ordering_Infrastructure.Data.Configurations
 {

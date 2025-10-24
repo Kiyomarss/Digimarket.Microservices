@@ -1,8 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Ordering.Components.StateMachines.Events;
+using Ordering.Core.StateMachines.Events;
 
-namespace Ordering.Components.Consumers;
+namespace Ordering.Core.Consumers;
 
 public class PaymentCompletedConsumer :
     IConsumer<PaymentCompleted>

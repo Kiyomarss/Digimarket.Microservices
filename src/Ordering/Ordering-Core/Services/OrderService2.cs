@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using Order.Grpc;
 
-namespace Ordering.Components.Services;
+namespace Ordering.Core.Services;
 
 public class OrderService2
     ()

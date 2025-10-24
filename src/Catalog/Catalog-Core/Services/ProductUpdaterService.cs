@@ -1,8 +1,10 @@
 using System.Text.Json;
-using Catalog.Components.DTO;
-using Catalog.Components.Repositories;
+using Catalog.Core.Domain.Entities;
+using Catalog.Core.Domain.RepositoryContracts;
+using Catalog.Core.DTO;
+using Catalog.Core.ServiceContracts;
 
-namespace Catalog.Components;
+namespace Catalog.Core.Services;
 
 public class ProductUpdaterService : IProductUpdaterService
 {

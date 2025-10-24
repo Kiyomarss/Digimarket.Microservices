@@ -1,4 +1,4 @@
-namespace Catalog.Components.DTO;
+namespace Catalog.Core.DTO;
 
 public record InventoryReduced
 {

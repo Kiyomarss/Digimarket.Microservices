@@ -1,3 +1,3 @@
-﻿namespace Ordering.Components.DTO;
+﻿namespace Ordering.Core.DTO;
 
 public record SendReminder(Guid Id);

@@ -1,4 +1,4 @@
-namespace Catalog.Components.Consumers;
+namespace Catalog.Core.Consumers;
 
 public record CatalogValidated
 {

@@ -1,6 +1,6 @@
-using Catalog.Components.DTO;
+using Catalog.Core.DTO;
 
-namespace Catalog.Components;
+namespace Catalog.Core.ServiceContracts;
 
 public interface IProductUpdaterService
 {

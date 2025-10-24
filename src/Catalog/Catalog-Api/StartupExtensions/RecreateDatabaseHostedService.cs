@@ -2,7 +2,7 @@ using MassTransit;
 using MassTransit.RetryPolicies;
 using Microsoft.EntityFrameworkCore;
 
-namespace Catalog.Api;
+namespace Catalog.Api.StartupExtensions;
 
 public class RecreateDatabaseHostedService<TDbContext> :
     IHostedService

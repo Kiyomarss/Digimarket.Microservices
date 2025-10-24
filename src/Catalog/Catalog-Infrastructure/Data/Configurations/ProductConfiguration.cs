@@ -1,4 +1,4 @@
-﻿using Catalog.Components;
+﻿using Catalog.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

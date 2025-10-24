@@ -1,8 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Ordering.Components.Services;
+using Ordering.Core.ServiceContracts;
 
-namespace Ordering.Components.Consumers;
+namespace Ordering.Core.Consumers;
 
 public class ValidateOrdersConsumer :
     IConsumer<NotifyOrderConsumer>

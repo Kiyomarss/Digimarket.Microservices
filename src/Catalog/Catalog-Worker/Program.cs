@@ -1,13 +1,14 @@
 using System.Diagnostics;
 using Catalog_Infrastructure.Data.DbContext;
+using Catalog.Core.Consumers;
+using Catalog.Core.ServiceContracts;
+using Catalog.Core.Services;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Catalog.Components.Consumers;
-using Catalog.Components.Services;
 using Serilog;
 using Serilog.Events;
 

@@ -1,8 +1,5 @@
 using MassTransit;
 using Quartz;
-using Ordering.Components.Consumers;
-using Ordering.Components.Services;
-using Ordering.Components.StateMachines;
 using Serilog;
 using System.Diagnostics;
 using MassTransit.Metadata;
@@ -12,6 +9,10 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Data.Configurations;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Core.Consumers;
+using Ordering.Core.ServiceContracts;
+using Ordering.Core.Services;
+using Ordering.Core.StateMachines;
 
 var builder = Host.CreateDefaultBuilder(args)
                   .ConfigureServices((hostContext, services) =>

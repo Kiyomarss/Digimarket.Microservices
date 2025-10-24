@@ -1,8 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using Ordering.Components.DTO;
+using Ordering.Core.DTO;
 
-namespace Ordering.Components.Consumers
+namespace Ordering.Core.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {

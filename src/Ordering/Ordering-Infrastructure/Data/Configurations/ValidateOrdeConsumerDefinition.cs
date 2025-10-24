@@ -1,6 +1,6 @@
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Components.Consumers;
+using Ordering.Core.Consumers;
 
 namespace Ordering_Infrastructure.Data.Configurations;
 

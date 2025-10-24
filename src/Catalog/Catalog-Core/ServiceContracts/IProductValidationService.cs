@@ -1,4 +1,4 @@
-namespace Catalog.Components.Services;
+namespace Catalog.Core.ServiceContracts;
 
 public interface IProductValidationService
 {

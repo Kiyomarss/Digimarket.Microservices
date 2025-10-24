@@ -1,6 +1,6 @@
-using Ordering.Components.DTO;
+using Ordering.Core.DTO;
 
-namespace Ordering.Components.ServiceContracts;
+namespace Ordering.Core.ServiceContracts;
 
 public interface IOrderService
 {

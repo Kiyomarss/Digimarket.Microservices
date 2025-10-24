@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using Catalog_Infrastructure.Data.DbContext;
 using Catalog_Infrastructure.Repositories;
-using Catalog.Components;
-using Catalog.Components.Repositories;
+using Catalog.Core.Domain.RepositoryContracts;
+using Catalog.Core.ServiceContracts;
+using Catalog.Core.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

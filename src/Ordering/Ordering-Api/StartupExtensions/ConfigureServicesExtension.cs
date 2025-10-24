@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Repositories;
-using Ordering.Components.Domain.RepositoryContracts;
-using Ordering.Components.ServiceContracts;
-using Ordering.Components.Services;
+using Ordering.Core.Domain.RepositoryContracts;
+using Ordering.Core.ServiceContracts;
+using Ordering.Core.Services;
 
-namespace Basket.Api.StartupExtensions;
+namespace Ordering.Api.StartupExtensions;
 
 public static class ConfigureServicesExtension
 {

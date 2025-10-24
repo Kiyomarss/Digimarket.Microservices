@@ -1,6 +1,6 @@
 using MassTransit;
 
-namespace Ordering.Components.StateMachines
+namespace Ordering.Core.StateMachines
 {
     public class OrderState : SagaStateMachineInstance
     {

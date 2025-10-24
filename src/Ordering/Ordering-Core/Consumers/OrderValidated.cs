@@ -1,4 +1,4 @@
-namespace Ordering.Components.Consumers;
+namespace Ordering.Core.Consumers;
 
 public record OrderValidated
 {

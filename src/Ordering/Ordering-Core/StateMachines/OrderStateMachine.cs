@@ -1,8 +1,8 @@
 using MassTransit;
-using Ordering.Components.DTO;
-using Ordering.Components.StateMachines.Events;
+using Ordering.Core.DTO;
+using Ordering.Core.StateMachines.Events;
 
-namespace Ordering.Components.StateMachines
+namespace Ordering.Core.StateMachines
 {
     public class OrderStateMachine : MassTransitStateMachine<OrderState>
     {

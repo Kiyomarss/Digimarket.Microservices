@@ -2,6 +2,7 @@
 using Basket.Core;
 using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.ServiceContracts;
+using Basket.Core.Services;
 using Basket.Core.Services.CheckoutBasket;
 using Basket.Infrastructure.Data.DbContext;
 using Basket.Infrastructure.Repositories;
