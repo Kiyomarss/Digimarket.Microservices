@@ -16,18 +16,7 @@ builder.Services.AddConfiguredMediatR(typeof(CreateOrderHandler));
 
 builder.Services.ConfigureServices(builder.Configuration);
 
-//Grpc Services
-builder.Services.AddGrpcClient<OrderProtoService.OrderProtoServiceClient>(options => { options.Address = new Uri(builder.Configuration["GrpcSettings:OrderUrl"]!); })
-       .ConfigurePrimaryHttpMessageHandler(() =>
-       {
-           var handler = new HttpClientHandler
-           {
-               ServerCertificateCustomValidationCallback =
-                   HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-           };
-
-           return handler;
-       });
+builder.Services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(builder.Configuration, "GrpcSettings:OrderUrl");
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<BasketDbContext>>();
 
