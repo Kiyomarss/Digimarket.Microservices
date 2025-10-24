@@ -2,6 +2,7 @@
 using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
 using BuildingBlocks.Configurations;
+using BuildingBlocks.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
@@ -23,13 +24,7 @@ public class CachedBasketRepository : IBasketRepository
     {
         _basketRepository = basketRepository;
         _cache = cache;
-
-        var settings = cacheSettings.Value;
-        _cacheOptions = new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(settings.AbsoluteExpirationMinutes),
-            SlidingExpiration = TimeSpan.FromMinutes(settings.SlidingExpirationMinutes)
-        };
+        _cacheOptions = cacheSettings.GetCacheOptions();
     }
 
     public async Task<BasketEntity> FindBasketByUserId(Guid userId)
