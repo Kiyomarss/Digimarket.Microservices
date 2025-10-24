@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
-namespace BuildingBlocks.Extensions;
+namespace BuildingBlocks.Extensions.Caching;
 
 public static class CacheExtensions
 {

@@ -3,6 +3,7 @@ using Basket.Core.Domain.Entities;
 using Basket.Core.Domain.RepositoryContracts;
 using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.Extensions.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
