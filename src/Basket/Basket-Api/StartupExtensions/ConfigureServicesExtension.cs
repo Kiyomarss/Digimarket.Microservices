@@ -61,7 +61,8 @@ public static class ConfigureServicesExtension
         // Scoped Services
         services.AddScoped<IBasketUpdaterService, BasketUpdaterService>();
         services.AddScoped<IBasketRepository, BasketRepository>();
-        
+        services.Decorate<IBasketRepository, CachedBasketRepository>();
+
         services.AddConfiguredMediatR(typeof(CreateOrderHandler));
 
         services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(configuration, "GrpcSettings:OrderUrl");
