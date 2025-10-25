@@ -22,7 +22,7 @@ public class OrderService : IOrderService
     {
         var orderId = NewId.NextGuid();
 
-        var entity = new Domain.Entities.Order
+        var entity = new Order
         {
             Id = orderId,
             State = "Init",

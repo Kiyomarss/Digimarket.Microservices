@@ -1,6 +1,6 @@
 ﻿using Basket.Core.Domain.RepositoryContracts;
 using BuildingBlocks.CQRS;
-using Order.Grpc;
+using OrderGrpc;
 
 namespace Basket.Core.Services.CheckoutBasket;
 public class CreateOrderHandler(IBasketRepository basketRepository, OrderProtoService.OrderProtoServiceClient orderProto)

@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using Ordering.Core.Domain.Entities;
 using Ordering.Core.DTO;
 
 namespace Ordering.Core.Consumers
@@ -17,7 +18,7 @@ namespace Ordering.Core.Consumers
         {
             var message = context.Message;
 
-            var order = new Domain.Entities.Order();
+            var order = new Order();
 
             if (order == null)
             {

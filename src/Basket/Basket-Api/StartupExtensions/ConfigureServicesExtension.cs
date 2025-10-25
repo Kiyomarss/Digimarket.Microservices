@@ -10,7 +10,7 @@ using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Order.Grpc;
+using OrderGrpc;
 
 namespace Basket.Api.StartupExtensions;
 

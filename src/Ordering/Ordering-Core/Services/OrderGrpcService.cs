@@ -1,5 +1,5 @@
 ﻿using Grpc.Core;
-using Order.Grpc;
+using OrderGrpc;
 using Ordering.Core.Domain.Entities;
 using Ordering.Core.Domain.RepositoryContracts;
 using ProductGrpc;
@@ -30,7 +30,7 @@ public class OrderGrpcService : OrderProtoService.OrderProtoServiceBase
 
         var orderId = Guid.NewGuid();
         // ۴. ایجاد شیء سفارش و ذخیره در دیتابیس
-        var order = new Domain.Entities.Order
+        var order = new Order
         {
             Id = orderId,
             Customer = request.Customer,

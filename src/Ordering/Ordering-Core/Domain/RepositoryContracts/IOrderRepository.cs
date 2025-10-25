@@ -1,6 +1,8 @@
-﻿namespace Ordering.Core.Domain.RepositoryContracts;
+﻿using Ordering.Core.Domain.Entities;
+
+namespace Ordering.Core.Domain.RepositoryContracts;
 
 public interface IOrderRepository
 {
-    Task AddOrder(Entities.Order order);
+    Task AddOrder(Order order);
 }

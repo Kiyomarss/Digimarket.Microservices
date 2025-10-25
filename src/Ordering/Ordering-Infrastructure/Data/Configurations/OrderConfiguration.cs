@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Ordering.Core.Domain.Entities;
 
 namespace Ordering_Infrastructure.Data.Configurations
 {
-    public class OrderConfiguration : IEntityTypeConfiguration<Ordering.Core.Domain.Entities.Order>
+    public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<Ordering.Core.Domain.Entities.Order> builder)
+        public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.ToTable("orders");
 
