@@ -32,12 +32,6 @@ public static class ConfigureServicesExtension
             });
         });
 
-        // Redis Cache
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = configuration.GetConnectionString("Redis");
-        });
-
         // Scoped Services
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderService, OrderService>();

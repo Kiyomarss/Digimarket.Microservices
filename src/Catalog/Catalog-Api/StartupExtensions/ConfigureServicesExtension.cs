@@ -47,13 +47,7 @@ public static class ConfigureServicesExtension
                 cfg.AutoStart = true;
             });
         });
-
-        // Redis Cache
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = configuration.GetConnectionString("Redis");
-        });
-
+        
         // Scoped Services
         services.AddScoped<IProductUpdaterService, ProductUpdaterService>();
         services.AddScoped<IProductGetterService, ProductGetterService>();
