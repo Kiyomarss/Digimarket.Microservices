@@ -5,7 +5,6 @@ using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.StartupExtensions;
 using Ordering.Core.Services;
 using Serilog;
-using Product.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 

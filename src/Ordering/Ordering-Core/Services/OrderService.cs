@@ -3,7 +3,6 @@ using Ordering.Core.Domain.Entities;
 using Ordering.Core.Domain.RepositoryContracts;
 using Ordering.Core.DTO;
 using Ordering.Core.ServiceContracts;
-using Product.Grpc;
 
 namespace Ordering.Core.Services;
 
@@ -12,13 +11,11 @@ public class OrderService : IOrderService
     readonly IOrderRepository _orderRepository;
 
     readonly IPublishEndpoint _publishEndpoint;
-    private readonly ProductService.ProductServiceClient _productClient;
 
-    public OrderService(IOrderRepository orderRepository, IPublishEndpoint publishEndpoint, ProductService.ProductServiceClient productClient)
+    public OrderService(IOrderRepository orderRepository, IPublishEndpoint publishEndpoint)
     {
         _orderRepository = orderRepository;
         _publishEndpoint = publishEndpoint;
-        _productClient = productClient;
     }
 
     public async Task<Guid> CreateOrder(OrderDto dto)

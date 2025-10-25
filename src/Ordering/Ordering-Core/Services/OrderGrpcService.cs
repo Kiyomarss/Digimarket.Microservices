@@ -34,6 +34,7 @@ public class OrderGrpcService : OrderProtoService.OrderProtoServiceBase
         {
             Id = orderId,
             Customer = request.Customer,
+            State = "Init",
             Items = productResponse.Products.Select(i => new OrderItem
             {
                 OrderId = orderId,

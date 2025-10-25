@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
+using BuildingBlocks.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Repositories;
 using Ordering.Core.Domain.RepositoryContracts;
 using Ordering.Core.ServiceContracts;
 using Ordering.Core.Services;
+using ProductGrpc;
 
 namespace Ordering.Api.StartupExtensions;
 
@@ -39,6 +41,8 @@ public static class ConfigureServicesExtension
         // Scoped Services
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IOrderService, OrderService>();
+        
+        services.AddGrpcClientWithConfig<ProductProtoService.ProductProtoServiceClient>(configuration, "GrpcSettings:CatalogUrl");
 
         return services;
     }
