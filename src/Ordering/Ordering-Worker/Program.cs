@@ -7,17 +7,17 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Ordering_Infrastructure.Data.Configurations;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Core.Consumers;
-using Ordering.Core.ServiceContracts;
-using Ordering.Core.Services;
-using Ordering.Core.StateMachines;
+using Ordering.Worker.Configurations;
+using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.Consumers;
+using Ordering.Worker.DbContext;
+using Ordering.Worker.StateMachines;
 
 var builder = Host.CreateDefaultBuilder(args)
                   .ConfigureServices((hostContext, services) =>
                   {
-                      services.AddDbContext<OrderingDbContext>(x =>
+                      services.AddDbContext<OrdersSagaDbContext>(x =>
                       {
                           var connectionString = hostContext.Configuration.GetConnectionString("Default");
                           x.UseNpgsql(connectionString, options =>
@@ -48,15 +48,13 @@ var builder = Host.CreateDefaultBuilder(args)
                                };
                            });
                       });
-
-                      services.AddScoped<IOrderValidationService, OrderValidationService>();
-
+                      
                       services.AddQuartz();
                       services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
                       services.AddMassTransit(x =>
                       {
-                          x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
+                          x.AddEntityFrameworkOutbox<OrdersSagaDbContext>(o =>
                           {
                               o.UsePostgres();
                               o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
@@ -73,7 +71,7 @@ var builder = Host.CreateDefaultBuilder(args)
                           x.AddSagaStateMachine<OrderStateMachine, OrderState, OrdersStateDefinition>()
                            .EntityFrameworkRepository(r =>
                            {
-                               r.ExistingDbContext<OrderingDbContext>();
+                               r.ExistingDbContext<OrdersSagaDbContext>();
                                r.UsePostgres();
                            });
 

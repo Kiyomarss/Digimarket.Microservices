@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Core.Domain.Entities;
-using Ordering.Core.Domain.RepositoryContracts;
 
 namespace Ordering_Infrastructure.Repositories;
 

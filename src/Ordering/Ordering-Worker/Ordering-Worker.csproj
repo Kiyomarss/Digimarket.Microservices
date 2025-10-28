@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ordering-Core\Ordering-Core.csproj" />
     <ProjectReference Include="..\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
   </ItemGroup>
 </Project>

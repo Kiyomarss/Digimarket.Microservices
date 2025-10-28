@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Basket.Core;
 using Basket.Core.Domain.RepositoryContracts;
 using Basket.Core.ServiceContracts;
 using Basket.Core.Services;

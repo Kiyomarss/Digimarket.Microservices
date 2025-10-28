@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using BuildingBlocks.Extensions;
 using Catalog_Infrastructure.Data.DbContext;
 using Catalog_Infrastructure.Repositories;
 using Catalog.Core.Domain.RepositoryContracts;

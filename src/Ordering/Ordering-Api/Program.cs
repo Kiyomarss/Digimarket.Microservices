@@ -2,8 +2,8 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Api.GrpcService;
 using Ordering.Api.StartupExtensions;
-using Ordering.Core.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
