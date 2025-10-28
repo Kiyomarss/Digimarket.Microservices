@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Ordering_Infrastructure.Data.DbContext;
-using Ordering_Infrastructure.Repositories;
-using Ordering_Domain.Domain.RepositoryContracts;
+using Ordering_Infrastructure.Extensions;
 using Ordering.Worker.Configurations;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.Consumers;
@@ -22,22 +20,7 @@ var builder = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
         var connectionString = configuration.GetConnectionString("Default");
 
-        // -------------------------
-        // Ordering domain DbContext (Orders, OrderItems) - used by repositories
-        // -------------------------
-        services.AddDbContext<OrderingDbContext>(options =>
-        {
-            options.UseNpgsql(connectionString, npgOptions =>
-            {
-                // optional: migrations assembly for infrastructure project
-                npgOptions.MigrationsAssembly(typeof(OrderingDbContext).Assembly.GetName().Name);
-                npgOptions.MinBatchSize(1);
-                npgOptions.EnableRetryOnFailure(5);
-            });
-        });
-
-        // Register domain repositories / services (infrastructure implementations)
-        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddOrderingInfrastructure(configuration);
 
         // -------------------------
         // Orders Saga DbContext (Saga states) - dedicated DB context for saga persistence
