@@ -1,16 +1,19 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Ordering.Core.Domain.Entities;
+using Ordering.Core.Domain.RepositoryContracts;
 using Ordering.Core.DTO;
 
 namespace Ordering.Core.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {
+        readonly IOrderRepository _orderRepository;
         private readonly ILogger<OrderStatusChangedConsumer> _logger;
 
-        public OrderStatusChangedConsumer(ILogger<OrderStatusChangedConsumer> logger)
+        public OrderStatusChangedConsumer(IOrderRepository orderRepository, ILogger<OrderStatusChangedConsumer> logger)
         {
+            _orderRepository = orderRepository;
             _logger = logger;
         }
 
@@ -18,6 +21,7 @@ namespace Ordering.Core.Consumers
         {
             var message = context.Message;
 
+            var a = _orderRepository.FindOrderById(Guid.Parse("9336d6b2-68cf-48f8-81c0-5eb335f4571e"));
             var order = new Order();
 
             if (order == null)
@@ -28,6 +32,8 @@ namespace Ordering.Core.Consumers
             }
 
             order.State = message.OrderState;
+
+            await _orderRepository.Update();
         }
     }
 }

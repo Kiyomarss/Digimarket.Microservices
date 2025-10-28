@@ -20,25 +20,9 @@ public class OrderService : IOrderService
 
     public async Task<Guid> CreateOrder(OrderDto dto)
     {
-        var orderId = NewId.NextGuid();
+        await _publishEndpoint.Publish(new OrderInitiated { Id = Guid.Parse("9336d6b2-68cf-48f8-81c0-5eb335f4571e"), Date = DateTime.UtcNow, Customer = "asd"});
+        await _orderRepository.Update();
 
-        var entity = new Order
-        {
-            Id = orderId,
-            State = "Init",
-            Customer = dto.Customer,
-            Items = dto.Items.Select(x => new OrderItem
-            {
-                OrderId = orderId,
-                ProductId = x.ProductId,
-                ProductName = x.ProductName,
-                Quantity = x.Quantity,
-                Price = x.Price
-            }).ToList()
-        };
-
-        await _orderRepository.AddOrder(entity);
-
-        return entity.Id;
+        return NewId.NextGuid();
     }
 }
