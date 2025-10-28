@@ -4,7 +4,7 @@ using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
 using ProductGrpc;
 
-namespace Ordering.Api.GrpcService;
+namespace Ordering.Api.GrpcServices;
 
 public class OrderGrpcService : OrderProtoService.OrderProtoServiceBase
 {

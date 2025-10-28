@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
     <PackageReference Include="Carter" Version="8.0.0" />
     <PackageReference Include="Marten" Version="7.40.1" />
     <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.4" />
@@ -27,5 +28,10 @@
     <ProjectReference Include="..\Ordering-Application\Ordering-Application.csproj" />
     <ProjectReference Include="..\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
   </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\..\BuildingBlocks\Protos\OrderGrpcContracts\order.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\product.proto" GrpcServices="Client" />
+    </ItemGroup>
 
 </Project>

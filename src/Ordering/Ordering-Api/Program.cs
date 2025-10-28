@@ -2,7 +2,7 @@ using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Api.GrpcService;
+using Ordering.Api.GrpcServices;
 using Ordering.Api.StartupExtensions;
 using Serilog;
 
