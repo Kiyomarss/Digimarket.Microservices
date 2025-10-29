@@ -18,9 +18,9 @@
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
   </ItemGroup>
-    
-    <ItemGroup>
-        <Protobuf Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\product.proto" GrpcServices="Server" />
-    </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
+  </ItemGroup>
     
 </Project>

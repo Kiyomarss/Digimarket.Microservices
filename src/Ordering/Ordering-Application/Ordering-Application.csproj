@@ -1,10 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>Ordering.Core</RootNamespace>
-  </PropertyGroup>
-    
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Ordering.Core</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="Orders\Queries\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
+      <ProjectReference Include="..\Ordering-Domain\Ordering-Domain.csproj" />
+    </ItemGroup>
+
 </Project>
