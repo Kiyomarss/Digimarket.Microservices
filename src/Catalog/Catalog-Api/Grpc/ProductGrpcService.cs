@@ -1,16 +1,17 @@
-﻿using Catalog_Damain.RepositoryContracts;
+﻿using Catalog.Application.Products.Queries;
 using Grpc.Core;
+using MediatR;
 using ProductGrpc;
 
 namespace Catalog.Api.Grpc;
 
 public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
 {
-    private readonly IProductRepository _productRepository;
+    private readonly ISender _sender;
 
-    public ProductGrpcService(IProductRepository productRepository)
+    public ProductGrpcService(ISender sender)
     {
-        _productRepository = productRepository;
+        _sender = sender;
     }
 
     public override async Task<GetProductsResponse> GetProductsByIds(GetProductsRequest request, ServerCallContext context)
@@ -20,11 +21,11 @@ public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
                                 .Where(g => g != Guid.Empty)
                                 .ToList();
 
-        var products = await _productRepository.GetProductByIds(productIds);
+        var query = new GetProductsByIdsQuery(productIds);
+        var result = await _sender.Send(query);
 
         var response = new GetProductsResponse();
-
-        foreach (var p in products)
+        foreach (var p in result.Products)
         {
             response.Products.Add(new ProductInfo
             {
