@@ -1,4 +1,5 @@
-﻿using Catalog.Application.Products.Queries;
+﻿using BuildingBlocks.Common.Extensions;
+using Catalog.Application.Products.Queries;
 using Grpc.Core;
 using MediatR;
 using ProductGrpc;
@@ -16,10 +17,7 @@ public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
 
     public override async Task<GetProductsResponse> GetProductsByIds(GetProductsRequest request, ServerCallContext context)
     {
-        var productIds = request.ProductIds
-                                .Select(id => Guid.TryParse(id, out var guid) ? guid : Guid.Empty)
-                                .Where(g => g != Guid.Empty)
-                                .ToList();
+        var productIds = request.ProductIds.ToValidGuids().ToList();
 
         var query = new GetProductsByIdsQuery(productIds);
         var result = await _sender.Send(query);
