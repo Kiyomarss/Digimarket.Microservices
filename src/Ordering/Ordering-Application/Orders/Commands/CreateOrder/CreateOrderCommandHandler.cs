@@ -1,20 +1,25 @@
 ﻿using BuildingBlocks.CQRS;
+using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
 using ProductGrpc;
+using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Core.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Guid>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly ProductProtoService.ProductProtoServiceClient _productClient;
 
     public CreateOrderCommandHandler(IOrderRepository orderRepository,
-                                     ProductProtoService.ProductProtoServiceClient productClient)
+                                     ProductProtoService.ProductProtoServiceClient productClient,
+                                     IPublishEndpoint publishEndpoint)
     {
         _orderRepository = orderRepository;
         _productClient = productClient;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -43,6 +48,9 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
         foreach (var item in order.Items)
             item.Quantity = request.Items.Single(x => x.ProductId == item.ProductId.ToString()).Quantity;
+        
+        var orderInitiated = new OrderInitiated {Id = orderId, Date = DateTime.UtcNow,  Customer = request.Customer};
+        await _publishEndpoint.Publish(orderInitiated, cancellationToken);
 
         await _orderRepository.AddOrder(order);
         return orderId;

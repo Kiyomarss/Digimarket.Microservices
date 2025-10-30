@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering.Worker.StateMachines.Events;
+using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Worker.Consumers
 {
@@ -16,8 +17,6 @@ namespace Ordering.Worker.Consumers
         public async Task Consume(ConsumeContext<OrderInitiated> context)
         {
             var message = context.Message;
-
-            await _orderRepository.Update();
         }
     }
 }

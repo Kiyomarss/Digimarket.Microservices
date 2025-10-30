@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
+using BuildingBlocks.Extensions;
 using Catalog_Damain.RepositoryContracts;
 using Catalog_Infrastructure.Data.DbContext;
 using Catalog_Infrastructure.Repositories;
+using Catalog.Application.Products.Queries;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +47,8 @@ public static class ConfigureServicesExtension
             });
         });
         
+        services.AddConfiguredMediatR(typeof(GetProductsByIdsHandler));
+
         // Scoped Services
         services.AddScoped<IProductRepository, ProductRepository>();
 

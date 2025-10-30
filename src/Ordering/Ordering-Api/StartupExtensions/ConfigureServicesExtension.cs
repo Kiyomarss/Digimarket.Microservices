@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Extensions;
 using Ordering_Infrastructure.Extensions;
+using Ordering.Core.Orders.Commands.CreateOrder;
 using ProductGrpc;
 
 namespace Ordering.Api.StartupExtensions;
@@ -13,6 +14,7 @@ public static class ConfigureServicesExtension
 
         services.AddOrderingInfrastructure(configuration);
         
+        services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
         services.AddGrpcClientWithConfig<ProductProtoService.ProductProtoServiceClient>(configuration, "GrpcSettings:CatalogUrl");
 
         return services;

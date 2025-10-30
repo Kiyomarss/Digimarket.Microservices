@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
     <ProjectReference Include="..\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
   </ItemGroup>
 </Project>

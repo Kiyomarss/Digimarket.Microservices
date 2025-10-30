@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
       <ProjectReference Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
+      <ProjectReference Include="..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
       <ProjectReference Include="..\Ordering-Domain\Ordering-Domain.csproj" />
     </ItemGroup>
 
