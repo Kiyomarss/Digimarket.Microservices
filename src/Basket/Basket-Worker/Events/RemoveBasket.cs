@@ -1,3 +1,3 @@
-﻿namespace Basket.Core.DTO;
+﻿namespace Basket.Worker.Events;
 
 public record RemoveBasket(Guid Id);

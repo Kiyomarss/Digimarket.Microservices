@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.CQRS;
 
-namespace Basket.Core.Services.CheckoutBasket;
+namespace Basket_Application.Orders.Commands.CreateOrder;
 
 public record CreateOrderCommand() : ICommand<CreateOrderResult>;
 

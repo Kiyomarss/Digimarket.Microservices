@@ -2,7 +2,7 @@
 using BuildingBlocks.CQRS;
 using OrderGrpc;
 
-namespace Basket.Core.Services.CheckoutBasket;
+namespace Basket_Application.Orders.Commands.CreateOrder;
 public class CreateOrderHandler(IBasketRepository basketRepository, OrderProtoService.OrderProtoServiceClient orderProto)
     : ICommandHandler<CreateOrderCommand, CreateOrderResult>
 {

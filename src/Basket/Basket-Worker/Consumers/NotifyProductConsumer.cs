@@ -1,8 +1,7 @@
-using Basket.Core.DTO;
+using Basket.Worker.Events;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 
-namespace Basket.Core.Consumers;
+namespace Basket.Worker.Consumers;
 
 public class NotifyBasketConsumer :
     IConsumer<BasketInitiated>

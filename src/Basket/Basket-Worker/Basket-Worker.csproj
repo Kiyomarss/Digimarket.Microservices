@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Basket-Core\Basket-Core.csproj" />
+    <ProjectReference Include="..\Basket-Domain\Basket-Domain.csproj" />
     <ProjectReference Include="..\Basket-Infrastructure\Basket-Infrastructure.csproj" />
   </ItemGroup>
 </Project>

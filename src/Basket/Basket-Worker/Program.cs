@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Basket.Core.Consumers;
 using Basket.Core.ServiceContracts;
-using Basket.Core.Services;
 using Basket.Infrastructure.Data.DbContext;
+using Basket.Worker.Consumers;
 using Serilog;
 using Serilog.Events;
 
@@ -59,7 +58,6 @@ var host = Host.CreateDefaultBuilder(args)
                 });
         });
 
-        services.AddScoped<IProductValidationService, ProductValidationService>();
         services.AddMassTransit(x =>
         {
             x.AddEntityFrameworkOutbox<BasketDbContext>(o =>

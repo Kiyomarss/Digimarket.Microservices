@@ -1,3 +1,3 @@
-﻿namespace Basket.Core.DTO;
+﻿namespace Basket_Application.DTO;
 
 public record BasketRequest(List<BasketItemDto> BasketItems);
