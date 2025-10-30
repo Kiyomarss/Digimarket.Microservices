@@ -1,6 +1,6 @@
 using MessagePack;
 
-namespace Basket.Domain.Domain.Entities;
+namespace Basket.Domain.Entities;
 
 // عنوان BasketEntity به دلیل یکسان بودن namespace و عنوان این انتیتی قرار داد شده
 [MessagePackObject]

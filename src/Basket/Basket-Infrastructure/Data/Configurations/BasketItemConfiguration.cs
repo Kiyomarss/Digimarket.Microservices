@@ -1,4 +1,4 @@
-﻿using Basket.Domain.Domain.Entities;
+﻿using Basket.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

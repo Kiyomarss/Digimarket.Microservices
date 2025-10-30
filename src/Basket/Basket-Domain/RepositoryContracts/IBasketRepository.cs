@@ -1,6 +1,6 @@
-﻿using Basket.Domain.Domain.Entities;
+﻿using Basket.Domain.Entities;
 
-namespace Basket.Domain.Domain.RepositoryContracts;
+namespace Basket.Domain.RepositoryContracts;
 
 public interface IBasketRepository
 {
