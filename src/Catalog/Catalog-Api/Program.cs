@@ -1,7 +1,7 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
+using Catalog.Api.Grpc;
 using Catalog.Api.StartupExtensions;
-using Catalog.Core.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

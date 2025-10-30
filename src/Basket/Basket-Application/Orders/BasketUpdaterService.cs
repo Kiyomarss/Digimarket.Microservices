@@ -1,8 +1,8 @@
-using Basket.Core.Domain.Entities;
-using Basket.Core.Domain.RepositoryContracts;
-using Basket.Core.ServiceContracts;
+using Basket.Domain.Domain.Entities;
+using Basket.Domain.Domain.RepositoryContracts;
+using Basket.Domain.ServiceContracts;
 
-namespace Basket_Application.Services;
+namespace Basket_Application.Orders;
 
 public class BasketUpdaterService : IBasketUpdaterService
 {

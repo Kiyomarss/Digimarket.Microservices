@@ -1,4 +1,4 @@
-﻿using Basket.Core.Domain.Entities;
+﻿using Basket.Domain.Domain.Entities;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

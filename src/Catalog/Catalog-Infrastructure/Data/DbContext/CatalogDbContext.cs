@@ -1,4 +1,4 @@
-﻿using Catalog.Core.Domain.Entities;
+﻿using Catalog_Damain.Entities;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

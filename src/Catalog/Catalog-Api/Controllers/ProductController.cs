@@ -1,28 +1,15 @@
 ﻿using BuildingBlocks.Controllers;
-using Catalog.Core.DTO;
-using Catalog.Core.ServiceContracts;
+using Catalog.Application.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers
 {
     public class ProductController : BaseController
     {
-        private readonly IProductUpdaterService _productUpdaterService;
-        private readonly IProductGetterService _productGetterService;
-
-        public ProductController(
-            IProductUpdaterService productUpdaterService,
-            IProductGetterService productGetterService)
-        {
-            _productUpdaterService = productUpdaterService;
-            _productGetterService = productGetterService;
-        }
         
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductDto dto)
         {
-            await _productUpdaterService.AddProduct(dto);
-
             return Ok();
         }
         
@@ -35,15 +22,13 @@ namespace Catalog.Api.Controllers
         [HttpPost("by-ids")]
         public async Task<IActionResult> GetCatalogItemByIds([FromBody] List<Guid> ids)
         {
-            var catalogItem = await _productGetterService.GetProductByIds(ids);
         
-            return Ok(new { CatalogItems = catalogItem });
+            return Ok();
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveItem(Guid id)
         {
-            await _productUpdaterService.RemoveItem(id);
             return Ok();
         }
     }

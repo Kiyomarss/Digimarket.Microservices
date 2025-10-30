@@ -1,6 +1,6 @@
-﻿using Catalog.Core.Domain.Entities;
+﻿using Catalog_Damain.Entities;
 
-namespace Catalog.Core.Domain.RepositoryContracts;
+namespace Catalog_Damain.RepositoryContracts;
 
 public interface IProductRepository
 {

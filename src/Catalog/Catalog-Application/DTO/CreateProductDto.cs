@@ -1,4 +1,4 @@
-namespace Catalog.Core.DTO;
+namespace Catalog.Application.DTO;
 
 public class CreateProductDto
 {

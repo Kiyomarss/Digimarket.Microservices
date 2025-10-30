@@ -1,6 +1,6 @@
 ﻿using Basket_Application.DTO;
 using Basket_Application.Orders.Commands.CreateOrder;
-using Basket.Core.ServiceContracts;
+using Basket.Domain.ServiceContracts;
 using BuildingBlocks.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

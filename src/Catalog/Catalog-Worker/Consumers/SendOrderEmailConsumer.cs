@@ -1,8 +1,7 @@
-using Catalog.Core.DTO;
+using Catalog.Worker.Events;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 
-namespace Catalog.Core.Consumers;
+namespace Catalog.Worker.Consumers;
 
 public class SendCatalogEmailConsumer :
     IConsumer<InventoryReduced>

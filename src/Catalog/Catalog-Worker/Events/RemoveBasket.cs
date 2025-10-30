@@ -1,3 +1,3 @@
-﻿namespace Catalog.Core.DTO;
+﻿namespace Catalog.Worker.Events;
 
 public record RemoveCatalog(Guid Id);

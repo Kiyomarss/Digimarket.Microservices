@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using MessagePack;
 
-namespace Basket.Core.Domain.Entities;
+namespace Basket.Domain.Domain.Entities;
 
 [MessagePackObject]
 public class BasketItem

@@ -1,5 +1,5 @@
-﻿using Basket.Core.Domain.Entities;
-using Basket.Core.Domain.RepositoryContracts;
+﻿using Basket.Domain.Domain.Entities;
+using Basket.Domain.Domain.RepositoryContracts;
 using Basket.Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 

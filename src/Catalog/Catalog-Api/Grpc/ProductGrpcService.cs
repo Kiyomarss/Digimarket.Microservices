@@ -1,8 +1,8 @@
-﻿using Catalog.Core.Domain.RepositoryContracts;
+﻿using Catalog_Damain.RepositoryContracts;
 using Grpc.Core;
 using ProductGrpc;
 
-namespace Catalog.Core.Services;
+namespace Catalog.Api.Grpc;
 
 public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
 {

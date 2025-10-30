@@ -1,4 +1,4 @@
-﻿using Basket.Core.Domain.RepositoryContracts;
+﻿using Basket.Domain.Domain.RepositoryContracts;
 using BuildingBlocks.CQRS;
 using OrderGrpc;
 

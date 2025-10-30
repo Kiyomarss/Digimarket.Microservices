@@ -1,6 +1,6 @@
-﻿using Catalog_Infrastructure.Data.DbContext;
-using Catalog.Core.Domain.Entities;
-using Catalog.Core.Domain.RepositoryContracts;
+﻿using Catalog_Damain.Entities;
+using Catalog_Damain.RepositoryContracts;
+using Catalog_Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Catalog_Infrastructure.Repositories;

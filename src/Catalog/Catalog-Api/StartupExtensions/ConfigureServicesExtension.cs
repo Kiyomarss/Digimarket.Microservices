@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
+using Catalog_Damain.RepositoryContracts;
 using Catalog_Infrastructure.Data.DbContext;
 using Catalog_Infrastructure.Repositories;
-using Catalog.Core.Domain.RepositoryContracts;
-using Catalog.Core.ServiceContracts;
-using Catalog.Core.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,8 +46,6 @@ public static class ConfigureServicesExtension
         });
         
         // Scoped Services
-        services.AddScoped<IProductUpdaterService, ProductUpdaterService>();
-        services.AddScoped<IProductGetterService, ProductGetterService>();
         services.AddScoped<IProductRepository, ProductRepository>();
 
         return services;

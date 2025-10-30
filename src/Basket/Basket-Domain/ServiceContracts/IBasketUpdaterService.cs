@@ -1,4 +1,4 @@
-namespace Basket.Core.ServiceContracts;
+namespace Basket.Domain.ServiceContracts;
 
 public interface IBasketUpdaterService
 {

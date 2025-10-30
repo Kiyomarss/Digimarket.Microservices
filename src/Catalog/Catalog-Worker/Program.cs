@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using Catalog_Infrastructure.Data.DbContext;
-using Catalog.Core.Consumers;
-using Catalog.Core.ServiceContracts;
-using Catalog.Core.Services;
+using Catalog.Worker.Consumers;
 using MassTransit;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +57,6 @@ var host = Host.CreateDefaultBuilder(args)
                 });
         });
 
-        services.AddScoped<IProductValidationService, ProductValidationService>();
         services.AddMassTransit(x =>
         {
             x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
