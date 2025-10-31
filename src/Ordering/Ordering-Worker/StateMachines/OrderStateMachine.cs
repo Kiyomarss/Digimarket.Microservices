@@ -13,7 +13,7 @@ namespace Ordering.Worker.StateMachines
         {
             InstanceState(x => x.CurrentState);
 
-            Event(() => OrderInitiated, x => x.CorrelateById(m => m.Message.Id));
+            Event(() => OrderInitiated, x => { x.CorrelateById(m => m.Message.Id); x.SelectId(m => m.Message.Id); });
             Event(() => PaymentCompleted, x => x.CorrelateById(m => m.Message.CorrelationId));
             Event(() => InventoryReduced, x => x.CorrelateById(m => m.Message.Id));
             Event(() => BasketRemoved, x => x.CorrelateById(m => m.Message.Id));
@@ -25,6 +25,7 @@ namespace Ordering.Worker.StateMachines
                 When(OrderInitiated)
                     .Then(context =>
                     {
+                        Console.WriteLine($"[SAGA] OrderInitiated received for OrderId: {context.Message.Id}");
                         context.Saga.Date = context.Message.Date;
                         context.Saga.Customer = context.Message.Customer;
                     })

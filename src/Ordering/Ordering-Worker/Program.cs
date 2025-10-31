@@ -8,6 +8,7 @@ using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Extensions;
+using Ordering.Api;
 using Ordering.Worker.Configurations;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.Consumers;
@@ -20,24 +21,23 @@ var builder = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
         var connectionString = configuration.GetConnectionString("Default");
 
+        // DbContext اصلی پروژه Ordering
         services.AddOrderingInfrastructure(configuration);
 
-        // -------------------------
-        // Orders Saga DbContext (Saga states) - dedicated DB context for saga persistence
-        // -------------------------
+        // DbContext مخصوص Saga (state persistence)
         services.AddDbContext<OrdersSagaDbContext>(options =>
         {
             options.UseNpgsql(connectionString, npgOptions =>
             {
                 npgOptions.MinBatchSize(1);
-                // migrations assembly optional:
                 npgOptions.MigrationsAssembly(typeof(OrdersSagaDbContext).Assembly.GetName().Name);
             });
         });
 
-        // -------------------------
-        // OpenTelemetry / Jaeger
-        // -------------------------
+        // برای ساخت خودکار دیتابیس در حالت Dev (اختیاری)
+        services.AddHostedService<RecreateDatabaseHostedService<OrdersSagaDbContext>>();
+
+        // Telemetry (Jaeger / OpenTelemetry)
         services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>
         {
             tracerProviderBuilder
@@ -50,80 +50,51 @@ var builder = Host.CreateDefaultBuilder(args)
                 {
                     o.AgentHost = HostMetadataCache.IsRunningInContainer ? "jaeger" : "localhost";
                     o.AgentPort = 6831;
-                    o.MaxPayloadSizeInBytes = 4096;
-                    o.ExportProcessorType = ExportProcessorType.Batch;
-                    o.BatchExportProcessorOptions = new BatchExportProcessorOptions<Activity>
-                    {
-                        MaxQueueSize = 2048,
-                        ScheduledDelayMilliseconds = 5000,
-                        ExporterTimeoutMilliseconds = 30000,
-                        MaxExportBatchSize = 512,
-                    };
                 });
         });
 
-        // -------------------------
         // Quartz
-        // -------------------------
         services.AddQuartz();
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-        // -------------------------
-        // MassTransit
-        // -------------------------
+        // MassTransit configuration
         services.AddMassTransit(x =>
         {
-            // Entity Framework Outbox for Saga DB (so saga publishes can be part of outbox)
-            x.AddEntityFrameworkOutbox<OrdersSagaDbContext>(o =>
-            {
-                o.UsePostgres();
-                o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-            });
-
             x.SetKebabCaseEndpointNameFormatter();
 
-            // Register Consumers (from Worker assembly)
-            x.AddConsumer<OrderStatusChangedConsumer>();
-            x.AddConsumer<OrderInitiatedConsumer>();
-            x.AddConsumer<OrderReadyToProcessConsumer>();
-            x.AddConsumer<SendOrderEmailConsumer>();
-            x.AddConsumer<ValidateOrdersConsumer, ValidateOrdeConsumerDefinition>();
+            // ثبت تمام consumerها از اسمبلی Worker
+            x.AddConsumers(typeof(OrderInitiatedConsumer).Assembly);
 
-            // Register Saga state machine (uses OrdersSagaDbContext)
-            x.AddSagaStateMachine<OrderStateMachine, OrderState, OrdersStateDefinition>()
+            // ثبت Saga State Machine
+            x.AddSagaStateMachine<OrderStateMachine, OrderState>()
              .EntityFrameworkRepository(r =>
              {
-                 // use the OrdersSagaDbContext that we registered above
                  r.ExistingDbContext<OrdersSagaDbContext>();
                  r.UsePostgres();
              });
 
-            // Quartz consumers for scheduled messages
+            // Quartz
             x.AddQuartzConsumers();
 
-            // Transport configuration (RabbitMQ)
+            // RabbitMQ
             x.UsingRabbitMq((context, cfg) =>
             {
-                // host can be read from config if you prefer
-                cfg.Host("rabbitmq://localhost", h =>
+                cfg.Host("localhost", "/", h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
                 });
 
-                // enable scheduler queue for Quartz
+                // فعال کردن Scheduler برای Quartz
                 cfg.UseMessageScheduler(new Uri("queue:quartz"));
 
-                // configure endpoints for consumers/sagas automatically
+                // 🔹 در اینجا Outbox در سطح transport فعال می‌شود
+                cfg.UseInMemoryOutbox(context);
+
+                // ثبت خودکار endpointها
                 cfg.ConfigureEndpoints(context);
             });
         });
-
-        // -------------------------
-        // (Optional) Hosted services or other registrations...
-        // -------------------------
-        // e.g. services.AddHostedService<SomeHostedService>();
-
     })
     .UseSerilog()
     .Build();
