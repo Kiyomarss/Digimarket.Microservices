@@ -1,6 +1,6 @@
-using Hesabdari_Core.DTO.Auth;
+using Identity_Core.DTO.Auth;
 
-namespace Hesabdari_Core.ServiceContracts;
+namespace Identity_Core.ServiceContracts.Authentication;
 
 public interface IAuthService
 {

@@ -1,4 +1,4 @@
-namespace Hesabdari_Core.Constants;
+namespace Identity_Core.Constants;
 
 public abstract class Constants
 {

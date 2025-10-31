@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using ContactsManager.Core.Domain.IdentityEntities;
-using Hesabdari_Core.ServiceContracts;
+using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.ServiceContracts.RoleManagement;
 using Microsoft.AspNetCore.Identity;
 
-namespace Hesabdari_Core.Services
+namespace Identity_Core.Services.RoleManagement
 {
     public class RoleClaimService : IRoleClaimService
     {

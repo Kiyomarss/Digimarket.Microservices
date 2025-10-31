@@ -1,4 +1,4 @@
-namespace Hesabdari_Core.ServiceContracts;
+namespace Identity_Core.ServiceContracts.Common;
 
 public interface IUnitOfWork : IDisposable
 {

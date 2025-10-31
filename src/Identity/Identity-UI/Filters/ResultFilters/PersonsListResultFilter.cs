@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Hesabdari_UI.Filters.ResultFilters
+namespace Identity_UI.Filters.ResultFilters
 {
  public class PersonsListResultFilter : IAsyncResultFilter
  {

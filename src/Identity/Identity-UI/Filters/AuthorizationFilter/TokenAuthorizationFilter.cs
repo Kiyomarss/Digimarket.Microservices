@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Hesabdari_UI.Filters.AuthorizationFilter
+namespace Identity_UI.Filters.AuthorizationFilter
 {
  public class TokenAuthorizationFilter : IAuthorizationFilter
  {

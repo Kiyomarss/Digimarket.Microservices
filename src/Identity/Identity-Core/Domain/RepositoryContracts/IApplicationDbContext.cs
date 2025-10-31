@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace RepositoryContracts;
+namespace Identity_Core.Domain.RepositoryContracts;
 public interface IApplicationDbContext : IDisposable
 {
     DbSet<TEntity> Set<TEntity>() where TEntity : class;

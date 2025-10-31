@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hesabdari_UI.Controllers
+namespace Identity_UI.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]

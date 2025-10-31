@@ -1,11 +1,11 @@
-﻿using ContactsManager.Core.Domain.IdentityEntities;
+﻿using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.Domain.RepositoryContracts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using RepositoryContracts;
 
-namespace Hesabdari_Infrastructure.DbContext
+namespace Identity_Infrastructure.DbContext
 {
  public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationDbContext
  {

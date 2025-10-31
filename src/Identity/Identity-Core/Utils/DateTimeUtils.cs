@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Hesabdari_Core.Utils
+namespace Identity_Core.Utils
 {
     public static class DateTimeUtils
     {

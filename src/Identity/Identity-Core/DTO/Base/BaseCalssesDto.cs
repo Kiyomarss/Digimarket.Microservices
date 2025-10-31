@@ -1,4 +1,4 @@
-﻿namespace Hesabdari_Core.DTO;
+﻿namespace Identity_Core.DTO.Base;
 
 public record ItemsResult<T>(List<T> Data, int? Count = null);
 

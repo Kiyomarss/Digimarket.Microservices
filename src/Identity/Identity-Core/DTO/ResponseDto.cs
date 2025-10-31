@@ -1,4 +1,4 @@
-namespace Hesabdari_Core.DTO;
+namespace Identity_Core.DTO;
 
 public record MessageResponse(string Message);
 

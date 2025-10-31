@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Hesabdari_Core.ServiceContracts.Storage;
+namespace Identity_Core.ServiceContracts.Storage;
 
 public interface IImageStorageService
 {

@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Hesabdari_UI.Filters;
+namespace Identity_UI.Filters;
 
 public class FileUploadOperationFilter : IOperationFilter
 {

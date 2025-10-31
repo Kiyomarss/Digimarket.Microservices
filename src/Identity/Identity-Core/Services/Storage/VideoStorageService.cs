@@ -1,7 +1,7 @@
-﻿using Hesabdari_Core.ServiceContracts.Storage;
+﻿using Identity_Core.ServiceContracts.Storage;
 using Microsoft.AspNetCore.Http;
 
-namespace Hesabdari_Core.Services.Storage;
+namespace Identity_Core.Services.Storage;
 
 public class VideoStorageService : IVideoStorageService
 {

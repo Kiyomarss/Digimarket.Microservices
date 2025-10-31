@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 
-namespace Hesabdari_UI.Middleware
+namespace Identity_UI.Middleware
 {
     public class ExceptionHandlingMiddleware
     {

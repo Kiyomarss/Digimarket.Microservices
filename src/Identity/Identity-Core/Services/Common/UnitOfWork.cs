@@ -1,8 +1,9 @@
-using Hesabdari_Core.ServiceContracts;
-using Microsoft.Extensions.Logging;
-using RepositoryContracts;
-namespace Hesabdari_Core.Services;
+using Identity_Core.Domain.RepositoryContracts;
+using Identity_Core.ServiceContracts.Common;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
+
+namespace Identity_Core.Services.Common;
 
 public class UnitOfWork : IUnitOfWork
 {

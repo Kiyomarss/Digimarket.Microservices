@@ -1,6 +1,6 @@
-using ContactsManager.Core.Domain.IdentityEntities;
+using Identity_Core.Domain.IdentityEntities;
 
-namespace Hesabdari_Core.ServiceContracts
+namespace Identity_Core.ServiceContracts.Identity
 {
     public interface IIdentityService
     {

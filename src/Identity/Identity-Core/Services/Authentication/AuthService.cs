@@ -1,14 +1,15 @@
-using ContactsManager.Core.Domain.IdentityEntities;
-using Hesabdari_Core.DTO.Auth;
+using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.DTO.Auth;
+using Identity_Core.ServiceContracts.Authentication;
+using Identity_Core.ServiceContracts.Base;
+using Identity_Core.ServiceContracts.Identity;
+using Identity_Core.ServiceContracts.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Hesabdari_Core.ServiceContracts;
-using Hesabdari_Core.ServiceContracts.Base;
-using Hesabdari_Core.ServiceContracts.Storage;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
-namespace Hesabdari_Core.Services
+namespace Identity_Core.Services.Authentication
 {
     public class AuthService : IAuthService
     {

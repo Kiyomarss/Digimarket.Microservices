@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Services.Helpers
+namespace Identity_Core.Helpers
 {
   public class ValidationHelper
   {

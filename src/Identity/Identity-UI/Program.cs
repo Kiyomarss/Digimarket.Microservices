@@ -1,8 +1,8 @@
 using System.Text;
-using Hesabdari_Infrastructure.DbContext;
-using Hesabdari_UI;
-using Hesabdari_UI.Filters;
-using Hesabdari_UI.Middleware;
+using Identity_Infrastructure.DbContext;
+using Identity_UI.Filters;
+using Identity_UI.Middleware;
+using Identity_UI.StartupExtensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

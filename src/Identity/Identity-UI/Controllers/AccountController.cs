@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Hesabdari_Core.ServiceContracts;
-using Hesabdari_Core.DTO;
-using Hesabdari_Core.DTO.Auth;
+using Identity_Core.DTO;
+using Identity_Core.DTO.Auth;
+using Identity_Core.ServiceContracts.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Hesabdari_UI.Controllers
+namespace Identity_UI.Controllers
 {
     public class AccountController : BaseController
     {

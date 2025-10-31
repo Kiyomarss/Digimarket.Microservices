@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Hesabdari_Core.DTO.Base;
+namespace Identity_Core.DTO.Base;
 
 public class FileUploadDto
 {

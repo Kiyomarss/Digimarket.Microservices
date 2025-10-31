@@ -1,4 +1,4 @@
-﻿namespace Exceptions
+﻿namespace Identity_Core.Exceptions
 {
  public class InvalidPersonIDException : ArgumentException
  {

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Hesabdari_Core.ServiceContracts
+namespace Identity_Core.ServiceContracts.Identity
 {
     public interface IUserClaimService
     {

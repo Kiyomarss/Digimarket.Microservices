@@ -1,6 +1,6 @@
-using RepositoryContracts;
+using Identity_Core.Domain.RepositoryContracts;
 
-namespace Hesabdari_Infrastructure.Repositories
+namespace Identity_Infrastructure.Repositories
 {
     public abstract class RepositoryBase
     {

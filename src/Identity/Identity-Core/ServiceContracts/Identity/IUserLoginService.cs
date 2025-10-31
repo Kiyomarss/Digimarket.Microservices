@@ -1,7 +1,7 @@
-using ContactsManager.Core.Domain.IdentityEntities;
+using Identity_Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 
-namespace Hesabdari_Core.ServiceContracts
+namespace Identity_Core.ServiceContracts.Identity
 {
     public interface IUserLoginService
     {

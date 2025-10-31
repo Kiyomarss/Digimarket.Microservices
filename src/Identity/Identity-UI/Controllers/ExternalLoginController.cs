@@ -1,12 +1,12 @@
-using ContactsManager.Core.Domain.IdentityEntities;
-using Hesabdari_Core.DTO;
-using Hesabdari_Core.DTO.Auth;
-using Hesabdari_Core.ServiceContracts;
-using Hesabdari_Core.ServiceContracts.Base;
+using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.DTO;
+using Identity_Core.DTO.Auth;
+using Identity_Core.ServiceContracts.Base;
+using Identity_Core.ServiceContracts.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hesabdari_UI.Controllers;
+namespace Identity_UI.Controllers;
 
 public class ExternalLoginController : BaseController
 {

@@ -1,19 +1,25 @@
-﻿using ContactsManager.Core.Domain.IdentityEntities;
-using Hesabdari_Core.ServiceContracts;
-using Hesabdari_Core.ServiceContracts.Base;
-using Hesabdari_Core.ServiceContracts.Storage;
-using Hesabdari_Core.Services;
-using Hesabdari_Core.Services.Base;
-using Hesabdari_Core.Services.Storage;
-using Hesabdari_Infrastructure.DbContext;
+﻿using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.Domain.RepositoryContracts;
+using Identity_Core.ServiceContracts.Authentication;
+using Identity_Core.ServiceContracts.Base;
+using Identity_Core.ServiceContracts.Common;
+using Identity_Core.ServiceContracts.Identity;
+using Identity_Core.ServiceContracts.RoleManagement;
+using Identity_Core.ServiceContracts.Storage;
+using Identity_Core.Services.Authentication;
+using Identity_Core.Services.Base;
+using Identity_Core.Services.Common;
+using Identity_Core.Services.Identity;
+using Identity_Core.Services.RoleManagement;
+using Identity_Core.Services.Storage;
+using Identity_Infrastructure.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
-using RepositoryContracts;
 
-namespace Hesabdari_UI
+namespace Identity_UI.StartupExtensions
 {
  public static class ConfigureServicesExtension
  {

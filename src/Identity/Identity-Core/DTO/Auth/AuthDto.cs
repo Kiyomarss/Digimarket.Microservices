@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Hesabdari_Core.DTO.Auth;
+namespace Identity_Core.DTO.Auth;
 
 public record SignupRequest(string PersonName, string Email, string Password);
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Hesabdari_UI.Filters.ExceptionFilters
+namespace Identity_UI.Filters.ExceptionFilters
 {
  public class HandleExceptionFilter : IExceptionFilter
  {

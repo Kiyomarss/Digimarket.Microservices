@@ -1,6 +1,6 @@
-using ContactsManager.Core.Domain.IdentityEntities;
+using Identity_Core.Domain.IdentityEntities;
 
-namespace Hesabdari_Core.ServiceContracts.Base;
+namespace Identity_Core.ServiceContracts.Base;
 
 public interface ITokenService
 {

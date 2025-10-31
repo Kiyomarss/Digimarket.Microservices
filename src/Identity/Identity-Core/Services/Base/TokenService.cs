@@ -1,13 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ContactsManager.Core.Domain.IdentityEntities;
-using Hesabdari_Core.ServiceContracts.Base;
+using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.ServiceContracts.Base;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Hesabdari_Core.Services.Base;
+namespace Identity_Core.Services.Base;
 
 public class TokenService : ITokenService
 {

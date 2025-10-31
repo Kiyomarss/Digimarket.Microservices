@@ -1,10 +1,10 @@
 using System.Security.Claims;
+using Identity_Core.Domain.IdentityEntities;
+using Identity_Core.ServiceContracts.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Hesabdari_Core.ServiceContracts;
-using ContactsManager.Core.Domain.IdentityEntities;
 
-namespace Hesabdari_Core.Services
+namespace Identity_Core.Services.Identity
 {
     public class IdentityService : IIdentityService
     {

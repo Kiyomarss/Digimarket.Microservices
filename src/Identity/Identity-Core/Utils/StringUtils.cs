@@ -1,6 +1,6 @@
-﻿using Hesabdari_Core.Constants;
+﻿using Identity_Core.Constants;
 
-namespace Hesabdari_Core.Utils
+namespace Identity_Core.Utils
 {
     public static class StringUtils
     {

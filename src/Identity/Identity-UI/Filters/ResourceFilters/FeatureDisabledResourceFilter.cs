@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Hesabdari_UI.Filters.ResourceFilters
+namespace Identity_UI.Filters.ResourceFilters
 {
  
  public class FeatureDisabledResourceFilter : IAsyncResourceFilter
