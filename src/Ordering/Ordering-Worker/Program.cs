@@ -1,15 +1,11 @@
 using MassTransit;
 using Quartz;
 using Serilog;
-using System.Diagnostics;
 using MassTransit.Metadata;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Extensions;
-using Ordering.Api;
-using Ordering.Worker.Configurations;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.Consumers;
 using Ordering.Worker.DbContext;
@@ -35,7 +31,8 @@ var builder = Host.CreateDefaultBuilder(args)
         });
 
         // برای ساخت خودکار دیتابیس در حالت Dev (اختیاری)
-        services.AddHostedService<RecreateDatabaseHostedService<OrdersSagaDbContext>>();
+        //services.AddHostedService<RecreateDatabaseHostedService<OrdersSagaDbContext>>();
+        //services.AddHostedService<RecreateDatabaseHostedService<OrderingDbContext>>();
 
         // Telemetry (Jaeger / OpenTelemetry)
         services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>

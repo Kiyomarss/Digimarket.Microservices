@@ -1,16 +1,13 @@
 ﻿using MassTransit;
 using MassTransit.RetryPolicies;
-using Microsoft.EntityFrameworkCore;
 
-namespace Ordering.Api;
+namespace Ordering.Worker;
 
-public class RecreateDatabaseHostedService<TDbContext> :
-    IHostedService
-    where TDbContext : DbContext
+public class RecreateDatabaseHostedService<TDbContext> : IHostedService
+    where TDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    readonly ILogger<RecreateDatabaseHostedService<TDbContext>> _logger;
-    readonly IServiceScopeFactory _scopeFactory;
-    TDbContext? _context;
+    private readonly ILogger<RecreateDatabaseHostedService<TDbContext>> _logger;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public RecreateDatabaseHostedService(IServiceScopeFactory scopeFactory, ILogger<RecreateDatabaseHostedService<TDbContext>> logger)
     {
@@ -20,33 +17,19 @@ public class RecreateDatabaseHostedService<TDbContext> :
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Applying migrations for {DbContext}", TypeCache<TDbContext>.ShortName);
+        _logger.LogInformation("Ensuring database for {DbContext}", TypeCache<TDbContext>.ShortName);
 
         await Retry.Interval(20, TimeSpan.FromSeconds(3)).Retry(async () =>
         {
-            var scope = _scopeFactory.CreateScope();
+            await using var scope = _scopeFactory.CreateAsyncScope();
+            var context = scope.ServiceProvider.GetRequiredService<TDbContext>();
 
-            try
-            {
-                _context = scope.ServiceProvider.GetRequiredService<TDbContext>();
+            // فقط ایجاد در صورت نیاز، حذف نمی‌کنیم
+            await context.Database.EnsureCreatedAsync(cancellationToken);
 
-                await _context.Database.EnsureDeletedAsync(cancellationToken);
-                await _context.Database.EnsureCreatedAsync(cancellationToken);
-
-                _logger.LogInformation("Migrations completed for {DbContext}", TypeCache<TDbContext>.ShortName);
-            }
-            finally
-            {
-                if (scope is IAsyncDisposable asyncDisposable)
-                    await asyncDisposable.DisposeAsync();
-                else
-                    scope.Dispose();
-            }
+            _logger.LogInformation("Database ensured for {DbContext}", TypeCache<TDbContext>.ShortName);
         }, cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
