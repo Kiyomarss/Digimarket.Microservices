@@ -1,6 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using System.Security.Cryptography;
 using Identity_Core.Domain.IdentityEntities;
 using Identity_Core.ServiceContracts.Base;
 using Microsoft.AspNetCore.Identity;
@@ -22,45 +22,48 @@ public class TokenService : ITokenService
 
     public async Task<string> GenerateJwtToken(ApplicationUser user)
     {
-        var key = _configuration["Jwt:Key"];
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            throw new InvalidOperationException("JWT Key is not configured.");
-        }
-
         var issuer = _configuration["Jwt:Issuer"];
         var audience = _configuration["Jwt:Audience"];
         var expirationHours = _configuration["Jwt:ExpirationHours"];
+        var privateKeyPath = _configuration["Jwt:PrivateKeyPath"]; // مسیر فایل کلید خصوصی
 
-        if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience) || string.IsNullOrWhiteSpace(expirationHours))
-        {
+        if (string.IsNullOrWhiteSpace(privateKeyPath) || !File.Exists(privateKeyPath))
+            throw new FileNotFoundException("Private key file not found. Make sure Jwt:PrivateKeyPath is set.");
+
+        if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
             throw new InvalidOperationException("JWT configuration is incomplete.");
-        }
 
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        var privateKeyPem = await File.ReadAllTextAsync(privateKeyPath);
+        using var rsa = RSA.Create();
+        rsa.ImportFromPem(privateKeyPem); // به‌صورت خودکار PKCS#1 یا PKCS#8 را تشخیص می‌دهد
+
+        var signingCredentials = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
 
         var roles = await _userManager.GetRolesAsync(user);
-
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()), new(JwtRegisteredClaimNames.Email, user.Email)
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new("username", user.UserName ?? string.Empty)
         };
-
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        // 🕒 زمان انقضا
+        var expiration = DateTime.UtcNow.AddHours(Convert.ToDouble(expirationHours));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(Convert.ToDouble(expirationHours)),
+            Expires = expiration,
             Issuer = issuer,
             Audience = audience,
-            SigningCredentials = credentials
+            SigningCredentials = signingCredentials
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        return tokenHandler.WriteToken(token);
+        var jwt = tokenHandler.WriteToken(token);
+        
+        return jwt;
     }
 }

@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using Identity_Infrastructure.DbContext;
 using Identity_UI.Filters;
@@ -12,14 +13,15 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Serilog
-builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) => {
-
+// ---------------------- Serilog ----------------------
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+{
     loggerConfiguration
-        .ReadFrom.Configuration(context.Configuration) //read configuration settings from built-in IConfiguration
-        .ReadFrom.Services(services); //read out current app's services and make them available to serilog
-} );
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services);
+});
 
+// ---------------------- Configure Services ----------------------
 builder.Services.ConfigureServices(builder.Configuration);
 
 builder.Services.AddApiVersioning(options =>
@@ -28,39 +30,66 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"], 
-            ValidAudience = builder.Configuration["Jwt:Audience"], 
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+// ---------------------- RSA: خواندن کلید خصوصی PEM ----------------------
+var privateKeyPath = builder.Configuration["Jwt:PrivateKeyPath"];
 
+if (string.IsNullOrWhiteSpace(privateKeyPath) || !File.Exists(privateKeyPath))
+    throw new FileNotFoundException($"Private key not found at: {privateKeyPath}");
+
+var privateKeyPem = await File.ReadAllTextAsync(privateKeyPath);
+
+// ساخت RSA برای امضا (Signing)
+var rsaForSigning = RSA.Create();
+rsaForSigning.ImportFromPem(privateKeyPem); // ImportFromPem نوع PEM را خودکار تشخیص می‌دهد
+
+// ساخت RSA برای اعتبارسنجی (فقط public)
+var rsaForValidation = RSA.Create();
+rsaForValidation.ImportFromPem(rsaForSigning.ExportSubjectPublicKeyInfoPem());
+
+// ساخت SecurityKey برای JWT
+var rsaValidationKey = new RsaSecurityKey(rsaForValidation)
+{
+    KeyId = Guid.NewGuid().ToString() // kid اختیاری است، اما برای JWKS خوب است
+};
+
+// ---------------------- Authentication / Authorization ----------------------
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // در محیط production باید true شود
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = rsaValidationKey
+    };
+});
+
+builder.Services.AddAuthorization();
+
+// ---------------------- Swagger ----------------------
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Hesabdari API",
+        Title = "Identity API",
         Version = "v1"
     });
-    
+
     options.MapType<Stream>(() => new OpenApiSchema
     {
         Type = "string",
@@ -68,7 +97,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<FileUploadOperationFilter>();
-    
+
     var securityScheme = new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -97,18 +126,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// ---------------------- DbContext ----------------------
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ---------------------- Build App ----------------------
 var app = builder.Build();
 
 app.UseExceptionHandlingMiddleware();
-
 app.UseSerilogRequestLogging();
-
 app.UseHttpLogging();
 
-// Configure the HTTP request pipeline.
+// ---------------------- Development Only ----------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -118,11 +147,38 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseCors("AllowFrontends");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// ---------------------- JWKS Endpoint ----------------------
+// این endpoint به سایر میکروسرویس‌ها اجازه می‌دهد کلید عمومی را دریافت کنند
+app.MapGet("/.well-known/jwks.json", () =>
+{
+    var rsaParameters = rsaForSigning.ExportParameters(false);
+    var e = Base64UrlEncoder.Encode(rsaParameters.Exponent);
+    var n = Base64UrlEncoder.Encode(rsaParameters.Modulus);
+
+    var jwk = new
+    {
+        keys = new[]
+        {
+            new {
+                kty = "RSA",
+                use = "sig",
+                alg = "RS256",
+                kid = rsaValidationKey.KeyId,
+                e,
+                n
+            }
+        }
+    };
+
+    return Results.Json(jwk);
+})
+.WithMetadata(new Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute());
 
 app.Run();
