@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F702A1B5
 		docker-compose.yml = docker-compose.yml
 		src\Dockerfile.Ordering.api = src\Dockerfile.Ordering.api
 		src\Dockerfile.Ordering.worker = src\Dockerfile.Ordering.worker
+		src\Dockerfile.Basket.api = src\Dockerfile.Basket.api
+		src\Dockerfile.Catalog.api = src\Dockerfile.Catalog.api
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{B84D5A65-D1A4-4FA1-AD9D-82265C15FE6A}"
@@ -62,7 +64,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Application", "src\Basket\Basket-Application\Basket-Application.csproj", "{D73DF2C2-923B-416F-BECE-552BD7D18503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Damain", "src\Catalog\Catalog-Damain\Catalog-Damain.csproj", "{C3BB6302-1F06-4E73-A49D-66A6BB900C89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Domain", "src\Catalog\Catalog-Domain\Catalog-Domain.csproj", "{C3BB6302-1F06-4E73-A49D-66A6BB900C89}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{DD874FFC-5949-4375-B9D8-E76C9E93ACF1}"
 EndProject

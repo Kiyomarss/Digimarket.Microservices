@@ -23,15 +23,15 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
 
-  api:
-    image: ordering/api
+  basket-api:
+    image: basket/api
     build:
       context: ./src
-      dockerfile: Dockerfile.Ordering.api
+      dockerfile: Dockerfile.Basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Order;
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=BasketDb;
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=remote
@@ -40,19 +40,63 @@ services:
       - RabbitMq__Username=guest
       - RabbitMq__Password=guest
     ports:
-      - "5000:80"
+      - "6001:80"
     depends_on:
       - jaeger
       - rabbitmq
 
-  service:
+  catalog-api:
+    image: catalog/api
+    build:
+      context: ./src
+      dockerfile: Dockerfile.Catalog.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=CatalogDb;
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=remote
+      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Username=guest
+      - RabbitMq__Password=guest
+    ports:
+      - "6002:80"
+    depends_on:
+      - jaeger
+      - rabbitmq
+
+  ordering-api:
+    image: ordering/api
+    build:
+      context: ./src
+      dockerfile: Dockerfile.Ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=OrderingDb;
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=remote
+      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Username=guest
+      - RabbitMq__Password=guest
+    ports:
+      - "6003:80"
+    depends_on:
+      - jaeger
+      - rabbitmq
+
+  ordering-service:
     image: ordering/worker
     build:
       context: ./src
       dockerfile: Dockerfile.Ordering.worker
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=Order;
+      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=OrderingDb;
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=remote
