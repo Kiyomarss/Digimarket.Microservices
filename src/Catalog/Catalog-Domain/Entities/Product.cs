@@ -1,4 +1,4 @@
-﻿namespace Catalog_Damain.Entities;
+﻿namespace Catalog_Domain.Entities;
 
 public class Product
 {

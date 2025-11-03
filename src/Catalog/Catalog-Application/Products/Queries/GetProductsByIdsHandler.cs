@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.CQRS;
-using Catalog_Damain.RepositoryContracts;
+using Catalog_Domain.RepositoryContracts;
 
 namespace Catalog.Application.Products.Queries;
 

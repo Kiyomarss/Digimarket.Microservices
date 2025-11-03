@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
-    <ProjectReference Include="..\Catalog-Damain\Catalog-Damain.csproj" />
+    <ProjectReference Include="..\Catalog-Domain\Catalog-Domain.csproj" />
   </ItemGroup>
     
 </Project>

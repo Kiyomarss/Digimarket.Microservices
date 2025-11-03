@@ -13,7 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Catalog-Application\Catalog-Application.csproj" />
-      <ProjectReference Include="..\Catalog-Damain\Catalog-Damain.csproj" />
+      <ProjectReference Include="..\Catalog-Domain\Catalog-Domain.csproj" />
     </ItemGroup>
 
 </Project>

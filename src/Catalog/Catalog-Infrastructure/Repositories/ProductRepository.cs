@@ -1,5 +1,5 @@
-﻿using Catalog_Damain.Entities;
-using Catalog_Damain.RepositoryContracts;
+﻿using Catalog_Domain.Entities;
+using Catalog_Domain.RepositoryContracts;
 using Catalog_Infrastructure.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 
