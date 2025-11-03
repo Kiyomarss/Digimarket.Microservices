@@ -2,6 +2,7 @@
 using Basket_Application.Orders.Commands.CreateOrder;
 using BuildingBlocks.Controllers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Basket.Api.Controllers
@@ -16,12 +17,14 @@ namespace Basket.Api.Controllers
         }
 
         [HttpPost()]
+        [Authorize]
         public async Task<IActionResult> AddItem([FromBody] BasketItemDto dto)
         {
             return Ok(new { message = "Item added to basket successfully." });
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Checkout()
         {
             var command = new CreateOrderCommand();
@@ -30,7 +33,6 @@ namespace Basket.Api.Controllers
 
             return Ok();
         }
-
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveItem(Guid id)
