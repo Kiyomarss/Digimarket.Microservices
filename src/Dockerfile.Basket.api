@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY ["Basket/Basket-Api/Basket-Api.csproj", "Basket/Basket-Api/"]
+COPY ["Basket/Basket-Application/Basket-Application.csproj", "Basket/Basket-Application/"]
+COPY ["Basket/Basket-Domain/Basket-Domain.csproj", "Basket/Basket-Domain/"]
+COPY ["Basket/Basket-Infrastructure/Basket-Infrastructure.csproj", "Basket/Basket-Infrastructure/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
+COPY ["BuildingBlocks/Protos/OrderGrpcContracts/OrderGrpcContracts.csproj", "BuildingBlocks/Protos/OrderGrpcContracts/"]
+COPY ["Shared/IntegrationEvents/IntegrationEvents.csproj", "Shared/IntegrationEvents/IntegrationEvents/"]
+RUN dotnet restore "Basket/Basket-Api/Basket-Api.csproj"
+
+COPY . .
+RUN dotnet publish -c Release -o /app Basket/Basket-Api/Basket-Api.csproj
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app ./
+ENTRYPOINT ["dotnet", "Basket-Api.dll"]
