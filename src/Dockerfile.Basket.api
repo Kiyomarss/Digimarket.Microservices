@@ -1,5 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
+# مسیر پکیج‌های لوکال (از لینک داخل پروژه)
+COPY [".nuget/packages", "/root/.nuget/packages"]
+
+# مسیر پکیج‌ها در داخل کانتینر
+ENV NUGET_PACKAGES=/root/.nuget/packages
+
+# فقط csprojها را کپی کن
 COPY ["Basket/Basket-Api/Basket-Api.csproj", "Basket/Basket-Api/"]
 COPY ["Basket/Basket-Application/Basket-Application.csproj", "Basket/Basket-Application/"]
 COPY ["Basket/Basket-Domain/Basket-Domain.csproj", "Basket/Basket-Domain/"]
@@ -8,12 +15,17 @@ COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/Bui
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/OrderGrpcContracts/OrderGrpcContracts.csproj", "BuildingBlocks/Protos/OrderGrpcContracts/"]
 COPY ["Shared/IntegrationEvents/IntegrationEvents.csproj", "Shared/IntegrationEvents/IntegrationEvents/"]
+
+# Restore (بدون دانلود مجدد)
 RUN dotnet restore "Basket/Basket-Api/Basket-Api.csproj"
 
+# حالا کل سورس پروژه را کپی کن
 COPY . .
-RUN dotnet publish -c Release -o /app Basket/Basket-Api/Basket-Api.csproj
+
+# Build و Publish
+RUN dotnet publish "Basket/Basket-Api/Basket-Api.csproj" -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-COPY --from=build /app ./
+COPY --from=build /app .
 ENTRYPOINT ["dotnet", "Basket-Api.dll"]
