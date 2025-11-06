@@ -31,6 +31,11 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
             ProductIds = { productIds }
         });
 
+        if (productResponse.Products == null || productResponse.Products.Count == 0)
+        {
+            throw new InvalidOperationException("No products found for the given IDs.");
+        }
+        
         var orderId = Guid.NewGuid();
         var order = new Order
         {
