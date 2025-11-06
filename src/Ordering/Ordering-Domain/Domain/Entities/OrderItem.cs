@@ -2,7 +2,7 @@
 
 public class OrderItem
 {
-    internal OrderItem(Guid productId, string productName, int quantity, int price)
+    public OrderItem(Guid productId, string productName, int quantity, int price)
     {
         ProductId = productId;
         ProductName = productName;

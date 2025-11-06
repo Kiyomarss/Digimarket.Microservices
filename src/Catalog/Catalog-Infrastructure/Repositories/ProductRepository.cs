@@ -18,7 +18,7 @@ public class ProductRepository : IProductRepository
     {
         return await _db.Set<Product>()
                         .Where(x => productIds.Contains(x.Id))
-                        .ToListAsync();;
+                        .ToListAsync();
     }
     
     public async Task<Product?> FindProductById(Guid id)
