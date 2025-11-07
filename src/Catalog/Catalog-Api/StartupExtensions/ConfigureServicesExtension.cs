@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.UnitOfWork;
 using Catalog_Domain.RepositoryContracts;
 using Catalog_Infrastructure.Data.DbContext;
+using Catalog_Infrastructure.Data.Persistence;
 using Catalog_Infrastructure.Repositories;
 using Catalog.Application.Products.Queries;
 using MassTransit;
@@ -51,6 +53,7 @@ public static class ConfigureServicesExtension
 
         // Scoped Services
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

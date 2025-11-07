@@ -7,6 +7,4 @@ public interface IOrderRepository
     Task AddOrder(Order order);
 
     Task<Order?> FindOrderById(Guid id);
-
-    Task Update();
 }

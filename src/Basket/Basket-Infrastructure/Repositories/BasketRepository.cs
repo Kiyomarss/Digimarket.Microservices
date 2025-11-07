@@ -38,6 +38,5 @@ public class BasketRepository : IBasketRepository
     public async Task AddItemToBasket(BasketItem item)
     {
         await _db.Set<BasketItem>().AddAsync(item);
-        await _db.SaveChangesAsync();
     }
 }
