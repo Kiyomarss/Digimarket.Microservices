@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using BuildingBlocks.UnitOfWork;
 using FluentAssertions;
 using Grpc.Core;
 using MassTransit;
@@ -16,6 +17,7 @@ public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IOrderRepository> _orderRepoMock = new();
     private readonly Mock<IPublishEndpoint> _publishMock = new();
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<ProductProtoService.ProductProtoServiceClient> _grpcMock = new();
 
     private readonly CreateOrderCommandHandler _handler;
@@ -24,10 +26,11 @@ public class CreateOrderCommandHandlerTests
     public CreateOrderCommandHandlerTests()
     {
         _handler = new CreateOrderCommandHandler(
-            _orderRepoMock.Object,
-            _grpcMock.Object,
-            _publishMock.Object
-        );
+                                                 _orderRepoMock.Object,
+                                                 _grpcMock.Object,
+                                                 _publishMock.Object,
+                                                 _unitOfWorkMock.Object
+                                                );
 
         _fixture.Behaviors.Clear(); // جلوگیری از recursion
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
@@ -85,6 +88,7 @@ public class CreateOrderCommandHandlerTests
         _publishMock.Verify(x =>
             x.Publish(It.IsAny<OrderInitiated>(), It.IsAny<CancellationToken>()),
             Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
 

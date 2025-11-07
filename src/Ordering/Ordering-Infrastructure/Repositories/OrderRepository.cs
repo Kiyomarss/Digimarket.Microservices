@@ -17,7 +17,6 @@ public class OrderRepository : IOrderRepository
     public async Task AddOrder(Order order)
     {
         await _db.Set<Order>().AddAsync(order);
-        await _db.SaveChangesAsync();
     }
     
     public async Task<Order?> FindOrderById(Guid id)

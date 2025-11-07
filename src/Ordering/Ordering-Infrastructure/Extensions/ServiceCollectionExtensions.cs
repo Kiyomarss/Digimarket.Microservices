@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BuildingBlocks.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering_Infrastructure.Data.Persistence;
 using Ordering_Infrastructure.Repositories;
 
 namespace Ordering_Infrastructure.Extensions;
@@ -28,6 +30,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

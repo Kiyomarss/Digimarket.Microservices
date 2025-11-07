@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.CQRS;
+using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
@@ -12,15 +13,18 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
     private readonly IOrderRepository _orderRepository;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly ProductProtoService.ProductProtoServiceClient _productClient;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
         ProductProtoService.ProductProtoServiceClient productClient,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        IUnitOfWork unitOfWork)
     {
         _orderRepository = orderRepository;
         _productClient = productClient;
         _publishEndpoint = publishEndpoint;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -38,6 +42,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
         // 4. ذخیره در دیتابیس
         await _orderRepository.AddOrder(order);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return order.Id;
     }

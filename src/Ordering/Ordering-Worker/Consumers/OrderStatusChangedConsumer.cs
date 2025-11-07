@@ -1,3 +1,4 @@
+using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
@@ -8,12 +9,14 @@ namespace Ordering.Worker.Consumers
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {
         readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderStatusChangedConsumer> _logger;
 
-        public OrderStatusChangedConsumer(IOrderRepository orderRepository, ILogger<OrderStatusChangedConsumer> logger)
+        public OrderStatusChangedConsumer(IOrderRepository orderRepository, ILogger<OrderStatusChangedConsumer> logger, IUnitOfWork unitOfWork)
         {
             _orderRepository = orderRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Consume(ConsumeContext<OrderStatusChanged> context)
@@ -31,8 +34,7 @@ namespace Ordering.Worker.Consumers
             }
 
             order.State = message.OrderState;
-
-            await _orderRepository.Update();
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
