@@ -67,7 +67,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
             Id = orderId,
             Customer = request.Customer,
             State = "Init",
-            Items = new List<OrderItem>()
         };
 
         foreach (var grpcProduct in productResponse.Products)

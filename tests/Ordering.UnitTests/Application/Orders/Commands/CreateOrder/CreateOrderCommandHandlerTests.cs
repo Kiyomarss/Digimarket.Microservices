@@ -158,8 +158,8 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
 
             Assert.NotNull(capturedOrder);
 
-            Assert.Equal(2, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product1.ToString())).Quantity);
-            Assert.Equal(3, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product2.ToString())).Quantity);
+            Assert.Equal(2, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product1)).Quantity);
+            Assert.Equal(3, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product2)).Quantity);
         }
 
 
