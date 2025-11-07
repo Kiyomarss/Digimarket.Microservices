@@ -41,8 +41,8 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
                 Customer = "Kiyomarth",
                 Items =
                 {
-                    new CreateOrderCommand.OrderItemDto { ProductId = "1", Quantity = 2 },
-                    new CreateOrderCommand.OrderItemDto { ProductId = "2", Quantity = 3 }
+                    new CreateOrderCommand.OrderItemDto { ProductId = TestGuids.Product1, Quantity = 2 },
+                    new CreateOrderCommand.OrderItemDto { ProductId = TestGuids.Product2, Quantity = 3 }
                 }
             };
 
@@ -64,8 +64,8 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
             {
                 Products =
                 {
-                    new ProductInfo { ProductId = "1", ProductName = "A", Price = 100 },
-                    new ProductInfo { ProductId = "2", ProductName = "B", Price = 200 }
+                    new ProductInfo { ProductId = TestGuids.Product1, ProductName = "A", Price = 100 },
+                    new ProductInfo { ProductId = TestGuids.Product2, ProductName = "B", Price = 200 }
                 }
             };
 
@@ -136,8 +136,8 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
             {
                 Products =
                 {
-                    new ProductInfo { ProductId = "1", ProductName = "P1", Price = 10 },
-                    new ProductInfo { ProductId = "2", ProductName = "P2", Price = 20 }
+                    new ProductInfo { ProductId = TestGuids.Product1, ProductName = "P1", Price = 10 },
+                    new ProductInfo { ProductId = TestGuids.Product2, ProductName = "P2", Price = 20 }
                 }
             };
 
@@ -158,8 +158,8 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
 
             Assert.NotNull(capturedOrder);
 
-            Assert.Equal(2, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse("1")).Quantity);
-            Assert.Equal(3, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse("2")).Quantity);
+            Assert.Equal(2, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product1.ToString())).Quantity);
+            Assert.Equal(3, capturedOrder!.Items.Single(i => i.ProductId == Guid.Parse(TestGuids.Product2.ToString())).Quantity);
         }
 
 
@@ -173,7 +173,7 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
             {
                 Products =
                 {
-                    new ProductInfo { ProductId = "1", ProductName = "TestA", Price = 800 },
+                    new ProductInfo { ProductId = TestGuids.Product1, ProductName = "TestA", Price = 800 },
                 }
             };
 
@@ -182,7 +182,7 @@ namespace Ordering.UnitTests.Application.Orders.Commands.CreateOrder
                 Customer = "Kiyo",
                 Items =
                 {
-                    new CreateOrderCommand.OrderItemDto { ProductId = "1", Quantity = 1 }
+                    new CreateOrderCommand.OrderItemDto { ProductId = TestGuids.Product1, Quantity = 1 }
                 }
             };
 
