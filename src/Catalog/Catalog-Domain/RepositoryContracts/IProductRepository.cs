@@ -9,6 +9,4 @@ public interface IProductRepository
     Task AddProduct(Product product);
     
     Task<Product?> FindProductById(Guid id);
-
-    Task<bool> DeleteProduct(Guid id);
 }

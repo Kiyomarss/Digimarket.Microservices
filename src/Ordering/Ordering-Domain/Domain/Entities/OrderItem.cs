@@ -1,4 +1,6 @@
-﻿namespace Ordering_Domain.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ordering_Domain.Domain.Entities;
 
 public class OrderItem
 {
@@ -18,5 +20,7 @@ public class OrderItem
     public Guid ProductId { get; set; } = default!;
     public string ProductName { get; set; } = default!;
     public int Quantity { get; set; } = default!;
+    
+    [Required]
     public long Price { get; set; } = default!;
 }
