@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Domain.Domain.Entities;
+using Ordering_Infrastructure.Data.Persistence;
 using Ordering_Infrastructure.Repositories;
 using Ordering.IntegrationTests.Config;
 
@@ -119,5 +120,25 @@ public class OrderRepositoryTests : IClassFixture<LocalPostgresFixture>
 
         Func<Task> act = async () => await db.SaveChangesAsync();
         await act.Should().ThrowAsync<DbUpdateException>();
+    }
+    
+    [Fact]
+    public async Task SaveChangesAsync_Should_Save_Data()
+    {
+        var db = _fixture.CreateDbContext();
+        var unitOfWork = new UnitOfWork(db);
+
+        var order = new Order
+        {
+            Customer = "Test",
+            State = "Pending"
+        };
+
+        db.Orders.Add(order);
+    
+        var result = await unitOfWork.SaveChangesAsync();
+    
+        result.Should().Be(1); // یک ردیف تغییر کرده
+        (await db.Orders.FirstOrDefaultAsync(o => o.Id == order.Id)).Should().NotBeNull();
     }
 }
