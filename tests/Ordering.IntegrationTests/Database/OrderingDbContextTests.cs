@@ -105,7 +105,7 @@ public class OrderingDbContextTests : IClassFixture<LocalPostgresFixture>
         db.Orders.Remove(order);
         await db.SaveChangesAsync();
 
-        var items = await db.OrderItems.ToListAsync();
+        var items = await db.OrderItems.Where(x => x.OrderId == order.Id).ToListAsync();
 
         items.Should().BeEmpty();   // Cascade delete ✅
     }
