@@ -1,46 +1,34 @@
-﻿using System.Reflection;
-using BuildingBlocks.Behaviors;
+﻿using BuildingBlocks.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Extensions
 {
-    /// <summary>
-    /// Extension methods for registering MediatR in microservices.
-    /// Automatically discovers assemblies and adds pipeline behaviors.
-    /// </summary>
     public static class MediatRExtensions
     {
         /// <summary>
-        /// Registers MediatR handlers from all relevant assemblies.
-        /// Also adds global pipeline behaviors like Validation and Logging.
+        /// Registers MediatR handlers from one or multiple assemblies.
+        /// Usage:
+        /// services.AddConfiguredMediatR(typeof(AppMarker), typeof(DomainMarker));
         /// </summary>
-        /// <param name="services">The IServiceCollection</param>
-        /// <param name="markerType">A marker type from the Core layer of the service (e.g., CreateOrderHandler)</param>
-        /// <param name="assemblyPrefix">Common assembly name prefix for discovery (e.g., Digimarket)</param>
         public static IServiceCollection AddConfiguredMediatR(
             this IServiceCollection services,
-            Type markerType,
-            string assemblyPrefix = "Digimarket")
+            params Type[] markerTypes)
         {
-            // 1️⃣ Explicitly add the Core assembly (Basket.Core, Ordering.Core, etc.)
-            var markerAssemblies = new[]
-            {
-                markerType.Assembly
-            };
+            if (markerTypes == null || markerTypes.Length == 0)
+                throw new ArgumentException("You must pass at least one marker type to AddConfiguredMediatR.");
 
-            // 2️⃣ Dynamically discover assemblies in the service's bin folder
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-            var discovered = Directory.GetFiles(path, "*.dll")
-                                      .Select(Assembly.LoadFrom)
-                                      .Where(a => a.GetName().Name!.StartsWith(assemblyPrefix))
-                                      .ToArray();
-
-            // 3️⃣ Merge both and register them all
-            var allAssemblies = markerAssemblies.Concat(discovered).Distinct().ToArray();
+            // ✅ استخراج همه اسمبلی‌ها
+            var assemblies = markerTypes
+                             .Select(t => t.Assembly)
+                             .Distinct()
+                             .ToArray();
 
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(allAssemblies);
+                // ✅ ثبت همه اسمبلی‌ها
+                cfg.RegisterServicesFromAssemblies(assemblies);
+
+                // ✅ اضافه کردن pipeline behaviors
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
                 cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
