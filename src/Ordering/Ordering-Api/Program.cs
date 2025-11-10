@@ -66,3 +66,5 @@ app.MapGrpcService<OrderGrpcService>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
