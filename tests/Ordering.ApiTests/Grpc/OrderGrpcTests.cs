@@ -1,26 +1,25 @@
 ﻿using FluentAssertions;
-using Grpc.Net.Client;
-using Grpc.Core;
 using OrderGrpc;
 
-public class OrderGrpcTests : IClassFixture<OrderApiFactory>
+public class OrderGrpcTests : IClassFixture<OrderingApiFactory>
 {
     private readonly OrderProtoService.OrderProtoServiceClient _client;
 
-    public OrderGrpcTests(OrderApiFactory factory)
+    public OrderGrpcTests(OrderingApiFactory factory)
     {
-        // اطمینان از اینکه HttpClient/GrpcChannel ساخته شده است:
-        var httpClient = factory.CreateClient(); // این خط باعث ساخت ConfigureClient می‌شود
+        // ایجاد HttpClient برای فعال شدن ConfigureClient
+        var httpClient = factory.CreateClient();
+
+        // استفاده از GrpcChannel که در Factory ساخته شده
         var channel = factory.GrpcChannel;
 
-        // روش ایمن: ساخت CallInvoker و پاس دادن به ctor
-        var callInvoker = channel.CreateCallInvoker();
-        _client = new OrderProtoService.OrderProtoServiceClient(callInvoker);
+        _client = new OrderProtoService.OrderProtoServiceClient(channel);
     }
 
     [Fact]
     public async Task CreateOrder_Should_Return_OrderId()
     {
+        // Arrange
         var request = new CreateOrderRequest
         {
             Customer = "kiomars",
@@ -34,8 +33,10 @@ public class OrderGrpcTests : IClassFixture<OrderApiFactory>
             }
         };
 
+        // Act
         var response = await _client.CreateOrderAsync(request);
 
+        // Assert
         response.OrderId.Should().NotBeNullOrWhiteSpace();
         Guid.TryParse(response.OrderId, out _).Should().BeTrue();
     }

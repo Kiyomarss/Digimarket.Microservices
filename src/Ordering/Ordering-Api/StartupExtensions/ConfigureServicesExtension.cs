@@ -7,15 +7,19 @@ namespace Ordering.Api.StartupExtensions;
 
 public static class ConfigureServicesExtension
 {
-    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, bool isTest = false)
     {
         // Controllers
         services.AddControllers();
-
-        services.AddOrderingInfrastructure(configuration);
         
+        services.AddOrderingInfrastructure(configuration);
+
+        // MediatR و Pipeline Behaviors
         services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
-        services.AddGrpcClientWithConfig<ProductProtoService.ProductProtoServiceClient>(configuration, "GrpcSettings:CatalogUrl");
+
+        // gRPC Client برای Product
+        services.AddGrpcClientWithConfig<ProductProtoService.ProductProtoServiceClient>(
+                                                                                        configuration, "GrpcSettings:CatalogUrl");
 
         return services;
     }

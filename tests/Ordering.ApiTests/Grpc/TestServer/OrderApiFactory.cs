@@ -1,32 +1,37 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Grpc.Net.Client;
-using System.Linq;
 using System.Net.Http;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.ApiTests.Utilities;
 
-public class OrderApiFactory : WebApplicationFactory<Program>
+public class OrderingApiFactory : WebApplicationFactory<Program>
 {
-    public GrpcChannel GrpcChannel { get; private set; } = default!;
+    public GrpcChannel GrpcChannel { get; private set; }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // فعال کردن HTTP/2 برای gRPC
+        builder.ConfigureKestrel(options =>
+        {
+            options.ConfigureEndpointDefaults(o =>
+            {
+                o.Protocols = HttpProtocols.Http2;
+            });
+        });
+
         builder.ConfigureServices(services =>
         {
-            // حذف DbContextOptions قبلی (Postgres) و استفاده از InMemory برای تست
-            var descriptor = services.SingleOrDefault(
-                                                      d => d.ServiceType == typeof(DbContextOptions<OrderingDbContext>));
+            // حذف MassTransit و جایگزین با Fake
+            services.RemoveMassTransitForTests();
 
-            if (descriptor != null)
-                services.Remove(descriptor);
+            // DbContext تستی InMemory
+            services.ReplaceOrderingDbContextWithInMemory();
 
-            services.AddDbContext<OrderingDbContext>(o =>
-            {
-                o.UseInMemoryDatabase("Ordering_Db_For_Tests");
-            });
+            // Fake gRPC Client برای ProductGrpc
+            services.AddSingleton<ProductGrpc.ProductProtoService.ProductProtoServiceClient, FakeProductGrpcClient>();
         });
     }
 
@@ -34,7 +39,7 @@ public class OrderApiFactory : WebApplicationFactory<Program>
     {
         base.ConfigureClient(client);
 
-        // ایجاد GrpcChannel روی همان HttpClient که TestServer ساخته
+        // ساخت gRPC Channel از روی HttpClient خود WebApplicationFactory
         GrpcChannel = GrpcChannel.ForAddress(client.BaseAddress!, new GrpcChannelOptions
         {
             HttpClient = client
