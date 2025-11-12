@@ -1,22 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ordering_Infrastructure.Data.DbContext;
 
 namespace Ordering.ApiTests.Utilities;
 
-public static class DbContextTestExtensions
+public static class DatabaseTestExtensions
 {
-    public static void ReplaceOrderingDbContextWithInMemory(this IServiceCollection services)
+    public static void ReplaceDbContextWithInMemory(this IServiceCollection services, string dbName)
     {
-        var descriptor = services.SingleOrDefault(
-                                                  d => d.ServiceType == typeof(DbContextOptions<OrderingDbContext>));
+        // حذف DbContextهای قبلی
+        services.RemoveAll(typeof(DbContextOptions<OrderingDbContext>));
+        services.RemoveAll(typeof(OrderingDbContext));
 
-        if (descriptor != null)
-            services.Remove(descriptor);
-
+        // اضافه کردن DbContext اصلی با InMemoryDatabase
         services.AddDbContext<OrderingDbContext>(options =>
         {
-            options.UseInMemoryDatabase("OrderingTestsDb");
+            options.UseInMemoryDatabase(dbName);
+        });
+
+        // نگاشت OrderingDbContext به TestOrderingDbContext برای کنترل تست
+        services.AddScoped<TestOrderingDbContext>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<OrderingDbContext>>();
+            return new TestOrderingDbContext(options);
         });
     }
 }

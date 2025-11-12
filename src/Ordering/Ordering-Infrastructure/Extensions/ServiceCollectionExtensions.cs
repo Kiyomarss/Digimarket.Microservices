@@ -16,18 +16,26 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Default");
-
-        services.AddDbContext<OrderingDbContext>(x =>
+        
+        if (configuration["UseInMemory"] == "true")
         {
-            x.UseNpgsql(connectionString, options =>
+            services.AddDbContext<OrderingDbContext>(options =>
+                                                         options.UseInMemoryDatabase("OrderingTestDb"));
+        }
+        else
+        {
+            services.AddDbContext<OrderingDbContext>(x =>
             {
-                options.MigrationsAssembly(typeof(OrderingDbContext).Assembly.GetName().Name);
-                options.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
+                x.UseNpgsql(connectionString, options =>
+                {
+                    options.MigrationsAssembly(typeof(OrderingDbContext).Assembly.GetName().Name);
+                    options.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
 
-                options.EnableRetryOnFailure(5);
-                options.MinBatchSize(1);
+                    options.EnableRetryOnFailure(5);
+                    options.MinBatchSize(1);
+                });
             });
-        });
+        }
 
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

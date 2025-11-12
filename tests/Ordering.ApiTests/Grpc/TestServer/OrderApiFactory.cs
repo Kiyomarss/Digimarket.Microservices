@@ -27,12 +27,14 @@ public class OrderingApiFactory : WebApplicationFactory<Program>
             // حذف MassTransit و جایگزین با Fake
             services.RemoveMassTransitForTests();
 
-            // DbContext تستی InMemory
-            services.ReplaceOrderingDbContextWithInMemory();
+            // جایگزینی DbContext با نسخه InMemory مخصوص تست
+            services.ReplaceDbContextWithInMemory("OrderingTestDb");
 
             // Fake gRPC Client برای ProductGrpc
             services.AddSingleton<ProductGrpc.ProductProtoService.ProductProtoServiceClient, FakeProductGrpcClient>();
         });
+        
+        builder.UseSetting("UseInMemory", "true");
     }
 
     protected override void ConfigureClient(HttpClient client)
