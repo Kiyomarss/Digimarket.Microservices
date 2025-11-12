@@ -9,7 +9,6 @@ public static class DatabaseTestExtensions
 {
     public static void ReplaceDbContextWithInMemory(this IServiceCollection services, string dbName)
     {
-        // حذف DbContextهای قبلی
         services.RemoveAll(typeof(DbContextOptions<OrderingDbContext>));
         services.RemoveAll(typeof(OrderingDbContext));
 

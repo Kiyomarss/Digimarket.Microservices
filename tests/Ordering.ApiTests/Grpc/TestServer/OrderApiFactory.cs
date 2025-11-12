@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Grpc.Net.Client;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Grpc.Net.Client;
-using System.Net.Http;
-using Ordering_Infrastructure.Data.DbContext;
 using Ordering.ApiTests.Utilities;
+
+namespace Ordering.ApiTests.Grpc.TestServer;
 
 public class OrderingApiFactory : WebApplicationFactory<Program>
 {

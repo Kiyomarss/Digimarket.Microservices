@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using OrderGrpc;
+using Ordering.ApiTests.Grpc.TestServer;
 
 public class OrderGrpcTests : IClassFixture<OrderingApiFactory>
 {
