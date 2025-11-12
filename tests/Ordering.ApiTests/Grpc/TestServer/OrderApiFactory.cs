@@ -42,7 +42,9 @@ public class OrderingApiFactory : WebApplicationFactory<Program>
         // ساخت gRPC Channel از روی HttpClient خود WebApplicationFactory
         GrpcChannel = GrpcChannel.ForAddress(client.BaseAddress!, new GrpcChannelOptions
         {
-            HttpClient = client
+            HttpClient = client,
+            MaxReceiveMessageSize = null,
+            MaxSendMessageSize = null
         });
     }
 }

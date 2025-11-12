@@ -8,7 +8,10 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.EnableDetailedErrors = true;
+});
 builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
