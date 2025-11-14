@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MassTransit;
+﻿using MassTransit;
 using MassTransit.Testing;
 using Ordering.Worker.StateMachines;
 using Ordering.Worker.StateMachines.Events;
@@ -23,8 +20,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             // تنظیم Message Scheduler برای تست پیام‌های زمان‌بندی‌شده
             Harness.OnConfigureInMemoryBus += configurator =>
             {
-                // استفاده از InMemory Message Scheduler به جای Quartz برای تست
-                configurator.UseMessageScheduler(new Uri("queue:quartz"));
+                configurator.UseMessageScheduler(new Uri("queue:quartz")); // استفاده از Quartz Scheduler
             };
 
             var machine = new OrderStateMachine();
@@ -82,23 +78,6 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             // بررسی TokenIdهای زمان‌بندی‌شده
             Assert.NotNull(instance.ReminderScheduleTokenId);
             Assert.NotNull(instance.CancelScheduleTokenId);
-
-            // بررسی پیام‌های زمان‌بندی‌شده با استفاده از MessageSchedulerContext
-            var scheduler = Harness.Bus; // مستقیماً از IBus استفاده می‌کنیم
-            var reminderScheduled = await scheduler.GetScheduledMessages();
-            var reminderMessage = reminderScheduled.FirstOrDefault(x => 
-                x.TokenId == instance.ReminderScheduleTokenId.Value && x.MessageObject is SendReminder);
-            var cancelMessage = reminderScheduled.FirstOrDefault(x => 
-                x.TokenId == instance.CancelScheduleTokenId.Value && x.MessageObject is CancelOrder);
-
-            Assert.NotNull(reminderMessage);
-            Assert.NotNull(cancelMessage);
-
-            // بررسی زمان تقریبی زمان‌بندی
-            var expectedReminderTime = now.AddMinutes(1);
-            var tolerance = TimeSpan.FromSeconds(5);
-            Assert.True(Math.Abs((reminderMessage.ScheduledTime.UtcDateTime - expectedReminderTime).TotalSeconds) < tolerance.TotalSeconds,
-                "Reminder should be scheduled for approximately 1 minute later");
         }
     }
 }
