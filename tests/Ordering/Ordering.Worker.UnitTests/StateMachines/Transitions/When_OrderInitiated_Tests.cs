@@ -7,6 +7,7 @@ using Ordering.Worker.StateMachines;
 using Ordering.Worker.StateMachines.Events;
 using Ordering.Worker.Configurations.Saga;
 using Shared.IntegrationEvents.Ordering;
+using Xunit;
 
 namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 {
@@ -17,15 +18,18 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 
         public async Task InitializeAsync()
         {
-            // create harness and enable in-memory scheduler (required for ScheduleSend)
             Harness = new InMemoryTestHarness();
-            Harness.OnConfigureInMemoryBus += cfg => cfg.UseInMemoryScheduler();
 
-            // create state machine and repository, then register saga on the harness
+            // تنظیم Message Scheduler برای تست پیام‌های زمان‌بندی‌شده
+            Harness.OnConfigureInMemoryBus += configurator =>
+            {
+                // استفاده از InMemory Message Scheduler به جای Quartz برای تست
+                configurator.UseMessageScheduler(new Uri("queue:quartz"));
+            };
+
             var machine = new OrderStateMachine();
             var repository = new InMemorySagaRepository<OrderState>();
 
-            // StateMachineSaga extension returns an ISagaStateMachineTestHarness
             SagaHarness = Harness.StateMachineSaga(machine, repository);
 
             await Harness.Start();
@@ -41,11 +45,11 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
         public async Task Should_create_saga_and_schedule_messages_and_publish_events()
         {
             // Arrange
-            var machine = SagaHarness.StateMachine; // the same instance we registered
+            var machine = SagaHarness.StateMachine;
             var orderId = Guid.NewGuid();
             var now = DateTime.UtcNow;
 
-            // Act: publish the initiating event
+            // Act: انتشار OrderInitiated
             await Harness.Bus.Publish(new OrderInitiated
             {
                 Id = orderId,
@@ -53,44 +57,48 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
                 Date = now
             });
 
-            // === Correct way to wait for saga existence AND state ===
-            // Wait until an instance with correlationId exists in WaitingForPayment
+            // انتظار تا saga ایجاد و وارد وضعیت WaitingForPayment شود
             var sagaInstanceId = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
-            Assert.NotNull(sagaInstanceId); // fail early if not created
+            Assert.NotNull(sagaInstanceId);
 
-            // Now get the actual instance from the Created collection
             var instance = SagaHarness.Created.Contains(orderId);
             Assert.NotNull(instance);
 
-            // Assert: state
+            // بررسی وضعیت saga
             Assert.Equal(machine.WaitingForPayment.Name, instance.CurrentState);
-
-            // Assert: instance properties set by the state machine
             Assert.Equal(now, instance.Date);
             Assert.Equal("TestCustomer", instance.Customer);
 
-            // Assert: published messages (ReduceInventory and RemoveBasket)
+            // بررسی پیام‌های منتشرشده
             Assert.True(await Harness.Published.Any<ReduceInventory>(x => x.Context.Message.Id == orderId),
                 "ReduceInventory should be published");
             Assert.True(await Harness.Published.Any<RemoveBasket>(x => x.Context.Message.Id == orderId),
                 "RemoveBasket should be published");
-
-            // Assert: OrderStatusChanged published with expected state
             Assert.True(await Harness.Published.Any<OrderStatusChanged>(x =>
                 x.Context.Message.Id == orderId &&
                 x.Context.Message.OrderState == machine.WaitingForPayment.Name),
                 "OrderStatusChanged should be published with WaitingForPayment");
 
-            // Assert: scheduled messages were sent (in-memory scheduler stores sent scheduled messages)
-            // Scheduled messages show up in Sent as ScheduledMessage<T>
-            Assert.True(Harness.Sent.Select<ScheduledMessage<SendReminder>>().Any(),
-                "SendReminder should be scheduled (found in Sent as ScheduledMessage<SendReminder>)");
-            Assert.True(Harness.Sent.Select<ScheduledMessage<CancelOrder>>().Any(),
-                "CancelOrder should be scheduled (found in Sent as ScheduledMessage<CancelOrder>)");
-
-            // Also ensure saga stored the schedule token ids (non-null)
+            // بررسی TokenIdهای زمان‌بندی‌شده
             Assert.NotNull(instance.ReminderScheduleTokenId);
             Assert.NotNull(instance.CancelScheduleTokenId);
+
+            // بررسی پیام‌های زمان‌بندی‌شده با استفاده از MessageSchedulerContext
+            var scheduler = Harness.Bus; // مستقیماً از IBus استفاده می‌کنیم
+            var reminderScheduled = await scheduler.GetScheduledMessages();
+            var reminderMessage = reminderScheduled.FirstOrDefault(x => 
+                x.TokenId == instance.ReminderScheduleTokenId.Value && x.MessageObject is SendReminder);
+            var cancelMessage = reminderScheduled.FirstOrDefault(x => 
+                x.TokenId == instance.CancelScheduleTokenId.Value && x.MessageObject is CancelOrder);
+
+            Assert.NotNull(reminderMessage);
+            Assert.NotNull(cancelMessage);
+
+            // بررسی زمان تقریبی زمان‌بندی
+            var expectedReminderTime = now.AddMinutes(1);
+            var tolerance = TimeSpan.FromSeconds(5);
+            Assert.True(Math.Abs((reminderMessage.ScheduledTime.UtcDateTime - expectedReminderTime).TotalSeconds) < tolerance.TotalSeconds,
+                "Reminder should be scheduled for approximately 1 minute later");
         }
     }
 }
