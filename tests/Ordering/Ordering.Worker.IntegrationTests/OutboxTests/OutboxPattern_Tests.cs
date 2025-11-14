@@ -8,7 +8,7 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
 {
     public class OutboxPattern_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
-        public OutboxPattern_Tests(Fixtures.OrderStateMachineFixture fixture) : base(fixture)
+        public OutboxPattern_Tests(Fixtures.OrderStateMachineFixture fixture) : base()
         {
         }
 

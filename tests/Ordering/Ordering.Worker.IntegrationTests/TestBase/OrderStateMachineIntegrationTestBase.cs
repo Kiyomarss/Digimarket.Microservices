@@ -1,23 +1,36 @@
-﻿using MassTransit;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.IntegrationTests.Fixtures;
+using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.TestBase
 {
-    public abstract class OrderStateMachineIntegrationTestBase : IClassFixture<OrderStateMachineFixture>
+    public abstract class OrderStateMachineIntegrationTestBase : IAsyncLifetime
     {
         protected readonly IBusControl Bus;
         protected readonly OrdersSagaDbContext DbContext;
 
-        protected OrderStateMachineIntegrationTestBase(OrderStateMachineFixture fixture)
-        {
-            Bus = fixture.Bus;
-            DbContext = fixture.DbContext;
+        private readonly OrderStateMachineFixture _fixture;
 
-            // شروع منابع در Fixture
-            fixture.StartAsync().GetAwaiter().GetResult();
+        protected OrderStateMachineIntegrationTestBase()
+        {
+            _fixture = new OrderStateMachineFixture();
+            Bus = _fixture.Bus;
+            DbContext = _fixture.DbContext;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _fixture.StartAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _fixture.DisposeAsync();
         }
 
         // متد کمکی برای پاک کردن دیتابیس

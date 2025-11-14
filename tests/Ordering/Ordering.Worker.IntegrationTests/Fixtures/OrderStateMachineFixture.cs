@@ -1,8 +1,11 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using System;
+using System.Threading.Tasks;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
@@ -32,6 +35,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
                 .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5672))
                 .Build();
+            _rabbitMqContainer.StartAsync().GetAwaiter().GetResult(); // راه‌اندازی همگام کانتینر
 
             // راه‌اندازی PostgreSQL با Testcontainers
             _postgresContainer = new ContainerBuilder()
@@ -42,12 +46,20 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .WithEnvironment("POSTGRES_DB", "ordering_test")
                 .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
                 .Build();
+            _postgresContainer.StartAsync().GetAwaiter().GetResult(); // راه‌اندازی همگام کانتینر
 
             // تنظیم ServiceCollection
             var services = new ServiceCollection();
 
+            // افزودن ILoggerFactory
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole(); // استفاده از Console Logger به عنوان فراهم‌کننده
+                builder.SetMinimumLevel(LogLevel.Information); // تنظیم سطح لاگ (اختیاری)
+            });
+
             // تنظیم DbContext
-            var postgresConnectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;";
+            var postgresConnectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=ordering_test;Username=postgres;Password=123;";
             services.AddDbContext<OrdersSagaDbContext>(options =>
             {
                 options.UseNpgsql(postgresConnectionString, npgOptions =>
@@ -98,8 +110,6 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
 
         public async Task StartAsync()
         {
-            await _rabbitMqContainer.StartAsync();
-            await _postgresContainer.StartAsync();
             await Bus.StartAsync();
         }
 
