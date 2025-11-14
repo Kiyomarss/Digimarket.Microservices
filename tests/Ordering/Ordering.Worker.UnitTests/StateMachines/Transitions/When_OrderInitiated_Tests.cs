@@ -1,47 +1,19 @@
 ﻿using FluentAssertions;
-using MassTransit;
-using MassTransit.Testing;
-using Ordering.Worker.StateMachines;
 using Ordering.Worker.StateMachines.Events;
-using Ordering.Worker.Configurations.Saga;
 using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 {
-    public class When_OrderInitiated_Tests : IAsyncLifetime
+    public class When_OrderInitiated_Tests : OrderStateMachineTestBase
     {
-        private InMemoryTestHarness Harness = null!;
-        private ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness = null!;
-
-        public async Task InitializeAsync()
+        public When_OrderInitiated_Tests(OrderStateMachineFixture fixture) : base(fixture)
         {
-            Harness = new InMemoryTestHarness();
-
-            // تنظیم Message Scheduler برای تست پیام‌های زمان‌بندی‌شده
-            Harness.OnConfigureInMemoryBus += configurator =>
-            {
-                configurator.UseMessageScheduler(new Uri("queue:quartz"));
-            };
-
-            var machine = new OrderStateMachine();
-            var repository = new InMemorySagaRepository<OrderState>();
-
-            SagaHarness = Harness.StateMachineSaga(machine, repository);
-
-            await Harness.Start();
-        }
-
-        public async Task DisposeAsync()
-        {
-            if (Harness != null)
-                await Harness.Stop();
         }
 
         [Fact]
         public async Task Should_create_saga_and_schedule_messages_and_publish_events()
         {
             // Arrange
-            var machine = SagaHarness.StateMachine;
             var orderId = Guid.NewGuid();
             var now = DateTime.UtcNow;
 
@@ -53,7 +25,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
                 Date = now
             });
 
-            // انتظار تا saga ایجاد و وارد وضعیت WaitingForPayment شود
+            // Assert: انتظار تا saga ایجاد و وارد وضعیت WaitingForPayment شود
             var sagaInstanceId = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
             sagaInstanceId.Should().NotBeNull("saga instance should exist in WaitingForPayment state");
 
@@ -61,7 +33,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             instance.Should().NotBeNull("saga instance should be created");
 
             // بررسی وضعیت saga
-            instance.CurrentState.Should().Be(machine.WaitingForPayment.Name);
+            instance.CurrentState.Should().Be(Machine.WaitingForPayment.Name);
             instance.Date.Should().Be(now);
             instance.Customer.Should().Be("TestCustomer");
 
@@ -74,7 +46,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 
             (await Harness.Published.Any<OrderStatusChanged>(x =>
                     x.Context.Message.Id == orderId &&
-                    x.Context.Message.OrderState == machine.WaitingForPayment.Name))
+                    x.Context.Message.OrderState == Machine.WaitingForPayment.Name))
                 .Should().BeTrue("OrderStatusChanged should be published with WaitingForPayment");
 
             // بررسی TokenIdهای زمان‌بندی‌شده
