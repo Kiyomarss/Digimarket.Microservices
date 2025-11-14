@@ -25,7 +25,6 @@ namespace Ordering.Worker.StateMachines
                 When(OrderInitiated)
                     .Then(context =>
                     {
-                        Console.WriteLine($"[SAGA] OrderInitiated received for OrderId: {context.Message.Id}");
                         context.Saga.Date = context.Message.Date;
                         context.Saga.Customer = context.Message.Customer;
                     })
