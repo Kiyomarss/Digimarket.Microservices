@@ -1,17 +1,17 @@
-﻿using MassTransit;
+﻿using FluentAssertions;
+using MassTransit;
 using MassTransit.Testing;
 using Ordering.Worker.StateMachines;
 using Ordering.Worker.StateMachines.Events;
 using Ordering.Worker.Configurations.Saga;
 using Shared.IntegrationEvents.Ordering;
-using Xunit;
 
 namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 {
     public class When_OrderInitiated_Tests : IAsyncLifetime
     {
-        InMemoryTestHarness Harness = null!;
-        ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness = null!;
+        private InMemoryTestHarness Harness = null!;
+        private ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness = null!;
 
         public async Task InitializeAsync()
         {
@@ -20,7 +20,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             // تنظیم Message Scheduler برای تست پیام‌های زمان‌بندی‌شده
             Harness.OnConfigureInMemoryBus += configurator =>
             {
-                configurator.UseMessageScheduler(new Uri("queue:quartz")); // استفاده از Quartz Scheduler
+                configurator.UseMessageScheduler(new Uri("queue:quartz"));
             };
 
             var machine = new OrderStateMachine();
@@ -55,29 +55,31 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 
             // انتظار تا saga ایجاد و وارد وضعیت WaitingForPayment شود
             var sagaInstanceId = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
-            Assert.NotNull(sagaInstanceId);
+            sagaInstanceId.Should().NotBeNull("saga instance should exist in WaitingForPayment state");
 
             var instance = SagaHarness.Created.Contains(orderId);
-            Assert.NotNull(instance);
+            instance.Should().NotBeNull("saga instance should be created");
 
             // بررسی وضعیت saga
-            Assert.Equal(machine.WaitingForPayment.Name, instance.CurrentState);
-            Assert.Equal(now, instance.Date);
-            Assert.Equal("TestCustomer", instance.Customer);
+            instance.CurrentState.Should().Be(machine.WaitingForPayment.Name);
+            instance.Date.Should().Be(now);
+            instance.Customer.Should().Be("TestCustomer");
 
             // بررسی پیام‌های منتشرشده
-            Assert.True(await Harness.Published.Any<ReduceInventory>(x => x.Context.Message.Id == orderId),
-                "ReduceInventory should be published");
-            Assert.True(await Harness.Published.Any<RemoveBasket>(x => x.Context.Message.Id == orderId),
-                "RemoveBasket should be published");
-            Assert.True(await Harness.Published.Any<OrderStatusChanged>(x =>
-                x.Context.Message.Id == orderId &&
-                x.Context.Message.OrderState == machine.WaitingForPayment.Name),
-                "OrderStatusChanged should be published with WaitingForPayment");
+            (await Harness.Published.Any<ReduceInventory>(x => x.Context.Message.Id == orderId))
+                .Should().BeTrue("ReduceInventory should be published");
+
+            (await Harness.Published.Any<RemoveBasket>(x => x.Context.Message.Id == orderId))
+                .Should().BeTrue("RemoveBasket should be published");
+
+            (await Harness.Published.Any<OrderStatusChanged>(x =>
+                    x.Context.Message.Id == orderId &&
+                    x.Context.Message.OrderState == machine.WaitingForPayment.Name))
+                .Should().BeTrue("OrderStatusChanged should be published with WaitingForPayment");
 
             // بررسی TokenIdهای زمان‌بندی‌شده
-            Assert.NotNull(instance.ReminderScheduleTokenId);
-            Assert.NotNull(instance.CancelScheduleTokenId);
+            instance.ReminderScheduleTokenId.Should().NotBeNull("Reminder should be scheduled");
+            instance.CancelScheduleTokenId.Should().NotBeNull("CancelOrder should be scheduled");
         }
     }
 }
