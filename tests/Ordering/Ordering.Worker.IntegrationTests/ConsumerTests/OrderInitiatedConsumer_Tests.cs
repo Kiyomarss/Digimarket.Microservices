@@ -1,26 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Ordering.Worker.Consumers;
-using Ordering_Domain.Domain.RepositoryContracts;
+﻿using FluentAssertions;
 using Shared.IntegrationEvents.Ordering;
-using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.ConsumerTests
 {
     public class OrderInitiatedConsumer_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
-        private readonly Mock<IOrderRepository> _mockOrderRepository;
+        private readonly Fixtures.OrderStateMachineFixture _fixture;
 
         public OrderInitiatedConsumer_Tests(Fixtures.OrderStateMachineFixture fixture) : base(fixture)
         {
-            _mockOrderRepository = new Mock<IOrderRepository>();
-            // بازنویسی سرویس در ServiceProvider برای استفاده از Mock
-            var serviceProvider = (ServiceProvider)DbContext.Database.GetService<IServiceProvider>();
-            serviceProvider.GetService<IOrderRepository>().Returns(_mockOrderRepository.Object);
+            _fixture = fixture;
         }
 
         [Fact]
@@ -43,8 +32,13 @@ namespace Ordering.Worker.IntegrationTests.ConsumerTests
             await Task.Delay(1000);
 
             // Assert
-            //_mockOrderRepository.Verify(r => r.SomeMethod(It.IsAny<object>()), Times.Never(),
-                                        //"OrderInitiatedConsumer should not call repository methods without implementation");
+            var saga = await GetSagaState(orderId);
+            saga.Should().NotBeNull("Saga should be created");
+            saga!.CurrentState.Should().Be("WaitingForPayment");
+            saga.Date.Should().Be(now);
+            saga.Customer.Should().Be("TestCustomer");
+            saga.ReminderScheduleTokenId.Should().NotBeNull("Reminder should be scheduled");
+            saga.CancelScheduleTokenId.Should().NotBeNull("CancelOrder should be scheduled");
         }
     }
 }

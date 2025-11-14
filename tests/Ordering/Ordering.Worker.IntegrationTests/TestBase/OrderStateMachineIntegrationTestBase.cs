@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
-using FluentAssertions;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.IntegrationTests.Fixtures;
-using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.TestBase
 {

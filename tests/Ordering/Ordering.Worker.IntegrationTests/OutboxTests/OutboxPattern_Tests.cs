@@ -1,13 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
-using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Events;
 using Shared.IntegrationEvents.Ordering;
-using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.OutboxTests
 {

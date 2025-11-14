@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using DotNet.Testcontainers.Builders;
+﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +19,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
         private readonly ServiceProvider _serviceProvider;
         public IBusControl Bus { get; }
         public OrdersSagaDbContext DbContext { get; }
+        public Mock<IOrderRepository> MockOrderRepository { get; }
 
         public OrderStateMachineFixture()
         {
@@ -31,7 +30,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .WithPortBinding(15672, true)
                 .WithEnvironment("RABBITMQ_DEFAULT_USER", "guest")
                 .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5672))
                 .Build();
 
             // راه‌اندازی PostgreSQL با Testcontainers
@@ -41,7 +40,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .WithEnvironment("POSTGRES_USER", "postgres")
                 .WithEnvironment("POSTGRES_PASSWORD", "123")
                 .WithEnvironment("POSTGRES_DB", "ordering_test")
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
                 .Build();
 
             // تنظیم ServiceCollection
@@ -59,8 +58,8 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
             });
 
             // Mock کردن IOrderRepository
-            var mockOrderRepository = new Mock<IOrderRepository>();
-            services.AddSingleton(mockOrderRepository.Object);
+            MockOrderRepository = new Mock<IOrderRepository>();
+            services.AddSingleton(MockOrderRepository.Object);
 
             // تنظیم MassTransit با RabbitMQ
             services.AddMassTransit(x =>

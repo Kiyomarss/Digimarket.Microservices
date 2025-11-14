@@ -1,9 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Ordering.Worker.Configurations.Saga;
+﻿using FluentAssertions;
 using Shared.IntegrationEvents.Ordering;
-using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.StateMachineTests
 {
