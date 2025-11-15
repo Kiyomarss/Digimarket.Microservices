@@ -16,9 +16,6 @@ public class NotifyOrderConsumer :
 
     public Task Consume(ConsumeContext<OrderInitiated> context)
     {
-        _logger.LogInformation("Member {MemberId} registered for event {EventId} on {RegistrationDate}", context.Message.Customer,
-            context.Message.Date);
-
         return Task.CompletedTask;
     }
 }

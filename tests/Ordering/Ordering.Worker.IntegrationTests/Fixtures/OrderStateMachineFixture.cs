@@ -43,7 +43,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .WithPortBinding(5432, true)
                 .WithEnvironment("POSTGRES_USER", "postgres")
                 .WithEnvironment("POSTGRES_PASSWORD", "123")
-                .WithEnvironment("POSTGRES_DB", "ordering_test")
+                .WithEnvironment("POSTGRES_DB", "OrderingDb")
                 .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
                 .Build();
             _postgresContainer.StartAsync().GetAwaiter().GetResult(); // راه‌اندازی همگام کانتینر
@@ -59,7 +59,7 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
             });
 
             // تنظیم DbContext
-            var postgresConnectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=ordering_test;Username=postgres;Password=123;";
+            var postgresConnectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;";
             services.AddDbContext<OrdersSagaDbContext>(options =>
             {
                 options.UseNpgsql(postgresConnectionString, npgOptions =>
