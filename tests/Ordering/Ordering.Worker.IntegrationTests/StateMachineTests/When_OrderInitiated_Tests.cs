@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Ordering.Worker.IntegrationTests.StateMachineTests
 {
+    [Collection("DatabaseCollection")]
     public class When_OrderInitiated_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
         [Fact]
