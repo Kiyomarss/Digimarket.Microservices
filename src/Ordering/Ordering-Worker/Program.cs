@@ -69,6 +69,7 @@ var builder = Host.CreateDefaultBuilder(args)
                       {
                           x.SetKebabCaseEndpointNameFormatter();
                           x.AddConsumers(typeof(OrderInitiatedConsumer).Assembly);
+                          x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
                           x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                            .EntityFrameworkRepository(r =>
                            {

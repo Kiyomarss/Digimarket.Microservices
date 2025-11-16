@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BuildingBlocks.UnitOfWork;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
@@ -11,6 +12,8 @@ using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.StateMachines;
 using Ordering_Domain.Domain.RepositoryContracts;
+using Ordering.Worker.IntegrationTests.TestFixtures;
+using Ordering.Worker.StateMachines.Events;
 using Quartz;
 
 namespace Ordering.Worker.IntegrationTests.Fixtures
@@ -58,10 +61,12 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
             services.AddDbContext<OrdersSagaDbContext>(options => options.UseNpgsql(postgresConnectionString));
             MockOrderRepository = new Mock<IOrderRepository>();
             services.AddSingleton(MockOrderRepository.Object);
+            services.AddScoped<IUnitOfWork, MockUnitOfWork>();
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumers(typeof(Ordering.Worker.Consumers.OrderInitiatedConsumer).Assembly);
+                x.AddConsumers(typeof(Consumers.OrderInitiatedConsumer).Assembly);
+                x.AddConsumers(typeof(Consumers.OrderStatusChangedConsumer).Assembly);
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                     .EntityFrameworkRepository(r =>
                     {

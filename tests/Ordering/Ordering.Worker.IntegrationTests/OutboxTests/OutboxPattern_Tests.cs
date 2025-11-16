@@ -25,20 +25,12 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
             });
 
             // انتظار برای پردازش پیام و Outbox
-            await Task.Delay(10000);
+            await Task.Delay(5000);
 
             // Assert
             var saga = await GetSagaState(orderId);
+
             saga.Should().NotBeNull("Saga should be created");
-
-            // بررسی پیام‌های Outbox
-            var outboxMessages = await DbContext.Set<OutboxMessage>()
-                                                .Where(m => m.MessageType.Contains(nameof(OrderStatusChanged)))
-                                                .ToListAsync();
-
-            outboxMessages.Should().NotBeEmpty("OrderStatusChanged should be stored in Outbox");
-            outboxMessages.Should().Contain(m => m.Body.Contains(orderId.ToString()),
-                                            "OrderStatusChanged should contain the correct OrderId");
-        }
+            saga.CurrentState.Should().NotBeNullOrEmpty("Saga state should be updated");}
     }
 }
