@@ -58,22 +58,20 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-
-            // ثبت تمام consumerها از اسمبلی Worker
             x.AddConsumers(typeof(OrderInitiatedConsumer).Assembly);
-
-            // ثبت Saga State Machine
             x.AddSagaStateMachine<OrderStateMachine, OrderState>()
              .EntityFrameworkRepository(r =>
              {
                  r.ExistingDbContext<OrdersSagaDbContext>();
                  r.UsePostgres();
              });
-
-            // Quartz
             x.AddQuartzConsumers();
-
-            // RabbitMQ
+            x.AddEntityFrameworkOutbox<OrdersSagaDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(1); // تنظیم تأخیر برای بررسی Outbox
+                o.UsePostgres();
+                o.UseBusOutbox();
+            });
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host("localhost", "/", h =>
@@ -81,14 +79,7 @@ var builder = Host.CreateDefaultBuilder(args)
                     h.Username("guest");
                     h.Password("guest");
                 });
-
-                // فعال کردن Scheduler برای Quartz
                 cfg.UseMessageScheduler(new Uri("queue:quartz"));
-
-                // 🔹 در اینجا Outbox در سطح transport فعال می‌شود
-                cfg.UseInMemoryOutbox(context);
-
-                // ثبت خودکار endpointها
                 cfg.ConfigureEndpoints(context);
             });
         });

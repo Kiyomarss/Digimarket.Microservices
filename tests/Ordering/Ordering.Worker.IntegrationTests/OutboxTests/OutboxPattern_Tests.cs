@@ -8,10 +8,6 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
 {
     public class OutboxPattern_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
-        public OutboxPattern_Tests(Fixtures.OrderStateMachineFixture fixture) : base()
-        {
-        }
-
         [Fact]
         public async Task Should_store_and_publish_order_status_changed()
         {
@@ -29,7 +25,7 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
             });
 
             // انتظار برای پردازش پیام و Outbox
-            await Task.Delay(2000);
+            await Task.Delay(10000);
 
             // Assert
             var saga = await GetSagaState(orderId);
