@@ -48,6 +48,9 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
                 .Build();
             _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
+            Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING", $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
+            Environment.SetEnvironmentVariable("RABBITMQ_HOST", $"localhost:{_rabbitMqContainer.GetMappedPublicPort(5672)}");
+            
             // تنظیم ServiceCollection
             var services = new ServiceCollection();
             services.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information));
