@@ -65,8 +65,6 @@ namespace Ordering.Worker.IntegrationTests.Fixtures
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumers(typeof(Consumers.OrderInitiatedConsumer).Assembly);
-                x.AddConsumers(typeof(Consumers.OrderStatusChangedConsumer).Assembly);
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                     .EntityFrameworkRepository(r =>
                     {
