@@ -1,5 +1,4 @@
 using MassTransit;
-using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 
