@@ -9,18 +9,12 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.2"/>
+        <PackageReference Include="MassTransit.Abstractions" Version="8.2.4" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
         <PackageReference Include="xunit" Version="2.9.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"/>
-        <PackageReference Include="Testcontainers.RabbitMq" Version="3.10.0" />
-        <PackageReference Include="Testcontainers.PostgreSql" Version="4.8.1" />
-        <PackageReference Include="FluentAssertions" Version="8.8.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-        <PackageReference Include="MassTransit.Quartz" Version="8.2.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
-        <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.4" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="FluentAssertions" Version="8.8.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,7 +22,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Ordering\Ordering-Worker\Ordering-Worker.csproj" />
+      <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\..\..\src\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
+      <ProjectReference Include="..\..\..\src\Ordering\Ordering-Application\Ordering-Application.csproj" />
+      <ProjectReference Include="..\..\..\src\Ordering\Ordering-Domain\Ordering-Domain.csproj" />
+      <ProjectReference Include="..\..\..\src\Shared\IntegrationEvents\IntegrationEvents.csproj" />
+      <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>
