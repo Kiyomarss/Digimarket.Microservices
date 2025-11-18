@@ -1,78 +1,89 @@
 ﻿// tests/Ordering.Application.IntegrationTests/Fixtures/OrderingIntegrationFixture.cs
 using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 using MassTransit;
-using Testcontainers.PostgreSql; // <--- این using ضروری است
-using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Npgsql;
+using Moq;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Extensions;
 using Ordering.Core.Orders.Commands.CreateOrder;
+using Ordering_Domain.Domain.RepositoryContracts;
+using BuildingBlocks.UnitOfWork;
+using Quartz;
 using Respawn;
+using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Fixtures;
 
 public class OrderingIntegrationFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgresContainer; // <--- نوع درست
-    private Respawner? _respawner;
-    public IServiceProvider Services { get; private set; } = default!;
-    public ITestHarness TestHarness => Services.GetRequiredService<ITestHarness>();
-
-    public string ConnectionString { get; }
+    private readonly IContainer _postgresContainer;
+    private readonly IServiceProvider _serviceProvider;
+    public IServiceProvider Services => _serviceProvider;
+    public IBusControl Bus => _serviceProvider.GetRequiredService<IBusControl>();
+    public OrderingDbContext DbContext => _serviceProvider.GetRequiredService<OrderingDbContext>();
+    public Mock<IOrderRepository> MockOrderRepository { get; } = new();
 
     public OrderingIntegrationFixture()
     {
-        // استفاده از PostgreSqlBuilder مخصوص دیتابیس
-        _postgresContainer = new PostgreSqlBuilder()
-                             .WithImage("postgres:16")
-                             .WithDatabase("OrderingDb")
-                             .WithUsername("postgres")
-                             .WithPassword("123")
-                             .WithPortBinding(5432, true)
-                             .WithWaitStrategy(Wait.ForUnixContainer()
-                                                   .UntilDatabaseIsAvailable(NpgsqlFactory.Instance))
-                             .Build();
+        _postgresContainer = new ContainerBuilder()
+            .WithImage("postgres:16")
+            .WithPortBinding(5432, true)
+            .WithEnvironment("POSTGRES_USER", "postgres")
+            .WithEnvironment("POSTGRES_PASSWORD", "123")
+            .WithEnvironment("POSTGRES_DB", "OrderingDb")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
+            .Build();
 
         _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
-        var mappedPort = _postgresContainer.GetConnectionString(); // این متد خودش ConnectionString کامل رو می‌ده!
-        ConnectionString = mappedPort;
-    }
+        Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING",
+            $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
 
-    public async Task InitializeAsync()
-    {
         var services = new ServiceCollection();
 
         services.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information));
 
-        services.AddDbContext<OrderingDbContext>(options =>
-            options.UseNpgsql(ConnectionString));
+        var connectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;";
+        services.AddDbContext<OrderingDbContext>(options => options.UseNpgsql(connectionString));
 
-        services.AddOrderingInfrastructure(new ConfigurationBuilder().Build());
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
-        services.AddMassTransitTestHarness();
+        services.AddSingleton(MockOrderRepository.Object);
+        services.AddScoped<IUnitOfWork, MockUnitOfWork>();
 
-        Services = services.BuildServiceProvider();
+        services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+            x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(1);
+                o.UsePostgres();
+                o.UseBusOutbox();
+            });
+        });
 
-        using var scope = Services.CreateScope();
+        services.AddQuartz();
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+        _serviceProvider = services.BuildServiceProvider();
+
+        // Migrationها
+        using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
-        await dbContext.Database.MigrateAsync();
-
-        _respawner = await Respawner.CreateAsync(ConnectionString);
+        dbContext.Database.Migrate();
     }
 
-    public async Task ResetDatabaseAsync()
+    // این دو متد را دقیقاً با این نام و امضا داشته باش (public و async)
+    public async Task InitializeAsync()
     {
-        if (_respawner is not null)
-            await _respawner.ResetAsync(ConnectionString);
+        await _serviceProvider.GetRequiredService<IBusControl>().StartAsync();
     }
 
     public async Task DisposeAsync()
     {
+        await _serviceProvider.GetRequiredService<IBusControl>().StopAsync();
         await _postgresContainer.DisposeAsync();
+        await _serviceProvider.DisposeAsync();
     }
 }

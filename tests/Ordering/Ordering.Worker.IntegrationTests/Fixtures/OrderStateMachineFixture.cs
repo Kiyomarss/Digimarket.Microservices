@@ -12,9 +12,8 @@ using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.StateMachines;
 using Ordering_Domain.Domain.RepositoryContracts;
-using Ordering.Worker.IntegrationTests.TestFixtures;
-using Ordering.Worker.StateMachines.Events;
 using Quartz;
+using Shared.TestFixtures;
 
 namespace Ordering.Worker.IntegrationTests.Fixtures
 {

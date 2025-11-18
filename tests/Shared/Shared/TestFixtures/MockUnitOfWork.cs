@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.UnitOfWork;
 
-namespace Ordering.Worker.IntegrationTests.TestFixtures
+namespace Shared.TestFixtures
 {
     public class MockUnitOfWork : IUnitOfWork
     {

@@ -11,4 +11,8 @@
       <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
+    </ItemGroup>
+
 </Project>
