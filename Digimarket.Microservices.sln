@@ -82,7 +82,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker.Integration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.ApiTests", "tests\Ordering\Ordering.ApiTests\Ordering.ApiTests.csproj", "{83C551E1-68A8-4026-AD09-E1240F007178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.IntegrationTests", "tests\Ordering\Ordering.IntegrationTests\Ordering.IntegrationTests.csproj", "{34DB3002-831C-4973-8587-D3F2CF6C1A82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Application.IntegrationTests", "tests\Ordering\Ordering.Application.IntegrationTests\Ordering.Application.IntegrationTests.csproj", "{34DB3002-831C-4973-8587-D3F2CF6C1A82}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.UnitTests", "tests\Ordering\Ordering.UnitTests\Ordering.UnitTests.csproj", "{C19383F3-3F8A-4830-9FB9-28410BD2C467}"
 EndProject

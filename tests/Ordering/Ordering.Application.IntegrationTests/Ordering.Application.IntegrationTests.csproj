@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <RootNamespace>Ordering.Application.IntegrationTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,7 @@
         <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.4" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="Respawn" Version="6.2.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,12 +37,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\" />
-      <Folder Include="Utilities\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\src\Ordering\Ordering-Infrastructure\Ordering-Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
