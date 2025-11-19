@@ -20,7 +20,7 @@ namespace Ordering.Application.IntegrationTests.Fixtures;
 public class OrderingIntegrationFixture : IAsyncLifetime
 {
     private readonly IContainer _postgresContainer;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ServiceProvider _serviceProvider;
     public IServiceProvider Services => _serviceProvider;
     public IBusControl Bus => _serviceProvider.GetRequiredService<IBusControl>();
     public OrderingDbContext DbContext => _serviceProvider.GetRequiredService<OrderingDbContext>();
@@ -54,7 +54,6 @@ public class OrderingIntegrationFixture : IAsyncLifetime
 
         services.AddMassTransit(x =>
         {
-            x.SetKebabCaseEndpointNameFormatter();
             x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
             {
                 o.QueryDelay = TimeSpan.FromSeconds(1);
@@ -62,10 +61,7 @@ public class OrderingIntegrationFixture : IAsyncLifetime
                 o.UseBusOutbox();
             });
         });
-
-        services.AddQuartz();
-        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
+        
         _serviceProvider = services.BuildServiceProvider();
 
         // Migrationها
