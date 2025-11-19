@@ -1,4 +1,6 @@
 ﻿// tests/Ordering.Application.IntegrationTests/Fixtures/OrderingIntegrationFixture.cs
+
+using BuildingBlocks.Extensions;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
@@ -52,6 +54,8 @@ public class OrderingIntegrationFixture : IAsyncLifetime
         services.AddSingleton(MockOrderRepository.Object);
         services.AddScoped<IUnitOfWork, MockUnitOfWork>();
 
+        services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
+        
         services.AddMassTransit(x =>
         {
             x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
@@ -59,6 +63,13 @@ public class OrderingIntegrationFixture : IAsyncLifetime
                 o.QueryDelay = TimeSpan.FromSeconds(1);
                 o.UsePostgres();
                 o.UseBusOutbox();
+            });
+            
+            x.AddMassTransitTestHarness();
+
+            x.UsingInMemory((context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
             });
         });
         
