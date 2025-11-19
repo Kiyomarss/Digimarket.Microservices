@@ -13,6 +13,8 @@ using Ordering_Infrastructure.Extensions;
 using Ordering.Core.Orders.Commands.CreateOrder;
 using Ordering_Domain.Domain.RepositoryContracts;
 using BuildingBlocks.UnitOfWork;
+using Ordering.Core.Services;
+using ProductGrpc;
 using Quartz;
 using Respawn;
 using Shared.TestFixtures;
@@ -54,6 +56,10 @@ public class OrderingIntegrationFixture : IAsyncLifetime
         services.AddSingleton(MockOrderRepository.Object);
         services.AddScoped<IUnitOfWork, MockUnitOfWork>();
 
+        var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
+
+        services.AddScoped<IProductService>(sp => productServiceMock);
+        
         services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
         
         services.AddMassTransit(x =>

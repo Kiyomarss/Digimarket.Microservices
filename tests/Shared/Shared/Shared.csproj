@@ -8,11 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Grpc.Core.Api" Version="2.49.0" />
+        <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="Grpc.Core.Api" Version="2.71.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\..\..\src\Ordering\Ordering-Application\Ordering-Application.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Extensions;
 using Ordering_Infrastructure.Extensions;
 using Ordering.Core.Orders.Commands.CreateOrder;
+using Ordering.Core.Services;
 using ProductGrpc;
 
 namespace Ordering.Api.StartupExtensions;
@@ -20,7 +21,8 @@ public static class ConfigureServicesExtension
         // gRPC Client برای Product
         services.AddGrpcClientWithConfig<ProductProtoService.ProductProtoServiceClient>(
                                                                                         configuration, "GrpcSettings:CatalogUrl");
-
+        services.AddScoped<IProductService, ProductGrpcService>();
+        
         return services;
     }
 }

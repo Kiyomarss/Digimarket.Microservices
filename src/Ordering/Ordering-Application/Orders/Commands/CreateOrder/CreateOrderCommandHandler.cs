@@ -3,6 +3,7 @@ using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
+using Ordering.Core.Services;
 using ProductGrpc;
 using Shared.IntegrationEvents.Ordering;
 
@@ -12,19 +13,19 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IPublishEndpoint _publishEndpoint;
-    private readonly ProductProtoService.ProductProtoServiceClient _productClient;
     private readonly IUnitOfWork _unitOfWork;
-
+    private readonly IProductService _productService;
+    
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
-        ProductProtoService.ProductProtoServiceClient productClient,
         IPublishEndpoint publishEndpoint,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IProductService productService)
     {
         _orderRepository = orderRepository;
-        _productClient = productClient;
         _publishEndpoint = publishEndpoint;
         _unitOfWork = unitOfWork;
+        _productService = productService;
     }
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -53,9 +54,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
     private async Task<GetProductsResponse> FetchProductsAsync(List<string> productIds, CancellationToken ct)
     {
-        var response = await _productClient.GetProductsByIdsAsync(
-            new GetProductsRequest { ProductIds = { productIds } },
-            cancellationToken: ct);
+        var response = await _productService.GetProductsByIdsAsync(productIds, ct);
 
         if (response == null || response.Products.Count == 0)
             throw new InvalidOperationException("Products not found in gRPC service.");
