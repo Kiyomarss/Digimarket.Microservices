@@ -13,6 +13,8 @@ using Ordering_Infrastructure.Extensions;
 using Ordering.Core.Orders.Commands.CreateOrder;
 using Ordering_Domain.Domain.RepositoryContracts;
 using BuildingBlocks.UnitOfWork;
+using Ordering_Infrastructure.Data.Persistence;
+using Ordering_Infrastructure.Repositories;
 using Ordering.Core.Services;
 using ProductGrpc;
 using Quartz;
@@ -53,8 +55,9 @@ public class OrderingIntegrationFixture : IAsyncLifetime
         var connectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;";
         services.AddDbContext<OrderingDbContext>(options => options.UseNpgsql(connectionString));
 
-        services.AddSingleton(MockOrderRepository.Object);
-        services.AddScoped<IUnitOfWork, MockUnitOfWork>();
+        //services.AddSingleton(MockOrderRepository.Object);
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
 
@@ -64,14 +67,14 @@ public class OrderingIntegrationFixture : IAsyncLifetime
         
         services.AddMassTransit(x =>
         {
+            x.AddMassTransitTestHarness();
+            
             x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
             {
                 o.QueryDelay = TimeSpan.FromSeconds(1);
                 o.UsePostgres();
                 o.UseBusOutbox();
             });
-            
-            x.AddMassTransitTestHarness();
 
             x.UsingInMemory((context, cfg) =>
             {

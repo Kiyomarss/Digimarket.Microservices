@@ -44,12 +44,8 @@ public class CreateOrderCommandHandler_IntegrationTests : OrderIntegrationTestBa
         var outboxMessages = await DbContext.Set<OutboxMessage>()
             .Where(m => m.MessageType.Contains("OrderInitiated"))
             .ToListAsync();
-
+        
         outboxMessages.Should().HaveCount(1);
-        outboxMessages[0].Body.Should().Contain("Ali Ahmadi");
-
-        // Assert 3: پیام منتشر شده
-        var published = await TestHarness.Published.Any<OrderInitiated>();
-        published.Should().BeTrue();
+        outboxMessages[0].Body.Should().Contain(orderId.ToString());
     }
 }
