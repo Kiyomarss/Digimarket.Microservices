@@ -1,25 +1,25 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
-
 using DotNet.Testcontainers.Builders;
-using Microsoft.AspNetCore.Hosting;
+using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Ordering_Infrastructure.Data.DbContext;
 using Respawn;
 using Testcontainers.PostgreSql;
+using Xunit;
 
-namespace Ordering.Application.IntegrationTests.Fixtures;
+namespace Ordering.Api.IntegrationTests.Fixtures;
 
-public class OrderingIntegrationFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
         .WithImage("postgres:16")
         .WithDatabase("OrderingDb")
         .WithUsername("postgres")
         .WithPassword("123")
-        .WithPortBinding(5432, true) // پورت رندم روی هاست
+        .WithPortBinding(5432, true) // پورت رندم روی هاست — بدون تداخل با لوکال
         .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready -U postgres"))
         .Build();
 
@@ -27,24 +27,25 @@ public class OrderingIntegrationFixture : WebApplicationFactory<Program>, IAsync
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("IntegrationTest");
+        builder.UseEnvironment("IntegrationTest"); // محیط تست
 
-        // مهم: فقط بعد از StartAsync کانتینر می‌تونیم ConnectionString بگیریم
         builder.ConfigureServices(services =>
         {
-            // حذف DbContext قبلی (که از appsettings می‌گیره)
+            // جایگزینی DbContext با کانتینر واقعی
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<OrderingDbContext>));
             if (descriptor != null) services.Remove(descriptor);
 
-            // استفاده از ConnectionString واقعی کانتینر
             services.AddDbContext<OrderingDbContext>(options =>
                 options.UseNpgsql(_postgresContainer.GetConnectionString()));
+
+            // اگر می‌خوای gRPC Client خارجی (Catalog) رو Mock کنی، اینجا انجام بده
+            // services.Remove(services.SingleOrDefault(s => s.ServiceType == typeof(IProductService)));
+            // services.AddScoped<IProductService, MockProductService>();
         });
     }
 
     public async Task InitializeAsync()
     {
-        // استارت کانتینر — این خط حیاتی است!
         await _postgresContainer.StartAsync();
 
         // اعمال Migrationها
@@ -52,7 +53,7 @@ public class OrderingIntegrationFixture : WebApplicationFactory<Program>, IAsync
         var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
         await dbContext.Database.MigrateAsync();
 
-        // Respawn برای Reset دیتابیس بین تست‌ها
+        // آماده‌سازی Respawn برای Reset دیتابیس بین تست‌ها
         _respawner = await Respawner.CreateAsync(_postgresContainer.GetConnectionString());
     }
 
