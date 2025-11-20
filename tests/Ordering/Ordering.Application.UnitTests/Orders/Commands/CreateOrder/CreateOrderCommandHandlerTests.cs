@@ -8,6 +8,7 @@ using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering.Core.Orders.Commands.CreateOrder;
 using ProductGrpc;
 using Grpc.Core;
+using Ordering.Core.Services;
 using Shared;
 using Shared.Grpc; // این using حتماً اضافه شود!
 
@@ -17,14 +18,16 @@ public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IOrderRepository> _orderRepositoryMock;
     private readonly Mock<IPublishEndpoint> _publishEndpointMock;
+    private readonly Mock<IProductService> _productService;
+
     private readonly Mock<ProductProtoService.ProductProtoServiceClient> _productClientMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
     public CreateOrderCommandHandlerTests()
     {
+        _productService = new Mock<IProductService>();
         _orderRepositoryMock = new Mock<IOrderRepository>();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
-        _productClientMock = new Mock<ProductProtoService.ProductProtoServiceClient>(MockBehavior.Loose);
         _unitOfWorkMock = new Mock<IUnitOfWork>();
     }
 
@@ -55,9 +58,9 @@ public class CreateOrderCommandHandlerTests
 
         var handler = new CreateOrderCommandHandler(
             _orderRepositoryMock.Object,
-            _productClientMock.Object,
             _publishEndpointMock.Object,
-            _unitOfWorkMock.Object);
+            _unitOfWorkMock.Object,
+            _productService.Object);
 
         var command = new CreateOrderCommand
         {
@@ -108,9 +111,9 @@ public class CreateOrderCommandHandlerTests
 
         var handler = new CreateOrderCommandHandler(
             _orderRepositoryMock.Object,
-            _productClientMock.Object,
             _publishEndpointMock.Object,
-            _unitOfWorkMock.Object);
+            _unitOfWorkMock.Object,
+            _productService.Object);
 
         var command = new CreateOrderCommand
         {
