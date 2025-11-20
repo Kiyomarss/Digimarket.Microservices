@@ -1,70 +1,105 @@
-﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
+﻿// tests/Ordering.Application.IntegrationTests/Fixtures/OrderingIntegrationFixture.cs
 
+using BuildingBlocks.Extensions;
 using DotNet.Testcontainers.Builders;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
+using DotNet.Testcontainers.Containers;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering_Infrastructure.Extensions;
+using Ordering.Core.Orders.Commands.CreateOrder;
+using Ordering_Domain.Domain.RepositoryContracts;
+using BuildingBlocks.UnitOfWork;
+using Ordering_Infrastructure.Data.Persistence;
+using Ordering_Infrastructure.Repositories;
+using Ordering.Core.Services;
+using ProductGrpc;
+using Quartz;
 using Respawn;
-using Testcontainers.PostgreSql;
+using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Fixtures;
 
-public class OrderingIntegrationFixture : WebApplicationFactory<Program>, IAsyncLifetime
+public class OrderingIntegrationFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:16")
-        .WithDatabase("OrderingDb")
-        .WithUsername("postgres")
-        .WithPassword("123")
-        .WithPortBinding(5432, true) // پورت رندم روی هاست
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready -U postgres"))
-        .Build();
+    private readonly IContainer _postgresContainer;
+    private readonly ServiceProvider _serviceProvider;
+    public IServiceProvider Services => _serviceProvider;
+    public IBusControl Bus => _serviceProvider.GetRequiredService<IBusControl>();
+    public OrderingDbContext DbContext => _serviceProvider.GetRequiredService<OrderingDbContext>();
+    public Mock<IOrderRepository> MockOrderRepository { get; } = new();
 
-    private Respawner? _respawner;
-
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    public OrderingIntegrationFixture()
     {
-        builder.UseEnvironment("IntegrationTest");
+        _postgresContainer = new ContainerBuilder()
+            .WithImage("postgres:16")
+            .WithPortBinding(5432, true)
+            .WithEnvironment("POSTGRES_USER", "postgres")
+            .WithEnvironment("POSTGRES_PASSWORD", "123")
+            .WithEnvironment("POSTGRES_DB", "OrderingDb")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
+            .Build();
 
-        // مهم: فقط بعد از StartAsync کانتینر می‌تونیم ConnectionString بگیریم
-        builder.ConfigureServices(services =>
+        _postgresContainer.StartAsync().GetAwaiter().GetResult();
+
+        Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING",
+            $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
+
+        var services = new ServiceCollection();
+
+        services.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information));
+
+        var connectionString = $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;";
+        services.AddDbContext<OrderingDbContext>(options => options.UseNpgsql(connectionString));
+
+        //services.AddSingleton(MockOrderRepository.Object);
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
+
+        services.AddScoped<IProductService>(sp => productServiceMock);
+        
+        services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
+        
+        services.AddMassTransit(x =>
         {
-            // حذف DbContext قبلی (که از appsettings می‌گیره)
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<OrderingDbContext>));
-            if (descriptor != null) services.Remove(descriptor);
+            x.AddMassTransitTestHarness();
+            
+            x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(1);
+                o.UsePostgres();
+                o.UseBusOutbox();
+            });
 
-            // استفاده از ConnectionString واقعی کانتینر
-            services.AddDbContext<OrderingDbContext>(options =>
-                options.UseNpgsql(_postgresContainer.GetConnectionString()));
+            x.UsingInMemory((context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+            });
         });
+        
+        _serviceProvider = services.BuildServiceProvider();
+
+        // Migrationها
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        dbContext.Database.Migrate();
     }
 
+    // این دو متد را دقیقاً با این نام و امضا داشته باش (public و async)
     public async Task InitializeAsync()
     {
-        // استارت کانتینر — این خط حیاتی است!
-        await _postgresContainer.StartAsync();
-
-        // اعمال Migrationها
-        using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
-        await dbContext.Database.MigrateAsync();
-
-        // Respawn برای Reset دیتابیس بین تست‌ها
-        _respawner = await Respawner.CreateAsync(_postgresContainer.GetConnectionString());
+        await _serviceProvider.GetRequiredService<IBusControl>().StartAsync();
     }
 
-    public async Task ResetDatabaseAsync()
+    public async Task DisposeAsync()
     {
-        if (_respawner is not null)
-            await _respawner.ResetAsync(_postgresContainer.GetConnectionString());
-    }
-
-    public new async Task DisposeAsync()
-    {
+        await _serviceProvider.GetRequiredService<IBusControl>().StopAsync();
         await _postgresContainer.DisposeAsync();
-        await base.DisposeAsync();
+        await _serviceProvider.DisposeAsync();
     }
 }
