@@ -3,14 +3,11 @@ using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Core.Orders.Commands.CreateOrder;
-using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Application.IntegrationTests.TestBase;
 using Shared;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Application.IntegrationTests.Orders.Commands.CreateOrder;
 
-public class CreateOrderCommandHandler_IntegrationTests : OrderIntegrationTestBase
+public class CreateOrderCommandHandler_IntegrationTests : OrderingAppTestBase
 {
     [Fact]
     public async Task Handle_Should_PersistOrder_And_Save_OutboxMessage()

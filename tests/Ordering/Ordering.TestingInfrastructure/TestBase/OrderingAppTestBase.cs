@@ -1,29 +1,26 @@
-﻿// tests/Ordering.Application.IntegrationTests/TestBase/OrderIntegrationTestBase.cs
-using FluentAssertions;
+﻿using MassTransit;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Application.IntegrationTests.Fixtures;
+using Ordering.TestingInfrastructure.Fixtures;
 using Xunit;
 
-namespace Ordering.Application.IntegrationTests.TestBase;
-
-[Collection("Integration")]
-public abstract class OrderIntegrationTestBase : IClassFixture<OrderingIntegrationFixture>, IAsyncLifetime
+[Collection("ApiIntegration")]
+public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, IAsyncLifetime
 {
-    protected readonly OrderingIntegrationFixture Fixture;
+    protected readonly OrderingAppFactory Fixture;
     protected readonly ISender Sender;
     protected readonly OrderingDbContext DbContext;
-    protected readonly ITestHarness TestHarness;
+    protected readonly IBusControl Bus;
 
-    protected OrderIntegrationTestBase()
+    protected OrderingAppTestBase()
     {
-        Fixture = new OrderingIntegrationFixture();
+        Fixture = new OrderingAppFactory();
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
-        TestHarness = Fixture.Services.GetRequiredService<ITestHarness>();
+        Bus = Fixture.Services.GetRequiredService<IBusControl>();
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
