@@ -1,32 +1,21 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
-
-using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
-using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using Grpc.Net.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Moq;
-using OrderGrpc;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Data.Persistence;
-using Ordering_Infrastructure.Extensions;
 using Ordering_Infrastructure.Repositories;
-using Ordering.Core.Orders.Commands.CreateOrder;
 using Ordering.Core.Services;
 using ProductGrpc;
-using Quartz;
-using Respawn;
 using Shared;
 using Shared.TestFixtures;
-using Testcontainers.PostgreSql;
 
 namespace Ordering.Api.IntegrationTests.Fixtures;
 
@@ -52,11 +41,9 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // Make ASPNETCORE_ENVIRONMENT available early (keeps behavior consistent)
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "IntegrationTest");
 
-        // Set connection strings environment so ConfigureWebHost can read them
-        Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING",
-            $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
-        Environment.SetEnvironmentVariable("RABBITMQ_HOST",
-            $"localhost:{_rabbitMqContainer.GetMappedPublicPort(5672)}");
+        TestEnvironmentHelper.SetPostgresConnectionString(_postgresContainer);
+        TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
+
 
         // Force creation of the host now so Services is available to tests immediately.
         // CreateDefaultClient triggers the host to build and run (in-memory test server).
@@ -64,10 +51,8 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // (This will call ConfigureWebHost below.)
         _ = this.CreateDefaultClient();
         
-        // After the host is built, run migrations once
-        using var scope = Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
-        db.Database.Migrate();
+        DatabaseHelper.ApplyMigrations<OrderingDbContext>(Services);
+
     }
 
     // Override ConfigureWebHost to register/override services inside the factory's host
