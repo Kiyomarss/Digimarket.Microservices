@@ -12,7 +12,6 @@ public abstract class OrderApiTestBase : IClassFixture<OrderingApiFactory>, IAsy
     protected readonly OrderingApiFactory Fixture;
     protected readonly ISender Sender;
     protected readonly OrderingDbContext DbContext;
-    protected readonly ITestHarness TestHarness;
     protected readonly IBusControl Bus;
 
     protected OrderApiTestBase()
@@ -20,7 +19,6 @@ public abstract class OrderApiTestBase : IClassFixture<OrderingApiFactory>, IAsy
         Fixture = new OrderingApiFactory();
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
-        TestHarness = Fixture.Services.GetRequiredService<ITestHarness>();
         Bus = Fixture.Services.GetRequiredService<IBusControl>();
     }
 
