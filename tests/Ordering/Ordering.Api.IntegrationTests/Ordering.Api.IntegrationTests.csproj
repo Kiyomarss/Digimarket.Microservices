@@ -15,14 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Respawn" Version="6.2.1" />
-        <PackageReference Include="xunit.extensibility.core" Version="2.9.2" />
-        <PackageReference Include="FluentAssertions" Version="8.8.0" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\..\src\Ordering\Ordering-Api\Ordering-Api.csproj" />
         <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
+        <ProjectReference Include="..\Ordering.TestingInfrastructure\Ordering.TestingInfrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,19 +4,20 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Api.IntegrationTests.Fixtures;
+using Ordering.TestingInfrastructure.Fixtures;
+using Xunit;
 
 [Collection("ApiIntegration")]
-public abstract class OrderApiTestBase : IClassFixture<OrderingApiFactory>, IAsyncLifetime
+public abstract class OrderApiTestBase : IClassFixture<OrderingAppFactory>, IAsyncLifetime
 {
-    protected readonly OrderingApiFactory Fixture;
+    protected readonly OrderingAppFactory Fixture;
     protected readonly ISender Sender;
     protected readonly OrderingDbContext DbContext;
     protected readonly IBusControl Bus;
 
     protected OrderApiTestBase()
     {
-        Fixture = new OrderingApiFactory();
+        Fixture = new OrderingAppFactory();
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
         Bus = Fixture.Services.GetRequiredService<IBusControl>();

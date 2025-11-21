@@ -2,13 +2,9 @@
 using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Api.IntegrationTests.Fixtures;
 using OrderGrpc;
 using Shared;
 using Shared.Grpc;
-using Xunit;
 
 namespace Ordering.Api.IntegrationTests.Grpc;
 

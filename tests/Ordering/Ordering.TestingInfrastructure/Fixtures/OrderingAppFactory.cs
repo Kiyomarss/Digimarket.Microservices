@@ -1,4 +1,5 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
+
 using BuildingBlocks.UnitOfWork;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
@@ -16,10 +17,11 @@ using Ordering.Core.Services;
 using ProductGrpc;
 using Shared;
 using Shared.TestFixtures;
+using Xunit;
 
-namespace Ordering.Api.IntegrationTests.Fixtures;
+namespace Ordering.TestingInfrastructure.Fixtures;
 
-public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IContainer _rabbitMqContainer;
     private readonly IContainer _postgresContainer;
@@ -30,7 +32,7 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     public OrderingDbContext DbContext => Services.CreateScope().ServiceProvider.GetRequiredService<OrderingDbContext>();
     public Mock<IOrderRepository> MockOrderRepository { get; } = new();
 
-    public OrderingApiFactory()
+    public OrderingAppFactory()
     {
         _rabbitMqContainer = TestContainerFactory.CreateRabbitMqContainer();
         _rabbitMqContainer.StartAsync().GetAwaiter().GetResult();
@@ -48,10 +50,9 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // CreateDefaultClient triggers the host to build and run (in-memory test server).
         // We don't keep the HttpClient here — we just ensure host creation now.
         // (This will call ConfigureWebHost below.)
-        _ = this.CreateDefaultClient();
+        _ = CreateDefaultClient();
         
         DatabaseHelper.ApplyMigrations<OrderingDbContext>(Services);
-
     }
 
     // Override ConfigureWebHost to register/override services inside the factory's host

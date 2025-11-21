@@ -13,6 +13,8 @@ using Ordering_Infrastructure.Extensions;
 using Ordering.Core.Orders.Commands.CreateOrder;
 using Ordering_Domain.Domain.RepositoryContracts;
 using BuildingBlocks.UnitOfWork;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Ordering_Infrastructure.Data.Persistence;
 using Ordering_Infrastructure.Repositories;
 using Ordering.Core.Services;
@@ -23,7 +25,7 @@ using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Fixtures;
 
-public class OrderingIntegrationFixture : IAsyncLifetime
+public class OrderingIntegrationFixture : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IContainer _postgresContainer;
     private readonly ServiceProvider _serviceProvider;
