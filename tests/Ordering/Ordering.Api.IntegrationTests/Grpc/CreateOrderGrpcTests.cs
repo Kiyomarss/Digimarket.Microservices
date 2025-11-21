@@ -19,8 +19,8 @@ public class CreateOrderGrpcTests : OrderApiTestBase
     {
         await CleanupDatabase();
 
-        // تنها روش کارکردی در .NET 9
-        var client = Fixture.Services.GetRequiredService<OrderProtoService.OrderProtoServiceClient>();
+        var grpcClient = new OrderProtoService.OrderProtoServiceClient(
+                                                                       Fixture.CreateGrpcChannel());
 
         var request = new CreateOrderRequest
         {
@@ -32,7 +32,7 @@ public class CreateOrderGrpcTests : OrderApiTestBase
             }
         };
 
-        var response = await client.CreateOrderAsync(request);
+        var response = await grpcClient.CreateOrderAsync(request);
 
         response.OrderId.Should().NotBeEmpty();
         var orderId = Guid.Parse(response.OrderId);

@@ -4,6 +4,7 @@ using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using Grpc.Net.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +27,7 @@ using Testcontainers.PostgreSql;
 
 namespace Ordering.Api.IntegrationTests.Fixtures;
 
-public class OrderingApiFactory : IAsyncLifetime
+public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IContainer _rabbitMqContainer;
     private readonly IContainer _postgresContainer;
@@ -60,6 +61,8 @@ public class OrderingApiFactory : IAsyncLifetime
 
         _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "IntegrationTest");
+        
         Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING", $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
         Environment.SetEnvironmentVariable("RABBITMQ_HOST", $"localhost:{_rabbitMqContainer.GetMappedPublicPort(5672)}");
 
@@ -81,7 +84,7 @@ public class OrderingApiFactory : IAsyncLifetime
         
         services.AddGrpcClient<OrderProtoService.OrderProtoServiceClient>(o =>
         {
-            o.Address = new Uri("http://localhost");
+            o.Address = new Uri("https://localhost");
         });
         
         services.AddMassTransit(x =>
@@ -118,6 +121,14 @@ public class OrderingApiFactory : IAsyncLifetime
     public async Task StartAsync()
     {
         await Bus.StartAsync();
+    }
+    
+    public GrpcChannel CreateGrpcChannel()
+    {
+        return GrpcChannel.ForAddress(Server.BaseAddress, new GrpcChannelOptions
+        {
+            HttpClient = this.CreateDefaultClient()
+        });
     }
 
     public async Task DisposeAsync()
