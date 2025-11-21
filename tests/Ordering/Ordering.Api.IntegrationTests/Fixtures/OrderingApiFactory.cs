@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using OrderGrpc;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Data.Persistence;
@@ -78,6 +79,11 @@ public class OrderingApiFactory : IAsyncLifetime
         
         services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
         
+        services.AddGrpcClient<OrderProtoService.OrderProtoServiceClient>(o =>
+        {
+            o.Address = new Uri("http://localhost");
+        });
+        
         services.AddMassTransit(x =>
         {
             x.AddMassTransitTestHarness();
@@ -92,19 +98,15 @@ public class OrderingApiFactory : IAsyncLifetime
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host($"amqp://guest:guest@localhost:{_rabbitMqContainer.GetMappedPublicPort(5672)}");
-                cfg.UseMessageScheduler(new Uri("queue:quartz"));
-                cfg.ConfigureEndpoints(context);
-            });
-
-            x.UsingInMemory((context, cfg) =>
-            {
                 cfg.ConfigureEndpoints(context);
             });
         });
-        
+
         _serviceProvider = services.BuildServiceProvider();
-        _serviceProvider = services.BuildServiceProvider();
-        DbContext.Database.Migrate();
+
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        dbContext.Database.Migrate();
     }
 
     // این دو متد را دقیقاً با این نام و امضا داشته باش (public و async)

@@ -6,9 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.IntegrationTests.Fixtures;
 
-namespace Ordering.Api.IntegrationTests.TestBase;
-
-[Collection("Integration")]
+[Collection("ApiIntegration")]
 public abstract class OrderApiTestBase : IClassFixture<OrderingApiFactory>, IAsyncLifetime
 {
     protected readonly OrderingApiFactory Fixture;
@@ -20,21 +18,15 @@ public abstract class OrderApiTestBase : IClassFixture<OrderingApiFactory>, IAsy
     protected OrderApiTestBase()
     {
         Fixture = new OrderingApiFactory();
-        Bus = Fixture.Bus;
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
         TestHarness = Fixture.Services.GetRequiredService<ITestHarness>();
+        Bus = Fixture.Services.GetRequiredService<IBusControl>();
     }
 
-    public async Task InitializeAsync()
-    {
-        await Fixture.StartAsync();
-    }    
-    
-    public async Task DisposeAsync()
-    {
-        await Fixture.DisposeAsync();
-    }
+    public Task InitializeAsync() => Task.CompletedTask;
+    public Task DisposeAsync() => Task.CompletedTask;
+
     protected async Task CleanupDatabase()
     {
         await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"orders\", \"order_items\" RESTART IDENTITY CASCADE");

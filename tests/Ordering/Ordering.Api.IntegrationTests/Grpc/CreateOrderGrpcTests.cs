@@ -1,6 +1,5 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Grpc/CreateOrderGrpcTests.cs
 using FluentAssertions;
-using Grpc.Net.Client;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,53 +12,40 @@ using Xunit;
 namespace Ordering.Api.IntegrationTests.Grpc;
 
 [Collection("ApiIntegration")]
-public class CreateOrderGrpcTests : IClassFixture<OrderingApiFactory>
+public class CreateOrderGrpcTests : OrderApiTestBase
 {
-    private readonly OrderingApiFactory _factory;
-
-    public CreateOrderGrpcTests(OrderingApiFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
-    public async Task CreateOrder_Should_Succeed_And_StoreInOutbox()
+    public async Task CreateOrder_ViaGrpc_Should_CreateOrder_And_StoreInOutbox()
     {
         await CleanupDatabase();
 
-        var httpClient = _factory.CreateClient();
-        var channel = GrpcChannel.ForAddress("http://localhost", new GrpcChannelOptions
-        {
-            HttpClient = httpClient
-        });
-
-        var client = new OrderProtoService.OrderProtoServiceClient(channel);
+        // تنها روش کارکردی در .NET 9
+        var client = Fixture.Services.GetRequiredService<OrderProtoService.OrderProtoServiceClient>();
 
         var request = new CreateOrderRequest
         {
             Customer = "Ali Ahmadi",
             Items =
             {
-                new OrderItemDto() { ProductId = TestGuids.Guid1, Quantity = 2 }
+                new OrderItemDto { ProductId = TestGuids.Guid1, Quantity = 2 },
+                new OrderItemDto { ProductId = TestGuids.Guid2, Quantity = 1 }
             }
         };
 
-        // Act
         var response = await client.CreateOrderAsync(request);
 
-        // Assert
         response.OrderId.Should().NotBeEmpty();
+        var orderId = Guid.Parse(response.OrderId);
 
-        using var scope = _factory.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
-
-        var order = await dbContext.Orders
+        var order = await DbContext.Orders
                                    .Include(o => o.Items)
-                                   .FirstOrDefaultAsync(o => o.Id == Guid.Parse(response.OrderId));
+                                   .FirstOrDefaultAsync(o => o.Id == orderId);
 
         order.Should().NotBeNull();
+        order!.Customer.Should().Be("Ali Ahmadi");
+        order.Items.Should().HaveCount(2);
 
-        var outboxMessages = await dbContext.Set<OutboxMessage>()
+        var outboxMessages = await DbContext.Set<OutboxMessage>()
                                             .Where(m => m.MessageType.Contains("OrderInitiated"))
                                             .ToListAsync();
 
