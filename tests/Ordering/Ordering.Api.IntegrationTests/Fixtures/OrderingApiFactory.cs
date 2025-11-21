@@ -44,7 +44,6 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         TestEnvironmentHelper.SetPostgresConnectionString(_postgresContainer);
         TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
 
-
         // Force creation of the host now so Services is available to tests immediately.
         // CreateDefaultClient triggers the host to build and run (in-memory test server).
         // We don't keep the HttpClient here — we just ensure host creation now.
