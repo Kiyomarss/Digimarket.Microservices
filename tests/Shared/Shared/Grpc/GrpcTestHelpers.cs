@@ -1,4 +1,6 @@
 ﻿using Grpc.Core;
+using Grpc.Net.Client;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Shared.Grpc;
 
@@ -23,5 +25,14 @@ public static class GrpcTestHelpers
                                              () => status,
                                              () => new Metadata(),
                                              () => { });
+    }
+    
+    public static GrpcChannel CreateGrpcChannel<TFactory>(this WebApplicationFactory<TFactory> factory)
+        where TFactory : class
+    {
+        return GrpcChannel.ForAddress(factory.Server.BaseAddress, new GrpcChannelOptions
+        {
+            HttpClient = factory.CreateDefaultClient()
+        });
     }
 }

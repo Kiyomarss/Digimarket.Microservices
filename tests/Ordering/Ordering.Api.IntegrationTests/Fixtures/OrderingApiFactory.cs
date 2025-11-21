@@ -24,6 +24,7 @@ using Ordering.Core.Services;
 using ProductGrpc;
 using Quartz;
 using Respawn;
+using Shared;
 using Shared.TestFixtures;
 using Testcontainers.PostgreSql;
 
@@ -103,15 +104,12 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.RemoveAll<IUnitOfWork>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // ----- MediatR registration (same handler type as original) -----
-            services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));
-
+            
             // ----- Replace real Product gRPC client/service with a mock IProductService -----
             services.RemoveAll<ProductProtoService.ProductProtoServiceClient>();
             services.RemoveAll<IProductService>();
             var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
-            services.AddSingleton<IProductService>(productServiceMock);
+            services.AddSingleton(productServiceMock);
         });
     }
 
@@ -127,15 +125,6 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         var bus = Services.GetRequiredService<IBusControl>();
         await bus.StartAsync();
-    }
-
-    // helper to create a GrpcChannel that targets the in-memory test server
-    public GrpcChannel CreateGrpcChannel()
-    {
-        return GrpcChannel.ForAddress(Server.BaseAddress, new GrpcChannelOptions
-        {
-            HttpClient = this.CreateDefaultClient()
-        });
     }
 
     // Dispose: stop bus and containers — DO NOT attempt to resolve services after disposal.
@@ -162,24 +151,5 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
         // Dispose the factory host (base) so it cleans up server and services properly
         await base.DisposeAsync();
-    }
-
-    // helper to safely detect registration
-}
-
-// Extension helper (put below class or in a test utilities file)
-static class ServiceProviderExtensions
-{
-    public static bool IsServiceRegistered<T>(this IServiceProvider services)
-    {
-        try
-        {
-            var s = services.GetService(typeof(T));
-            return s != null;
-        }
-        catch
-        {
-            return false;
-        }
     }
 }

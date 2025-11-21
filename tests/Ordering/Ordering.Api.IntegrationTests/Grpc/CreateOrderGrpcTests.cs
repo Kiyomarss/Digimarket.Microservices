@@ -7,6 +7,7 @@ using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.IntegrationTests.Fixtures;
 using OrderGrpc;
 using Shared;
+using Shared.Grpc;
 using Xunit;
 
 namespace Ordering.Api.IntegrationTests.Grpc;
@@ -19,8 +20,7 @@ public class CreateOrderGrpcTests : OrderApiTestBase
     {
         await CleanupDatabase();
 
-        var grpcClient = new OrderProtoService.OrderProtoServiceClient(
-                                                                       Fixture.CreateGrpcChannel());
+        var grpcClient = new OrderProtoService.OrderProtoServiceClient(Fixture.CreateGrpcChannel());
 
         var request = new CreateOrderRequest
         {
