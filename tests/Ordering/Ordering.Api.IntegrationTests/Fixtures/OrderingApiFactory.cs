@@ -43,25 +43,10 @@ public class OrderingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public OrderingApiFactory()
     {
-        // Start containers first (as in your original)
-        _rabbitMqContainer = new ContainerBuilder()
-            .WithImage("rabbitmq:3-management")
-            .WithPortBinding(5672, true)
-            .WithPortBinding(15672, true)
-            .WithEnvironment("RABBITMQ_DEFAULT_USER", "guest")
-            .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5672))
-            .Build();
+        _rabbitMqContainer = TestContainerFactory.CreateRabbitMqContainer();
         _rabbitMqContainer.StartAsync().GetAwaiter().GetResult();
 
-        _postgresContainer = new ContainerBuilder()
-            .WithImage("postgres:16")
-            .WithPortBinding(5432, true)
-            .WithEnvironment("POSTGRES_USER", "postgres")
-            .WithEnvironment("POSTGRES_PASSWORD", "123")
-            .WithEnvironment("POSTGRES_DB", "OrderingDb")
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
-            .Build();
+        _postgresContainer = TestContainerFactory.CreatePostgresContainer();
         _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
         // Make ASPNETCORE_ENVIRONMENT available early (keeps behavior consistent)
