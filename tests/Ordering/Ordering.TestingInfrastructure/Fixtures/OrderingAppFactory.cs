@@ -68,12 +68,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
                                    "Host=localhost;Database=OrderingDb;Username=postgres;Password=123;";
             services.AddDbContext<OrderingDbContext>(options => options.UseNpgsql(connectionString));
-
-            // ----- Repository & UnitOfWork -----
-            services.RemoveAll<IOrderRepository>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
-            services.RemoveAll<IUnitOfWork>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             // ----- Replace real Product gRPC client/service with a mock IProductService -----
             services.RemoveAll<ProductProtoService.ProductProtoServiceClient>();
