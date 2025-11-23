@@ -28,7 +28,11 @@ builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Catalog API");
 
+builder.Services.AddGatewayCors();
+
 var app = builder.Build();
+
+app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {

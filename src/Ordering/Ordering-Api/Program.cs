@@ -50,7 +50,11 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddGatewayCors();
+
 var app = builder.Build();
+
+app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {

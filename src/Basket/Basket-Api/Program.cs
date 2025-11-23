@@ -17,10 +17,13 @@ builder.Services.AddSwaggerDocumentation("Basket API");
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-// ✅ افزودن احراز هویت از طریق اکستنشن
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+builder.Services.AddGatewayCors();
+
 var app = builder.Build();
+
+app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {
