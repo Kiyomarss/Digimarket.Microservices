@@ -35,7 +35,7 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
 
         var order = await DbContext.Orders
                                    .Include(o => o.Items)
-                                   .FirstOrDefaultAsync(o => o.Id == orderId);
+                                   .FirstAsync(o => o.Id == orderId);
 
         order.Should().NotBeNull();
         order!.Customer.Should().Be("Ali Ahmadi");
