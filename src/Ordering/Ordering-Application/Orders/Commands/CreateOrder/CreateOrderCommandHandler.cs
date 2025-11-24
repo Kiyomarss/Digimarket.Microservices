@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.CQRS;
+using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
@@ -15,21 +16,26 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IProductService _productService;
-    
+    private readonly ICurrentUserService _currentUser;
+
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
         IPublishEndpoint publishEndpoint,
         IUnitOfWork unitOfWork,
-        IProductService productService)
+        IProductService productService,
+        ICurrentUserService currentUser)
     {
         _orderRepository = orderRepository;
         _publishEndpoint = publishEndpoint;
         _unitOfWork = unitOfWork;
         _productService = productService;
+        _currentUser = currentUser;
     }
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
+        var userId = _currentUser.GetUserId();
+
         var productIds = request.Items.Select(i => i.ProductId).ToList();
 
         // 1. گرفتن محصولات از gRPC

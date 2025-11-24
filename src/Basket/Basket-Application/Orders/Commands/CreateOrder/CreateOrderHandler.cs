@@ -48,7 +48,8 @@ public class CreateOrderHandler
             ProductId = x.ProductId.ToString(), Quantity = x.Quantity
         }));
 
-        var response = await _orderProto.CreateOrderAsync(request, cancellationToken: cancellationToken);
+        var headers = _currentUser.GetAuthorizationHeaders();
+        var response = await _orderProto.CreateOrderAsync(request, headers, cancellationToken: cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

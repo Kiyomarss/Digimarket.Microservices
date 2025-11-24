@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Grpc.Core;
 using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.Services;
@@ -45,5 +46,22 @@ public class CurrentUserService : ICurrentUserService
     public bool IsAuthenticated()
     {
         return _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+    }
+    
+    public Metadata GetAuthorizationHeaders()
+    {
+        var headers = new Metadata();
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            // اگر شامل Bearer نیست، اضافه کن
+            if (!token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                token = "Bearer " + token;
+
+            headers.Add("Authorization", token);
+        }
+
+        return headers;
     }
 }

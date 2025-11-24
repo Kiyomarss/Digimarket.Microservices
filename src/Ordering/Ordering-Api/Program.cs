@@ -1,5 +1,6 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.Services;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.Grpc;
@@ -24,6 +25,11 @@ builder.Services.AddOpenTelemetryWithJaeger("Ordering API");
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Ordering API");
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
 {
@@ -62,6 +68,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.MapGrpcService<OrderGrpcService>();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

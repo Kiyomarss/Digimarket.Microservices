@@ -1,5 +1,6 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.Services;
 using Catalog.Api.Grpc;
 using Catalog.Api.StartupExtensions;
 using Serilog;
@@ -28,6 +29,11 @@ builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Catalog API");
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 builder.Services.AddGatewayCors();
 
 var app = builder.Build();
@@ -41,6 +47,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGrpcService<ProductGrpcService>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

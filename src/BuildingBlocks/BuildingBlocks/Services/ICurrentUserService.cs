@@ -1,4 +1,5 @@
 ﻿using System;
+using Grpc.Core;
 
 namespace BuildingBlocks.Services;
 
@@ -8,4 +9,5 @@ public interface ICurrentUserService
     string? GetUserName();
     string? GetEmail();
     bool IsAuthenticated();
+    Metadata GetAuthorizationHeaders();
 }
