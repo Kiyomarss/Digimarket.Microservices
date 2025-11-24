@@ -14,11 +14,11 @@ public class ProductRepository : IProductRepository
         _db = dbContext;
     }
     
-    public async Task<List<Product>> GetProductByIds(List<Guid> productIds)
+    public async Task<List<Product>> GetProductByIds(List<Guid> productIds, CancellationToken ct)
     {
         return await _db.Set<Product>()
                         .Where(x => productIds.Contains(x.Id))
-                        .ToListAsync();
+                        .ToListAsync(ct);
     }
     
     public async Task<Product?> FindProductById(Guid id)

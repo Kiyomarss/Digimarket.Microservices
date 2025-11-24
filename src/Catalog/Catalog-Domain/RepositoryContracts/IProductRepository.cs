@@ -4,7 +4,7 @@ namespace Catalog_Domain.RepositoryContracts;
 
 public interface IProductRepository
 {
-    Task<List<Product>> GetProductByIds(List<Guid> productIds);
+    Task<List<Product>> GetProductByIds(List<Guid> productIds, CancellationToken cancellationToken);
     
     Task AddProduct(Product product);
     

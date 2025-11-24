@@ -25,4 +25,15 @@ public class OrderRepository : IOrderRepository
                         .Include(o => o.Items)
                         .FirstOrDefaultAsync(o => o.Id == id);
     }
+
+    public async Task<List<Order>> GetOrdersForUserAsync(Guid userId, string state, CancellationToken ct)
+    {
+        return await _db.Set<Order>()
+                        .Where(x => x.UserId == userId && x.State == state)
+                        .Select(x => new Order
+                        {
+                            Date = x.Date, Items = x.Items
+                        })
+                        .ToListAsync(ct);
+    }
 }
