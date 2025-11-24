@@ -1,4 +1,6 @@
 ﻿// tests/Ordering.Application.UnitTests/Orders/Commands/CreateOrder/CreateOrderCommandHandlerTests.cs
+
+using BuildingBlocks.Services;
 using FluentAssertions;
 using Moq;
 using Ordering.Core.Orders.Commands.CreateOrder;
@@ -19,6 +21,7 @@ public class CreateOrderCommandHandlerTests
     private readonly Mock<IPublishEndpoint> _publishMock = new();
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IProductService> _productServiceMock = new();
+    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
 
     private readonly CreateOrderCommandHandler _handler;
 
@@ -28,7 +31,8 @@ public class CreateOrderCommandHandlerTests
             _orderRepoMock.Object,
             _publishMock.Object,
             _unitOfWorkMock.Object,
-            _productServiceMock.Object);
+            _productServiceMock.Object,
+            _currentUserServiceMock.Object);
     }
 
     private CreateOrderCommand CreateValidCommand()
@@ -66,6 +70,8 @@ public class CreateOrderCommandHandlerTests
         // Assert
         orderId.Should().NotBe(Guid.Empty);
 
+        _currentUserServiceMock.Verify(r => r.GetRequiredUserId(), Times.Once);
+        
         _orderRepoMock.Verify(r => r.AddOrder(It.Is<Order>(o =>
             o.Customer == "Ali Ahmadi" &&
             o.Items.Count == 2 &&
