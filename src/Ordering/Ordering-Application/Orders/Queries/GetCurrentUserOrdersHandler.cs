@@ -2,7 +2,7 @@
 using BuildingBlocks.Services;
 using Ordering_Domain.Domain.RepositoryContracts;
 
-namespace Ordering.Core.Orders.Queries;
+namespace Ordering.Application.Orders.Queries;
 
 public class GetCurrentUserOrdersHandler 
     : IQueryHandler<GetCurrentUserOrdersQuery, OrdersListResponse>

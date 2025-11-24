@@ -1,3 +1,5 @@
+using ApiGateway;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // YARP
@@ -31,8 +33,11 @@ app.MapReverseProxy();
 
 app.Run();
 
-public class SwaggerService
+namespace ApiGateway
 {
-    public string Name { get; set; } = default!;
-    public string SwaggerEndpoint { get; set; } = default!;
+    public class SwaggerService
+    {
+        public string Name { get; set; } = default!;
+        public string SwaggerEndpoint { get; set; } = default!;
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Ordering.Core.Orders.Queries;
+using Ordering.Application.Orders.Queries;
 
 namespace Ordering.Api.Controllers
 {

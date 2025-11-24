@@ -1,15 +1,14 @@
-﻿using System.Diagnostics;
-using BuildingBlocks.CQRS;
+﻿using BuildingBlocks.CQRS;
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
-using Ordering.Core.Services;
+using Ordering.Application.Services;
 using ProductGrpc;
 using Shared.IntegrationEvents.Ordering;
 
-namespace Ordering.Core.Orders.Commands.CreateOrder;
+namespace Ordering.Application.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Guid>
 {

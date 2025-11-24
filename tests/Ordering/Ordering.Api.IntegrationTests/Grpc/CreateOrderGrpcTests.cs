@@ -3,6 +3,7 @@ using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using OrderGrpc;
+using Ordering.TestingInfrastructure.TestBase;
 using Shared;
 using Shared.Grpc;
 

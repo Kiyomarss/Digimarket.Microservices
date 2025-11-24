@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using MediatR;
 using OrderGrpc;
-using Ordering.Core.Orders.Commands.CreateOrder;
+using Ordering.Application.Orders.Commands.CreateOrder;
 
 namespace Ordering.Api.Grpc;
 

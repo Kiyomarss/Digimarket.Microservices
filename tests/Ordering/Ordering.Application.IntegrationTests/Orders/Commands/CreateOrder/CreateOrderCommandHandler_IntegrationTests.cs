@@ -2,7 +2,8 @@
 using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
-using Ordering.Core.Orders.Commands.CreateOrder;
+using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.TestingInfrastructure.TestBase;
 using Shared;
 
 namespace Ordering.Application.IntegrationTests.Orders.Commands.CreateOrder;

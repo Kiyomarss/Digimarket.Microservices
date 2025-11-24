@@ -1,7 +1,7 @@
 ﻿
 using BuildingBlocks.CQRS;
 
-namespace Ordering.Core.Orders.Commands.CreateOrder;
+namespace Ordering.Application.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommand : ICommand<Guid>
 {

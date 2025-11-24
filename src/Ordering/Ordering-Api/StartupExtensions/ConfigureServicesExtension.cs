@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Extensions;
 using Ordering_Infrastructure.Extensions;
-using Ordering.Core.Orders.Commands.CreateOrder;
-using Ordering.Core.Services;
+using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.Application.Services;
 using ProductGrpc;
 
 namespace Ordering.Api.StartupExtensions;

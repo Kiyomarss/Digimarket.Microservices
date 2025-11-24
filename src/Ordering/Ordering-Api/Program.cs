@@ -1,4 +1,3 @@
-using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
@@ -76,4 +75,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+namespace Ordering.Api
+{
+    public partial class Program { }
+}

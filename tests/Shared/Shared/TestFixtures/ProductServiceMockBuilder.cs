@@ -1,5 +1,5 @@
 ﻿using Moq;
-using Ordering.Core.Services;
+using Ordering.Application.Services;
 using ProductGrpc;
 
 namespace Shared.TestFixtures;

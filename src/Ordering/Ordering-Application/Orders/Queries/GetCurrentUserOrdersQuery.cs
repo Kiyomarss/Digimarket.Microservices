@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.CQRS;
 
-namespace Ordering.Core.Orders.Queries;
+namespace Ordering.Application.Orders.Queries;
 
 public record GetCurrentUserOrdersQuery(string State) : IQuery<OrdersListResponse>;
 

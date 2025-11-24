@@ -1,11 +1,12 @@
 ﻿using MassTransit;
-using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.TestingInfrastructure.Fixtures;
 using Xunit;
+
+namespace Ordering.TestingInfrastructure.TestBase;
 
 [Collection("ApiIntegration")]
 public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, IAsyncLifetime

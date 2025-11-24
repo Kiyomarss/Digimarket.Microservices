@@ -1,4 +1,4 @@
-namespace Ordering.Core;
+namespace Ordering.Application;
 
 [Serializable]
 public class DuplicateOrderException :
