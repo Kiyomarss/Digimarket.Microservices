@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.CQRS;
+﻿using System.Diagnostics;
+using BuildingBlocks.CQRS;
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
@@ -34,8 +35,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = _currentUser.GetUserId();
-
         var productIds = request.Items.Select(i => i.ProductId).ToList();
 
         // 1. گرفتن محصولات از gRPC
@@ -71,10 +70,12 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
     private Order CreateOrderFromProducts(CreateOrderCommand request, GetProductsResponse productResponse)
     {
         var orderId = Guid.NewGuid();
-
+        var userId = _currentUser.GetRequiredUserId();
+        
         var order = new Order
         {
             Id = orderId,
+            UserId = userId,
             Customer = request.Customer,
             State = "Init",
         };

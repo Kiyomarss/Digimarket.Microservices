@@ -26,6 +26,10 @@ namespace Ordering_Infrastructure.Data.Configurations
                    .IsRequired()
                    .HasMaxLength(100)
                    .HasColumnType("varchar(100)");
+            
+            builder.Property(x => x.UserId)
+                   .IsRequired()
+                   .HasColumnType("uuid");
 
             builder.Property(x => x.Customer)
                    .IsRequired()

@@ -28,12 +28,9 @@ public class CreateOrderHandler
 
     public async Task<CreateOrderResult> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        var userId = _currentUser.GetUserId();
-
-        if (userId == null)
-            throw new UnauthorizedAccessException("User is not authenticated.");
-
-        var basket = await _basketRepository.FindBasketByUserId(userId.Value);
+        var userId = _currentUser.GetRequiredUserId();
+        
+        var basket = await _basketRepository.FindBasketByUserId(userId);
 
         if (basket == null)
             throw new Exception("Basket not found.");

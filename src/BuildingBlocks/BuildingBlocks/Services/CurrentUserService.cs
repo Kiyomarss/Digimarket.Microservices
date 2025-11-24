@@ -29,6 +29,16 @@ public class CurrentUserService : ICurrentUserService
 
         return Guid.TryParse(userIdClaim.Value, out var userId) ? userId : null;
     }
+    
+    public Guid GetRequiredUserId()
+    {
+        var userId = GetUserId();
+        
+        if (userId == null)
+            throw new InvalidOperationException("UserId not found.");
+
+        return (Guid)userId;
+    }
 
     public string? GetUserName()
     {
