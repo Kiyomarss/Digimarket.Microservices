@@ -17,18 +17,8 @@ namespace Ordering.Worker.Extensions
         public static IServiceCollection AddOrderingServices(this IServiceCollection services, IConfiguration configuration)
         {
             // استخراج تنظیمات دیتابیس
-            var connectionString = GetConfigValue(configuration, "ConnectionStrings:Default", 
-                Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? 
-                "host=localhost;user id=postgres;password=123;database=OrderingDb;");
-
-            // استخراج تنظیمات RabbitMQ
-            var rabbitMqHost = GetConfigValue(configuration, "RabbitMQ:Host", 
-                Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost");
-            var rabbitMqUsername = GetConfigValue(configuration, "RabbitMQ:Username", 
-                Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest");
-            var rabbitMqPassword = GetConfigValue(configuration, "RabbitMQ:Password", 
-                Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest");
-
+            var connectionString = configuration.GetConnectionString("Default");
+            
             // ثبت DbContext اصلی
             services.AddOrderingInfrastructure(configuration);
 
@@ -63,10 +53,10 @@ namespace Ordering.Worker.Extensions
                 });
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitMqHost, "/", h =>
+                    cfg.Host("localhost", "/", h =>
                     {
-                        h.Username(rabbitMqUsername);
-                        h.Password(rabbitMqPassword);
+                        h.Username("guest");
+                        h.Password("guest");
                     });
                     cfg.UseMessageScheduler(new Uri("queue:quartz"));
                     cfg.ConfigureEndpoints(context);
@@ -94,11 +84,6 @@ namespace Ordering.Worker.Extensions
             });
 
             return services;
-        }
-
-        private static string GetConfigValue(IConfiguration configuration, string key, string defaultValue)
-        {
-            return configuration[key] ?? defaultValue;
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using MassTransit;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.IntegrationTests.Fixtures;
@@ -11,27 +13,24 @@ namespace Ordering.Worker.IntegrationTests.TestBase
 {
     public abstract class OrderStateMachineIntegrationTestBase : IAsyncLifetime
     {
-        protected readonly IBusControl Bus;
+        protected readonly OrderStateMachineFixture Fixture;
         protected readonly OrdersSagaDbContext DbContext;
+        protected readonly IBusControl Bus;
+        protected readonly IServiceScope Scope;
 
-        private readonly OrderStateMachineFixture _fixture;
 
         protected OrderStateMachineIntegrationTestBase()
         {
-            _fixture = new OrderStateMachineFixture();
-            Bus = _fixture.Bus;
-            DbContext = _fixture.DbContext;
+            Fixture = new OrderStateMachineFixture();
+            Fixture.StartAsync().GetAwaiter().GetResult();
+            Scope = Fixture.Services.CreateScope();
+
+            DbContext = Scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
+            Bus = Scope.ServiceProvider.GetRequiredService<IBusControl>();
         }
 
-        public async Task InitializeAsync()
-        {
-            await _fixture.StartAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await _fixture.DisposeAsync();
-        }
+        public Task InitializeAsync() => Task.CompletedTask;
+        public Task DisposeAsync() => Task.CompletedTask;
 
         // متد کمکی برای پاک کردن دیتابیس
         protected async Task CleanupDatabase()
