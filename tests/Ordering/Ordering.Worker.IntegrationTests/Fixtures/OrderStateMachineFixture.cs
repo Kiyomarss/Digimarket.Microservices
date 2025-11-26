@@ -46,8 +46,7 @@ public class OrderStateMachineFixture : IAsyncDisposable
         
         builder.Services.RemoveAll<OrdersSagaDbContext>();
 
-        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
-                               "Host=localhost;Database=OrderingDb;Username=postgres;Password=123;";
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
         builder.Services.AddDbContext<OrdersSagaDbContext>(options =>
         {
