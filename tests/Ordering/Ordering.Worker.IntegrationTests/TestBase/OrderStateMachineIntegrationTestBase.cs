@@ -17,9 +17,8 @@ namespace Ordering.Worker.IntegrationTests.TestBase
         protected readonly OrdersSagaDbContext DbContext;
         protected readonly IBusControl Bus;
         protected readonly IServiceScope Scope;
-
-
-
+        
+        //NOTE: در صورت استفاده نشدن از ورودی کانستراکتور و new کردن آبجکت کانستراکتور دوبار اجرا و هر کانتینر دوبار ساخته می‌شود
         public OrderStateMachineIntegrationTestBase(OrderStateMachineFixture fixture)
         {
             Fixture = fixture;
