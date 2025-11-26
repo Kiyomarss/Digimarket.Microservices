@@ -9,12 +9,12 @@ namespace Ordering.Api.StartupExtensions;
 
 public static class ConfigureServicesExtension
 {
-    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, bool isTest = false)
+    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment, bool isTest = false)
     {
         // Controllers
         services.AddControllers();
         
-        services.AddOrderingInfrastructure(configuration);
+        services.AddOrderingInfrastructure(configuration, environment);
 
         // MediatR و Pipeline Behaviors
         services.AddConfiguredMediatR(typeof(CreateOrderCommandHandler));

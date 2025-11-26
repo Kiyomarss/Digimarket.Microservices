@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using BuildingBlocks.UnitOfWork;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
@@ -32,15 +34,29 @@ public class OrderStateMachineFixture : IAsyncDisposable
         TestEnvironmentHelper.SetPostgresConnectionString(_postgresContainer);
         TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
 
-        var builder = new HostApplicationBuilder();
+        var builder = new HostApplicationBuilder
+        {
+            Environment =
+            {
+                EnvironmentName = "IntegrationTest"
+            }
+        };
 
         builder.Configuration.AddEnvironmentVariables();
+        
+        builder.Services.RemoveAll<OrdersSagaDbContext>();
 
-        builder.Services.AddOrderingServices(builder.Configuration);
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
+                               "Host=localhost;Database=OrderingDb;Username=postgres;Password=123;";
+
+        builder.Services.AddDbContext<OrdersSagaDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+        });
+
+        builder.Services.AddOrderingServices(builder.Configuration, builder.Environment);
 
         Host = builder.Build();
-
-        //DatabaseHelper.ApplyMigrations<OrdersSagaDbContext>(Services);
     }
 
     public async Task StartAsync()

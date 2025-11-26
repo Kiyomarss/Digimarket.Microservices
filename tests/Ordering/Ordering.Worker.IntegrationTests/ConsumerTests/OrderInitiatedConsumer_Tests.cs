@@ -7,7 +7,7 @@ namespace Ordering.Worker.IntegrationTests.ConsumerTests
     {
         private readonly Fixtures.OrderStateMachineFixture _fixture;
 
-        public OrderInitiatedConsumer_Tests(Fixtures.OrderStateMachineFixture fixture) : base()
+        public OrderInitiatedConsumer_Tests(Fixtures.OrderStateMachineFixture fixture) : base(fixture)
         {
             _fixture = fixture;
         }

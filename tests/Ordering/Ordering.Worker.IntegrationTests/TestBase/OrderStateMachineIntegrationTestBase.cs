@@ -19,9 +19,10 @@ namespace Ordering.Worker.IntegrationTests.TestBase
         protected readonly IServiceScope Scope;
 
 
-        protected OrderStateMachineIntegrationTestBase()
+
+        public OrderStateMachineIntegrationTestBase(OrderStateMachineFixture fixture)
         {
-            Fixture = new OrderStateMachineFixture();
+            Fixture = fixture;
             Fixture.StartAsync().GetAwaiter().GetResult();
             Scope = Fixture.Services.CreateScope();
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.IntegrationTests.Fixtures;
 using Shared.IntegrationEvents.Ordering;
 using Xunit;
 
@@ -10,6 +11,8 @@ namespace Ordering.Worker.IntegrationTests.StateMachineTests
     [Collection("DatabaseCollection")]
     public class When_OrderInitiated_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
+        public When_OrderInitiated_Tests(OrderStateMachineFixture fixture) : base(fixture) { }
+
         [Fact]
         public async Task Should_create_saga_and_publish_messages()
         {
@@ -27,7 +30,7 @@ namespace Ordering.Worker.IntegrationTests.StateMachineTests
             });
 
             // انتظار برای پردازش پیام‌ها (به دلیل Outbox و RabbitMQ)
-            await Task.Delay(3000);
+            await Task.Delay(6000);
 
             // Assert
             var saga = await GetSagaState(orderId);

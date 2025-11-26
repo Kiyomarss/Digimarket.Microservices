@@ -14,22 +14,18 @@ namespace Ordering.Worker.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddOrderingServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddOrderingServices(this IServiceCollection services, IConfiguration configuration,  IHostEnvironment environment)
         {
             // استخراج تنظیمات دیتابیس
             var connectionString = configuration.GetConnectionString("Default");
             
             // ثبت DbContext اصلی
-            services.AddOrderingInfrastructure(configuration);
+            services.AddOrderingInfrastructure(configuration, environment);
 
             // ثبت DbContext برای Saga
             services.AddDbContext<OrdersSagaDbContext>(options =>
             {
-                options.UseNpgsql(connectionString, npgOptions =>
-                {
-                    npgOptions.MinBatchSize(1);
-                    npgOptions.MigrationsAssembly(typeof(OrdersSagaDbContext).Assembly.GetName().Name);
-                });
+                options.UseNpgsql(connectionString);
             });
 
             // ثبت MassTransit

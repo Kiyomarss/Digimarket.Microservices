@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
+using Ordering.Worker.IntegrationTests.Fixtures;
 using Ordering.Worker.StateMachines.Events;
 using Shared.IntegrationEvents.Ordering;
 
@@ -8,6 +9,8 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
 {
     public class OutboxPattern_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
+        public OutboxPattern_Tests(OrderStateMachineFixture fixture) : base(fixture) { }
+
         [Fact]
         public async Task Should_store_and_publish_order_status_changed()
         {
