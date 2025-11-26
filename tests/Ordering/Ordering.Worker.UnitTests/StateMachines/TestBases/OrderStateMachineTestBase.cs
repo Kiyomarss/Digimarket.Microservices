@@ -1,8 +1,9 @@
 ﻿using MassTransit.Testing;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines;
+using Ordering.Worker.UnitTests.StateMachines.Fixtures;
 
-namespace Ordering.Worker.UnitTests.StateMachines.Transitions
+namespace Ordering.Worker.UnitTests.StateMachines.TestBases
 {
     public abstract class OrderStateMachineTestBase : IClassFixture<OrderStateMachineFixture>
     {

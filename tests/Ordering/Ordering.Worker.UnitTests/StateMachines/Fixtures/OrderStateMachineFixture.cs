@@ -1,14 +1,15 @@
 ﻿using MassTransit;
 using MassTransit.Testing;
-using Ordering.Worker.StateMachines;
 using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.StateMachines;
 
-namespace Ordering.Worker.UnitTests.StateMachines.Transitions
+namespace Ordering.Worker.UnitTests.StateMachines.Fixtures
 {
     public class OrderStateMachineFixture : IAsyncDisposable
     {
         public InMemoryTestHarness Harness { get; }
         public ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness { get; }
+        private bool _started;
 
         public OrderStateMachineFixture()
         {
@@ -28,6 +29,10 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 
         public async Task StartAsync()
         {
+            if (_started)
+                return;
+
+            _started = true;
             await Harness.Start();
         }
 

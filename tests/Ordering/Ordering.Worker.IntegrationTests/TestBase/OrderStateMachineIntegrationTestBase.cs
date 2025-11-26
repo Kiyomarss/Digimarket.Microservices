@@ -13,7 +13,6 @@ namespace Ordering.Worker.IntegrationTests.TestBase
 {
     public abstract class OrderStateMachineIntegrationTestBase : IAsyncLifetime
     {
-        protected readonly OrderStateMachineFixture Fixture;
         protected readonly OrdersSagaDbContext DbContext;
         protected readonly IBusControl Bus;
         protected readonly IServiceScope Scope;
@@ -21,9 +20,8 @@ namespace Ordering.Worker.IntegrationTests.TestBase
         //NOTE: در صورت استفاده نشدن از ورودی کانستراکتور و new کردن آبجکت کانستراکتور دوبار اجرا و هر کانتینر دوبار ساخته می‌شود
         public OrderStateMachineIntegrationTestBase(OrderStateMachineFixture fixture)
         {
-            Fixture = fixture;
-            Fixture.StartAsync().GetAwaiter().GetResult();
-            Scope = Fixture.Services.CreateScope();
+            fixture.StartAsync().GetAwaiter().GetResult();
+            Scope = fixture.Services.CreateScope();
 
             DbContext = Scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
             Bus = Scope.ServiceProvider.GetRequiredService<IBusControl>();

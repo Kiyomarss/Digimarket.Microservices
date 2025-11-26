@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using Ordering.Worker.StateMachines.Events;
+using Ordering.Worker.UnitTests.StateMachines.Fixtures;
+using Ordering.Worker.UnitTests.StateMachines.TestBases;
 using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Worker.UnitTests.StateMachines.Transitions
