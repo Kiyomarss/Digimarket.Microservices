@@ -6,6 +6,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
@@ -61,6 +62,11 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         builder.UseEnvironment("IntegrationTest");
 
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddJsonFile("appsettings.IntegrationTest.json", optional: false);
+        });
+        
         builder.ConfigureServices(services =>
         {
             // ----- Register DB context using connection string from env (keeps parity with your original) -----
