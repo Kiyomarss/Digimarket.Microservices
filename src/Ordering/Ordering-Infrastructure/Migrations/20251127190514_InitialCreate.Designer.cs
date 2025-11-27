@@ -12,7 +12,7 @@ using Ordering_Infrastructure.Data.DbContext;
 namespace Ordering_Infrastructure.Migrations
 {
     [DbContext(typeof(OrderingDbContext))]
-    [Migration("20251118141702_InitialCreate")]
+    [Migration("20251127190514_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -216,6 +216,9 @@ namespace Ordering_Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 

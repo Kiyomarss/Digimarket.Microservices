@@ -42,6 +42,7 @@ namespace Ordering_Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "NOW()"),
                     State = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Customer = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
