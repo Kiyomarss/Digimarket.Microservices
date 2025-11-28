@@ -16,7 +16,7 @@ builder.Host.UseConfiguredSerilog();
 
 builder.Host.UseSerilog();
 
-builder.Services.ConfigureServices(builder.Configuration, builder.Environment);
+builder.Services.ConfigureServices(builder.Configuration);
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<OrderingDbContext>>();
 
