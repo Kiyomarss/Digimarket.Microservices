@@ -53,8 +53,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // We don't keep the HttpClient here — we just ensure host creation now.
         // (This will call ConfigureWebHost below.)
         _ = CreateDefaultClient();
-        
-        DatabaseHelper.ApplyMigrations<OrderingDbContext>(Services);
     }
 
     // Override ConfigureWebHost to register/override services inside the factory's host
@@ -69,13 +67,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         
         builder.ConfigureServices(services =>
         {
-            // ----- Register DB context using connection string from env (keeps parity with your original) -----
-            // Remove any existing OrderingDbContext registration (if present) and re-register.
-            services.RemoveAll<OrderingDbContext>();
-            var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ??
-                                   "Host=localhost;Database=OrderingDb;Username=postgres;Password=123;";
-            services.AddDbContext<OrderingDbContext>(options => options.UseNpgsql(connectionString));
-            
             // ----- Replace real Product gRPC client/service with a mock IProductService -----
             services.RemoveAll<ProductProtoService.ProductProtoServiceClient>();
             services.RemoveAll<IProductService>();

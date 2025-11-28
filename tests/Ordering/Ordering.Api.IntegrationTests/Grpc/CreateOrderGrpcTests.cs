@@ -3,6 +3,7 @@ using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using OrderGrpc;
+using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
 using Shared.Grpc;
@@ -12,6 +13,8 @@ namespace Ordering.Api.IntegrationTests.Grpc;
 [Collection("ApiIntegration")]
 public class CreateOrderGrpcTests : OrderingAppTestBase
 {
+    public CreateOrderGrpcTests(OrderingAppFactory fixture) : base(fixture) { }
+
     [Fact]
     public async Task CreateOrder_ViaGrpc_Should_CreateOrder_And_StoreInOutbox()
     {

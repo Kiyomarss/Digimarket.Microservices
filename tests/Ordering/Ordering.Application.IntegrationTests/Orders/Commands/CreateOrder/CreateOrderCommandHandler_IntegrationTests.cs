@@ -3,6 +3,7 @@ using FluentAssertions;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
 
@@ -10,6 +11,8 @@ namespace Ordering.Application.IntegrationTests.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler_IntegrationTests : OrderingAppTestBase
 {
+    public CreateOrderCommandHandler_IntegrationTests(OrderingAppFactory fixture) : base(fixture) { }
+
     [Fact]
     public async Task Handle_Should_PersistOrder_And_Save_OutboxMessage()
     {

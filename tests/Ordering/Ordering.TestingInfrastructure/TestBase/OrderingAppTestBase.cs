@@ -16,9 +16,9 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected readonly OrderingDbContext DbContext;
     protected readonly IBusControl Bus;
 
-    protected OrderingAppTestBase()
+    protected OrderingAppTestBase(OrderingAppFactory fixture)
     {
-        Fixture = new OrderingAppFactory();
+        Fixture = fixture;
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
         Bus = Fixture.Services.GetRequiredService<IBusControl>();
@@ -29,7 +29,7 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
 
     protected async Task CleanupDatabase()
     {
-        await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"orders\", \"order_items\" RESTART IDENTITY CASCADE");
-        await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OutboxMessage\", \"OutboxState\", \"InboxState\" RESTART IDENTITY CASCADE");
+        await DbContext.Database.EnsureDeletedAsync();
+        await DbContext.Database.EnsureCreatedAsync();
     }
 }
