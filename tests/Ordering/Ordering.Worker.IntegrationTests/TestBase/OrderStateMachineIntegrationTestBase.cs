@@ -33,10 +33,8 @@ namespace Ordering.Worker.IntegrationTests.TestBase
         // متد کمکی برای پاک کردن دیتابیس
         protected async Task CleanupDatabase()
         {
-            await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OrderState\"");
-            await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OutboxMessage\"");
-            await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OutboxState\"");
-            await DbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"InboxState\"");
+            await DbContext.Database.EnsureDeletedAsync();
+            await DbContext.Database.EnsureCreatedAsync();
         }
 
         // متد کمکی برای دریافت Saga

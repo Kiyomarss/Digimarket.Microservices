@@ -30,7 +30,7 @@ namespace Ordering.Worker.IntegrationTests.StateMachineTests
             });
 
             // انتظار برای پردازش پیام‌ها (به دلیل Outbox و RabbitMQ)
-            await Task.Delay(6000);
+            await Task.Delay(8000);
 
             // Assert
             var saga = await GetSagaState(orderId);

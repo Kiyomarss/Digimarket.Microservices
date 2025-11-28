@@ -43,15 +43,6 @@ public class OrderStateMachineFixture : IAsyncDisposable
         };
 
         builder.Configuration.AddEnvironmentVariables();
-        
-        builder.Services.RemoveAll<OrdersSagaDbContext>();
-
-        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-
-        builder.Services.AddDbContext<OrdersSagaDbContext>(options =>
-        {
-            options.UseNpgsql(connectionString);
-        });
 
         builder.Services.AddOrderingServices(builder.Configuration, builder.Environment);
 

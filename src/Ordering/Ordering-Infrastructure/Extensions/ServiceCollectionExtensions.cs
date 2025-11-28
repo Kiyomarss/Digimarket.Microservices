@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering_Infrastructure.Data.Persistence;
 using Ordering_Infrastructure.Repositories;
 
 namespace Ordering_Infrastructure.Extensions
@@ -48,8 +47,7 @@ namespace Ordering_Infrastructure.Extensions
 
             // Register repository & unit of work (they depend on OrderingDbContext)
             services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IUnitOfWork, UnitOfWork<OrderingDbContext>>();
             return services;
         }
     }

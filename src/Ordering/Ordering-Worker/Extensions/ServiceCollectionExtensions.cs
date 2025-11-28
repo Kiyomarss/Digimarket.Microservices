@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BuildingBlocks.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Ordering.Worker.DbContext;
 using MassTransit;
 using MassTransit.Metadata;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Ordering_Infrastructure.Extensions;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.Consumers;
 using Ordering.Worker.StateMachines;
@@ -19,16 +19,14 @@ namespace Ordering.Worker.Extensions
             // استخراج تنظیمات دیتابیس
             var connectionString = configuration.GetConnectionString("Default");
             
-            // ثبت DbContext اصلی
-            services.AddOrderingInfrastructure(configuration, environment);
-
             // ثبت DbContext برای Saga
             services.AddDbContext<OrdersSagaDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
             });
 
-            // ثبت MassTransit
+            services.AddScoped<IUnitOfWork, UnitOfWork<OrdersSagaDbContext>>();
+            
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();

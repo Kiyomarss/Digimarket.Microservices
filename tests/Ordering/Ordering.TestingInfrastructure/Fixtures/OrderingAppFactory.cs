@@ -12,8 +12,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering_Infrastructure.Data.Persistence;
-using Ordering_Infrastructure.Repositories;
 using Ordering.Api;
 using Ordering.Application.Services;
 using ProductGrpc;

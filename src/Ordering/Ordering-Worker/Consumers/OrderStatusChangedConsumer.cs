@@ -1,19 +1,16 @@
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
-using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering.Worker.StateMachines.Events;
 
 namespace Ordering.Worker.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {
-        readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderStatusChangedConsumer> _logger;
 
-        public OrderStatusChangedConsumer(IOrderRepository orderRepository, ILogger<OrderStatusChangedConsumer> logger, IUnitOfWork unitOfWork)
+        public OrderStatusChangedConsumer(ILogger<OrderStatusChangedConsumer> logger, IUnitOfWork unitOfWork)
         {
-            _orderRepository = orderRepository;
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
