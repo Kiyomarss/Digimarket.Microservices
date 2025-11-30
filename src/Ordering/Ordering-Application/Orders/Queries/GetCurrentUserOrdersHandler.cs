@@ -20,7 +20,7 @@ public class GetCurrentUserOrdersHandler
         GetCurrentUserOrdersQuery query,
         CancellationToken cancellationToken)
     {
-        var userId = _currentUser.GetRequiredUserId();
+        var userId = await _currentUser.GetRequiredUserId();
 
         var orders = await _orderRepository
                          .GetOrdersForUserAsync(userId, query.State, cancellationToken);

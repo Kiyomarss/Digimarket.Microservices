@@ -28,7 +28,7 @@ public class CreateOrderHandler
 
     public async Task<CreateOrderResult> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        var userId = _currentUser.GetRequiredUserId();
+        var userId = await _currentUser.GetRequiredUserId();
         
         var basket = await _basketRepository.FindBasketByUserId(userId);
 

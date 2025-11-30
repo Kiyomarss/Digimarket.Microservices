@@ -70,6 +70,9 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.RemoveAll<IProductService>();
             var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
             services.AddSingleton(productServiceMock);
+            
+            var currentUserServiceMock = new MockCurrentUserService().WithDefaultUser().Build();
+            services.AddSingleton(currentUserServiceMock);
         });
     }
 

@@ -6,7 +6,7 @@ namespace BuildingBlocks.Services;
 public interface ICurrentUserService
 {
     Guid? GetUserId();
-    Guid GetRequiredUserId();
+    Task<Guid> GetRequiredUserId();
     string? GetUserName();
     string? GetEmail();
     bool IsAuthenticated();

@@ -40,7 +40,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         var productResponse = await FetchProductsAsync(productIds, cancellationToken);
 
         // 2. ایجاد آبجکت Order
-        var order = CreateOrderFromProducts(request, productResponse);
+        var order = await CreateOrderFromProducts(request, productResponse);
 
         // 3. انتشار event
         await PublishOrderInitiatedEvent(order.Id, request.Customer, cancellationToken);
@@ -66,10 +66,10 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         return response;
     }
 
-    private Order CreateOrderFromProducts(CreateOrderCommand request, GetProductsResponse productResponse)
+    private async Task<Order> CreateOrderFromProducts(CreateOrderCommand request, GetProductsResponse productResponse)
     {
         var orderId = Guid.NewGuid();
-        var userId = _currentUser.GetRequiredUserId();
+        var userId = await _currentUser.GetRequiredUserId();
         
         var order = new Order
         {
