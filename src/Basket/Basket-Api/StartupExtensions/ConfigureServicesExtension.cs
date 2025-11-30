@@ -3,7 +3,6 @@ using Basket_Application.Orders;
 using Basket_Application.Orders.Commands.CreateOrder;
 using Basket.Domain.RepositoryContracts;
 using Basket.Infrastructure.Data.DbContext;
-using Basket.Infrastructure.Data.Persistence;
 using Basket.Infrastructure.Repositories;
 using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions;
@@ -64,7 +63,7 @@ public static class ConfigureServicesExtension
         // Scoped Services
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.Decorate<IBasketRepository, CachedBasketRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork<BasketDbContext>>();
 
         services.AddConfiguredMediatR(typeof(CreateOrderHandler));
 
