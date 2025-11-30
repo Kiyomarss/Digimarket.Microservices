@@ -17,52 +17,45 @@ public class CurrentUserService : ICurrentUserService
     public Guid? GetUserId()
     {
         var user = _httpContextAccessor.HttpContext?.User;
-        if (user?.Identity == null || !user.Identity.IsAuthenticated)
+        if (user?.Identity is not { IsAuthenticated: true })
             return null;
 
-        // در JWT ما claim مربوط به شناسه کاربر را با نام "sub" قرار داده‌ایم
         var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)
                           ?? user.FindFirst(JwtRegisteredClaimNames.Sub);
 
-        if (userIdClaim == null)
-            return null;
-
-        return Guid.TryParse(userIdClaim.Value, out var userId) ? userId : null;
+        return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId) 
+                   ? userId 
+                   : null;
     }
 
     public Task<Guid> GetRequiredUserId() =>
-        Task.FromResult(GetUserId() ?? throw new InvalidOperationException("UserId not found."));
+        Task.FromResult(GetUserId() 
+                        ?? throw new UnauthorizedAccessException("User is not authenticated or UserId is missing."));
 
-    public string? GetUserName()
-    {
-        var user = _httpContextAccessor.HttpContext?.User;
-        return user?.FindFirst("username")?.Value;
-    }
+    public string? GetUserName() =>
+        _httpContextAccessor.HttpContext?.User?
+            .FindFirst("username")?.Value;
 
-    public string? GetEmail()
-    {
-        var user = _httpContextAccessor.HttpContext?.User;
-        return user?.FindFirst(ClaimTypes.Email)?.Value
-               ?? user?.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-    }
+    public string? GetEmail() =>
+        _httpContextAccessor.HttpContext?.User?
+            .FindFirst(ClaimTypes.Email)?.Value
+        ?? _httpContextAccessor.HttpContext?.User?
+            .FindFirst(JwtRegisteredClaimNames.Email)?.Value;
 
-    public bool IsAuthenticated()
-    {
-        return _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-    }
-    
+    public bool IsAuthenticated() =>
+        _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+
     public Metadata GetAuthorizationHeaders()
     {
         var headers = new Metadata();
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+        var authHeader = _httpContextAccessor.HttpContext?.Request.Headers.Authorization.ToString();
 
-        if (!string.IsNullOrWhiteSpace(token))
+        if (!string.IsNullOrWhiteSpace(authHeader))
         {
-            // اگر شامل Bearer نیست، اضافه کن
-            if (!token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                token = "Bearer " + token;
+            if (!authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                authHeader = "Bearer " + authHeader.Trim();
 
-            headers.Add("Authorization", token);
+            headers.Add("Authorization", authHeader);
         }
 
         return headers;
