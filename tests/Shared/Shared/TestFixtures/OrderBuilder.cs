@@ -26,6 +26,7 @@ public class OrderBuilder
         _order.Items = items.Select(i => new OrderItem
         {
             ProductId = i.productId,
+            ProductName = $"Product {i.productId:N}".Substring(0, 8),
             Quantity = i.quantity,
             Price = i.price
         }).ToList();
@@ -34,8 +35,8 @@ public class OrderBuilder
 
     public Order Build() => _order;
 
-    // متدهای آماده
-    public static Order Processing() => new OrderBuilder().WithState("Processing").Build();
-    public static Order Shipped() => new OrderBuilder().WithState("Shipped").Build();
-    public static Order Pending() => new OrderBuilder().WithState("Pending").Build();
+    // متدهای آماده — حالا OrderBuilder برمی‌گردانند نه Order!
+    public static OrderBuilder Processing() => new OrderBuilder().WithState("Processing");
+    public static OrderBuilder Shipped() => new OrderBuilder().WithState("Shipped");
+    public static OrderBuilder Pending() => new OrderBuilder().WithState("Pending");
 }
