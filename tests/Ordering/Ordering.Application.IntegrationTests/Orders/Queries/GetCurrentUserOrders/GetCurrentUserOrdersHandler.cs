@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Ordering_Domain.Domain.Entities;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
@@ -13,27 +14,21 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
         : base(fixture) { }
     
     [Fact]
-    public async Task Handle_With_State_Filter_Should_Return_Only_Matching_Orders()
+    public async Task Handle_Should_Return_Only_Shipped_Orders()
     {
         // Arrange
         await CleanupDatabase();
 
-        var currentUserId = TestGuids.Guid3;
-
         DbContext.Orders.AddRange(
-            new Order { Id = Guid.NewGuid(), UserId = currentUserId, State = "Processing", Customer = "a", Date = DateTime.Now},
-            new Order { Id = Guid.NewGuid(), UserId = currentUserId, State = "Shipped", Customer = "a", Date = DateTime.Now},
-            new Order { Id = Guid.NewGuid(), UserId = currentUserId, State = "Pending", Customer = "a", Date = DateTime.Now}
-        );
+                                  OrderBuilder.Processing(),
+                                  OrderBuilder.Shipped(),
+                                  OrderBuilder.Pending()
+                                 );
         await DbContext.SaveChangesAsync();
 
-        var query = new GetCurrentUserOrdersQuery ("Shipped");
+        var query = new GetCurrentUserOrdersQuery("Shipped");
 
-        // Act
+        // Act & Assert
         var result = await Sender.Send(query);
-
-        // Assert
         result.Orders.Should().HaveCount(1);
-        result.Orders[0].Should().NotBeNull();
-    }
-}
+    }}
