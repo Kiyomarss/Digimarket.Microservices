@@ -1,10 +1,8 @@
-﻿// tests/Ordering.Api.IntegrationTests/Controllers/OrderControllerTests.cs
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
-using Xunit;
 
 namespace Ordering.Api.IntegrationTests.Controllers;
 
@@ -12,52 +10,75 @@ namespace Ordering.Api.IntegrationTests.Controllers;
 public class OrderControllerTests : IClassFixture<OrderingAppFactory>
 {
     private readonly HttpClient _client;
+    private readonly OrderingAppFactory _factory;
 
     public OrderControllerTests(OrderingAppFactory factory)
     {
+        _factory = factory;
         _client = factory.CreateClient();
     }
 
-    [Fact]
-    public async Task GetCurrentUserOrders_WithValidState_Should_Return_Ok_With_Orders()
+    [Theory]
+    [InlineData("Shipped", 300_000L)]
+    [InlineData("Processing", 250_000L)]
+    [InlineData("Pending", 200_000L)]
+    public async Task GetCurrentUserOrders_WithState_ShouldReturn_CorrectTotal(string state, long expectedTotal)
     {
-        // Arrange
-        var state = "WaitingForPayment";
+        var dbContext = _factory.DbContext;
+
+        dbContext.Orders.AddRange(
+            new OrderBuilder().WithState("Processing")
+                              .WithItems((2, 100_000L), (1, 50_000L))
+                              .Build(),
+
+            new OrderBuilder().WithState("Shipped")
+                              .WithItems((3, 100_000L))
+                              .Build(),
+
+            new OrderBuilder().WithState("Pending")
+                              .WithItems((1, 200_000L))
+                              .Build()
+        );
+        await dbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"Order/GetCurrentUserOrders?state={state}");
-
-        // Assert
+        var response = await _client.GetAsync($"/Order/GetCurrentUserOrders?state={state}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var orders = await response.Content.ReadFromJsonAsync<List<object>>();
-        orders.Should().NotBeNull();
-        // اگر داده‌ای وجود داشته باشه، می‌تونی بیشتر چک کنی
-    }
-
-    [Fact]
-    public async Task GetCurrentUserOrders_WithInvalidState_Should_Return_BadRequest()
-    {
-        // Arrange
-        var invalidState = "InvalidState123";
-
-        // Act
-        var response = await _client.GetAsync($"/Order?state={invalidState}");
+        var result = await response.Content.ReadFromJsonAsync<OrdersListResponse>();
 
         // Assert
+        result.Should().NotBeNull();
+        result.Orders[0].TotalPrice.Should().Be(expectedTotal);
+    }
+    
+    [Fact]
+    public async Task GetCurrentUserOrders_WithInvalidState_ShouldReturn_EmptyList()
+    {
+        // Arrange
+        var dbContext = _factory.DbContext;
+        dbContext.Orders.AddRange(
+            new OrderBuilder().WithState("Shipped").Build(),
+            new OrderBuilder().WithState("Processing").Build()
+        );
+        await dbContext.SaveChangesAsync();
+
+        // Act
+        var response = await _client.GetAsync("/Order/GetCurrentUserOrders?state=InvalidState");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var result = await response.Content.ReadFromJsonAsync<OrdersListResponse>();
+
+        // Assert
+        result!.Orders.Should().BeEmpty();
+    }
+    
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task  GetCurrentUserOrders_WithInvalidOrEmptyState_ShouldReturn_BadRequest(string state)
+    {
+        var response = await _client.GetAsync($"/Order/GetCurrentUserOrders?state={state}");
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        // یا اگر ValidationBehavior داری → 400 یا 422
-    }
-
-    [Fact]
-    public async Task GetCurrentUserOrders_WithEmptyState_Should_Return_All_Orders()
-    {
-        // Act
-        var response = await _client.GetAsync("/Order");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var orders = await response.Content.ReadFromJsonAsync<List<object>>();
-        orders.Should().NotBeNull();
     }
 }

@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Controllers;
+﻿using System.ComponentModel.DataAnnotations;
+using BuildingBlocks.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Orders.Queries;
@@ -15,7 +16,7 @@ namespace Ordering.Api.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUserOrders(string state)
+        public async Task<IActionResult> GetCurrentUserOrders([FromQuery] [Required] string state)
         {
             var command = new GetCurrentUserOrdersQuery(state);
 
