@@ -21,12 +21,12 @@ public class OrderBuilder
         return this;
     }
 
-    public OrderBuilder WithItems(params (Guid productId, int quantity, long price)[] items)
+    public OrderBuilder WithItems(params (int quantity, long price)[] items)
     {
         _order.Items = items.Select(i => new OrderItem
         {
-            ProductId = i.productId,
-            ProductName = $"Product {i.productId:N}".Substring(0, 8),
+            ProductId = Guid.NewGuid(),
+            ProductName = "ProductName",
             Quantity = i.quantity,
             Price = i.price
         }).ToList();
@@ -35,7 +35,6 @@ public class OrderBuilder
 
     public Order Build() => _order;
 
-    // متدهای آماده — حالا OrderBuilder برمی‌گردانند نه Order!
     public static OrderBuilder Processing() => new OrderBuilder().WithState("Processing");
     public static OrderBuilder Shipped() => new OrderBuilder().WithState("Shipped");
     public static OrderBuilder Pending() => new OrderBuilder().WithState("Pending");
