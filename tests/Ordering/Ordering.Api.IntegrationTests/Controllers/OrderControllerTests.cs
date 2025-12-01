@@ -25,7 +25,7 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
         var state = "WaitingForPayment";
 
         // Act
-        var response = await _client.GetAsync($"/Order?state={state}");
+        var response = await _client.GetAsync($"Order/GetCurrentUserOrders?state={state}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
