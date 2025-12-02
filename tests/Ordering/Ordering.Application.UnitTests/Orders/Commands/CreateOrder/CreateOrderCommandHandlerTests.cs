@@ -22,11 +22,16 @@ public class CreateOrderCommandHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IProductService> _productServiceMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
+    private readonly Guid _currentUserId = TestGuids.Guid3;
 
     private readonly CreateOrderCommandHandler _handler;
 
     public CreateOrderCommandHandlerTests()
     {
+        _currentUserServiceMock
+            .Setup(x => x.GetRequiredUserId())
+            .ReturnsAsync(_currentUserId);
+
         _handler = new CreateOrderCommandHandler(
             _orderRepoMock.Object,
             _publishMock.Object,
@@ -74,6 +79,7 @@ public class CreateOrderCommandHandlerTests
         
         _orderRepoMock.Verify(r => r.AddOrder(It.Is<Order>(o =>
             o.Customer == "Ali Ahmadi" &&
+            o.UserId == _currentUserId &&
             o.Items.Count == 2 &&
             o.Items.Any(i => i.ProductId.ToString() == TestGuids.Guid1 && i.Quantity == 2) &&
             o.Items.Any(i => i.ProductId.ToString() == TestGuids.Guid2 && i.Quantity == 1)
@@ -143,6 +149,7 @@ public class CreateOrderCommandHandlerTests
         await _handler.Handle(command, CancellationToken.None);
 
         capturedOrder.Should().NotBeNull();
+        capturedOrder.UserId.Should().Be(_currentUserId);
         var item = capturedOrder!.Items.Single();
         item.ProductName.Should().Be("Test Product");
         item.Price.Should().Be(999);
