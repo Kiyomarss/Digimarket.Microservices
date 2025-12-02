@@ -1,6 +1,4 @@
-﻿// Shared/TestFixtures/OrderBuilder.cs
-
-using Ordering_Domain.Domain.Entities;
+﻿using Ordering_Domain.Domain.Entities;
 using Shared;
 
 public class OrderBuilder
@@ -26,15 +24,22 @@ public class OrderBuilder
         _order.Items = items.Select(i => new OrderItem
         {
             ProductId = Guid.NewGuid(),
-            ProductName = "ProductName",
+            ProductName = $"Product {Guid.NewGuid():N}".Substring(0, 8),
             Quantity = i.quantity,
             Price = i.price
         }).ToList();
         return this;
     }
 
+    public OrderBuilder WithUserId(Guid userId)
+    {
+        _order.UserId = userId;
+        return this;
+    }
+
     public Order Build() => _order;
 
+    // متدهای آماده
     public static OrderBuilder Processing() => new OrderBuilder().WithState("Processing");
     public static OrderBuilder Shipped() => new OrderBuilder().WithState("Shipped");
     public static OrderBuilder Pending() => new OrderBuilder().WithState("Pending");
