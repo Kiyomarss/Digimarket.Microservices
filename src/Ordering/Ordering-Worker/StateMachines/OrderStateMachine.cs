@@ -51,7 +51,7 @@ namespace Ordering.Worker.StateMachines
                         await context.Publish(new OrderStatusChanged
                         {
                             Id = context.Saga.CorrelationId,
-                            OrderState = WaitingForPayment.Name
+                            State = WaitingForPayment.Name
                         });
                     })
                     .TransitionTo(WaitingForPayment)
@@ -101,7 +101,7 @@ namespace Ordering.Worker.StateMachines
                            await context.Publish(new OrderStatusChanged
                            {
                                Id = context.Saga.CorrelationId,
-                               OrderState = Processing.Name
+                               State = Processing.Name
                            });
                        })
                        .TransitionTo(Processing)

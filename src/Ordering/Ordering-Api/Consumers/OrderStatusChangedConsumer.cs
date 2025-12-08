@@ -1,25 +1,29 @@
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
+using MediatR;
+using Ordering.Application.Orders.Commands.CreateOrder;
 using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<OrderStatusChangedConsumer> _logger;
+        private readonly ISender _sender;
 
-        public OrderStatusChangedConsumer(ILogger<OrderStatusChangedConsumer> logger, IUnitOfWork unitOfWork)
+        public OrderStatusChangedConsumer(ISender sender)
         {
-            _logger = logger;
-            _unitOfWork = unitOfWork;
+            _sender = sender;
         }
 
         public async Task Consume(ConsumeContext<OrderStatusChanged> context)
         {
             var message = context.Message;
-            
-            await _unitOfWork.SaveChangesAsync();
+            var command = new UpdateOrderStatusCommand
+            {
+                Id = message.Id, State = message.State
+            };
+
+            await _sender.Send(command);
         }
     }
 }

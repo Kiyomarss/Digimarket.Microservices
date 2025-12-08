@@ -48,7 +48,7 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
 
             (await Harness.Published.Any<OrderStatusChanged>(x =>
                     x.Context.Message.Id == orderId &&
-                    x.Context.Message.OrderState == Machine.WaitingForPayment.Name))
+                    x.Context.Message.State == Machine.WaitingForPayment.Name))
                 .Should().BeTrue("OrderStatusChanged should be published with WaitingForPayment");
 
             // بررسی TokenIdهای زمان‌بندی‌شده

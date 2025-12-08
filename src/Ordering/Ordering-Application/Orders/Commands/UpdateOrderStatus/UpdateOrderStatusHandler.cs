@@ -14,7 +14,7 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
     private readonly IOrderRepository _orderRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateOrderStatusHandler(IUnitOfWork unitOfWork, ILogger<UpdateOrderStatusHandler> logger, IOrderRepository orderRepository)
+    public UpdateOrderStatusHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
     {
         _unitOfWork = unitOfWork;
         _orderRepository = orderRepository;
