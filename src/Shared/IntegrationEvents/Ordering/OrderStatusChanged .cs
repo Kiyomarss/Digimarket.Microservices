@@ -1,4 +1,4 @@
-namespace Ordering.Worker.StateMachines.Events;
+namespace Shared.IntegrationEvents.Ordering;
 
 public record OrderStatusChanged 
 {

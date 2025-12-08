@@ -29,4 +29,8 @@
     <ProjectReference Include="..\Catalog-Infrastructure\Catalog-Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Consumers\" />
+  </ItemGroup>
+
 </Project>

@@ -2,6 +2,7 @@ using BuildingBlocks.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Api.Consumers;
 using Ordering.Api.Grpc;
 using Ordering.Api.StartupExtensions;
 using Serilog;
@@ -32,6 +33,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
     x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);

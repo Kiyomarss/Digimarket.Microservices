@@ -1,8 +1,8 @@
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
-using Ordering.Worker.StateMachines.Events;
+using Shared.IntegrationEvents.Ordering;
 
-namespace Ordering.Worker.Consumers
+namespace Ordering.Api.Consumers
 {
     public class OrderStatusChangedConsumer : IConsumer<OrderStatusChanged>
     {

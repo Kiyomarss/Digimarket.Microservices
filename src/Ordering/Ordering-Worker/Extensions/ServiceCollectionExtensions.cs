@@ -31,7 +31,6 @@ namespace Ordering.Worker.Extensions
             {
                 x.SetKebabCaseEndpointNameFormatter();
                 x.AddConsumers(typeof(OrderInitiatedConsumer).Assembly);
-                x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                     .EntityFrameworkRepository(r =>
                     {

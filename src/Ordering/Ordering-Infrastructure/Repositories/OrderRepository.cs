@@ -19,10 +19,16 @@ public class OrderRepository : IOrderRepository
         await _db.Set<Order>().AddAsync(order);
     }
     
-    public async Task<Order?> FindOrderById(Guid id)
+    public async Task<Order?> GetByIdWithItemsAsync(Guid id)
     {
         return await _db.Set<Order>()
                         .Include(o => o.Items)
+                        .FirstOrDefaultAsync(o => o.Id == id);
+    }
+    
+    public async Task<Order?> GetByIdAsync(Guid id)
+    {
+        return await _db.Set<Order>()
                         .FirstOrDefaultAsync(o => o.Id == id);
     }
 
