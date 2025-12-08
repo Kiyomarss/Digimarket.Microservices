@@ -50,6 +50,8 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
+        
+        cfg.UseMessageRetry(r => r.Interval(2, TimeSpan.FromSeconds(1)));
         // ساخت خودکار Queue/Exchange بر اساس Convention
         cfg.ConfigureEndpoints(context);
     });
