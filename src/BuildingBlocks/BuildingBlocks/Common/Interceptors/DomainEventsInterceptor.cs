@@ -8,18 +8,15 @@ public sealed class DomainEventsInterceptor : SaveChangesInterceptor
 {
     private readonly IMediator _mediator;
 
-    public DomainEventsInterceptor(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public DomainEventsInterceptor(IMediator mediator) => _mediator = mediator;
 
-    public override async ValueTask<int> SavedChangesAsync(
-        SaveChangesCompletedEventData eventData,
-        int result,
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
         var dbContext = eventData.Context;
-        if (dbContext is null) return await base.SavedChangesAsync(eventData, result, cancellationToken);
+        if (dbContext is null) return await base.SavingChangesAsync(eventData, result, cancellationToken);
 
         var entitiesWithEvents = dbContext.ChangeTracker
                                           .Entries<Entity>()
@@ -39,6 +36,6 @@ public sealed class DomainEventsInterceptor : SaveChangesInterceptor
             await _mediator.Publish(domainEvent, cancellationToken);
         }
 
-        return await base.SavedChangesAsync(eventData, result, cancellationToken);
+        return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 }
