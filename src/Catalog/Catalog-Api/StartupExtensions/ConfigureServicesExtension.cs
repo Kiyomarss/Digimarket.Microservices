@@ -53,7 +53,6 @@ public static class ConfigureServicesExtension
         // Scoped Services
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<CatalogDbContext>>();
-
         return services;
     }
 }

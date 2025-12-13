@@ -2,6 +2,7 @@
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering.Application.Services;
@@ -44,9 +45,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
         order.RaiseOrderCreatedEvent();
         
-        // 3. انتشار event
-        await PublishOrderInitiatedEvent(order.Id, request.Customer, cancellationToken);
-
         // 4. ذخیره در دیتابیس
         await _orderRepository.AddOrder(order);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

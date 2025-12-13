@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit.EntityFrameworkCoreIntegration;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.UnitOfWork;
 

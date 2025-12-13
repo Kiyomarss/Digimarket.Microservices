@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />    
@@ -29,6 +30,15 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
     <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Outbox\IOutboxService.cs" />
+    <Compile Remove="Outbox\OutboxBehavior.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Outbox\" />
   </ItemGroup>
 
 </Project>

@@ -34,6 +34,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
+    x.AddConsumers(typeof(OrderCreatedIntegrationEventConsumer).Assembly);
     x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);
@@ -52,8 +53,6 @@ builder.Services.AddMassTransit(x =>
         });
         
         cfg.UseMessageRetry(r => r.Interval(2, TimeSpan.FromSeconds(1)));
-        // ساخت خودکار Queue/Exchange بر اساس Convention
-        cfg.ConfigureEndpoints(context);
     });
 });
 

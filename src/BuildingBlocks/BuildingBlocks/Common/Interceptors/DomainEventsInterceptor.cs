@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Common.Entities;
+using BuildingBlocks.Common.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -15,27 +16,32 @@ public sealed class DomainEventsInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        var dbContext = eventData.Context;
-        if (dbContext is null) return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        var context = eventData.Context;
+        if (context == null) return result;
 
-        var entitiesWithEvents = dbContext.ChangeTracker
-                                          .Entries<Entity>()
-                                          .Where(e => e.Entity.DomainEvents.Any())
-                                          .Select(e => e.Entity)
-                                          .ToArray();
+        // 1. جمع‌آوری تمام دامین ایونت‌ها
+        var domainEvents = context.ChangeTracker
+                                  .Entries<Entity>()
+                                  .Where(e => e.Entity.DomainEvents.Any())
+                                  .SelectMany(e => e.Entity.DomainEvents)
+                                  .ToList();
 
-        var domainEvents = entitiesWithEvents
-                           .SelectMany(e => e.DomainEvents)
-                           .ToArray();
+        // 2. پاک کردن دامین ایونت‌ها از انتیتی‌ها (برای جلوگیری از تکرار)
+        foreach (var entry in context.ChangeTracker.Entries<Entity>())
+        {
+            entry.Entity.ClearDomainEvents();
+        }
 
-        foreach (var entity in entitiesWithEvents)
-            entity.ClearDomainEvents();
-
+        // 3. انتشار دامین ایونت‌ها (قبل از ذخیره‌سازی)
         foreach (var domainEvent in domainEvents)
         {
             await _mediator.Publish(domainEvent, cancellationToken);
         }
 
-        return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        // 4. اجازه دادن به EF Core که SaveChanges را ادامه دهد
+        return result; // این خط مهم است — به EF می‌گوید ادامه بده
     }
+
+    // اگر می‌خواهی دقیق‌تر باشی، می‌توانی base را هم صدا بزنی
+    // اما معمولاً return result کافی است
 }

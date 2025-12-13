@@ -18,4 +18,8 @@
       <ProjectReference Include="..\Ordering-Domain\Ordering-Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Orders\Commands\CreateOrder\Events\SendEmailOnOrderCreated.cs" />
+    </ItemGroup>
+
 </Project>

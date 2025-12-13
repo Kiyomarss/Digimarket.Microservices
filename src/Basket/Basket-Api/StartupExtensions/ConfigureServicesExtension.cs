@@ -68,7 +68,7 @@ public static class ConfigureServicesExtension
         services.AddConfiguredMediatR(typeof(CreateOrderHandler));
 
         services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(configuration, "GrpcSettings:OrderUrl");
-        
+
         return services;
     }
 }
