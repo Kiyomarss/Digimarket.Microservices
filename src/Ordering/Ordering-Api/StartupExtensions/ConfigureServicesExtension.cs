@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using BuildingBlocks.Common.Interceptors;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
 using FluentValidation;
@@ -20,8 +19,6 @@ public static class ConfigureServicesExtension
         // Controllers
         services.AddControllers();
         
-        services.AddSingleton<DomainEventsInterceptor>();
-        
         services.AddDbContext<OrderingDbContext>(x =>
         {
             var connectionString = configuration.GetConnectionString("Default");
@@ -34,7 +31,6 @@ public static class ConfigureServicesExtension
                 options.EnableRetryOnFailure(5);
                 options.MinBatchSize(1);
             });
-            x.AddInterceptors(services.BuildServiceProvider().GetRequiredService<DomainEventsInterceptor>());
         });
 
         // MediatR و Pipeline Behaviors

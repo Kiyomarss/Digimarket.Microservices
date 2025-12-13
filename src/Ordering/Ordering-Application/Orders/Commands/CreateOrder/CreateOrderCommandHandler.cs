@@ -42,8 +42,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         // 2. ایجاد آبجکت Order
         var order = await CreateOrderFromProducts(request, productResponse);
 
-        order.RaiseOrderCreatedEvent();
-        
         // 3. انتشار event
         await PublishOrderInitiatedEvent(order.Id, request.Customer, cancellationToken);
 
