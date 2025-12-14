@@ -1,16 +1,14 @@
-﻿using FluentValidation.TestHelper;
+﻿using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Xunit;
 
 namespace Ordering.Application.UnitTests.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandValidatorTests
 {
-    private readonly CreateOrderCommandValidator _validator;
-
-    public CreateOrderCommandValidatorTests()
-    {
-        _validator = new CreateOrderCommandValidator();
-    }
+    private readonly CreateOrderCommandValidator _validator = new();
 
     [Fact]
     public void Should_Have_Error_When_Customer_Is_Empty()
@@ -26,30 +24,36 @@ public class CreateOrderCommandValidatorTests
         };
 
         // Act
-        var result = _validator.TestValidate(command);
+        ValidationResult result = _validator.Validate(command);
 
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Customer)
-              .WithErrorMessage("Customer name is required.");
+        // Assert با FluentAssertions
+        result.Errors
+              .Should().ContainSingle(e => e.PropertyName == nameof(command.Customer))
+              .Which.ErrorMessage.Should().Be("Customer name is required.");
     }
 
     [Fact]
     public void Should_Have_Error_When_Items_Is_Empty()
     {
+        // Arrange
         var command = new CreateOrderCommand
         {
             Customer = "John Doe",
         };
 
-        var result = _validator.TestValidate(command);
+        // Act
+        var result = _validator.Validate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.Items)
-              .WithErrorMessage("Order must contain at least one item.");
+        // Assert
+        result.Errors
+              .Should().ContainSingle(e => e.PropertyName == nameof(command.Items))
+              .Which.ErrorMessage.Should().Be("Order must contain at least one item.");
     }
 
     [Fact]
     public void Should_Have_Error_When_ProductId_Is_Not_Valid_Guid()
     {
+        // Arrange
         var command = new CreateOrderCommand
         {
             Customer = "John Doe",
@@ -59,15 +63,19 @@ public class CreateOrderCommandValidatorTests
             }
         };
 
-        var result = _validator.TestValidate(command);
+        // Act
+        var result = _validator.Validate(command);
 
-        result.ShouldHaveValidationErrorFor("Items[0].ProductId")
-              .WithErrorMessage("ProductId must be a valid GUID.");
+        // Assert
+        result.Errors
+              .Should().ContainSingle(e => e.PropertyName == "Items[0].ProductId")
+              .Which.ErrorMessage.Should().Be("ProductId must be a valid GUID.");
     }
 
     [Fact]
     public void Should_Have_Error_When_Duplicate_ProductId_Exists()
     {
+        // Arrange
         var productId = Guid.NewGuid().ToString();
         var command = new CreateOrderCommand
         {
@@ -79,15 +87,19 @@ public class CreateOrderCommandValidatorTests
             }
         };
 
-        var result = _validator.TestValidate(command);
+        // Act
+        var result = _validator.Validate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.Items)
-              .WithErrorMessage("Duplicate products are not allowed in the order.");
+        // Assert
+        result.Errors
+              .Should().ContainSingle(e => e.PropertyName == nameof(command.Items))
+              .Which.ErrorMessage.Should().Be("Duplicate products are not allowed in the order.");
     }
 
     [Fact]
     public void Should_Not_Have_Error_When_Command_Is_Valid()
     {
+        // Arrange
         var command = new CreateOrderCommand
         {
             Customer = "John Doe",
@@ -98,8 +110,11 @@ public class CreateOrderCommandValidatorTests
             }
         };
 
-        var result = _validator.TestValidate(command);
+        // Act
+        var result = _validator.Validate(command);
 
-        result.ShouldNotHaveAnyValidationErrors();
+        // Assert
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
     }
 }
