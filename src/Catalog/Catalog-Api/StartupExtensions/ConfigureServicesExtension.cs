@@ -48,7 +48,7 @@ public static class ConfigureServicesExtension
             });
         });
         
-        services.AddConfiguredMediatR(typeof(GetProductsByIdsHandler));
+        services.AddConfiguredMediatR();
 
         // Scoped Services
         services.AddScoped<IProductRepository, ProductRepository>();

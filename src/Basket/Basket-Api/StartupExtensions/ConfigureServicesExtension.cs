@@ -65,7 +65,7 @@ public static class ConfigureServicesExtension
         services.Decorate<IBasketRepository, CachedBasketRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<BasketDbContext>>();
 
-        services.AddConfiguredMediatR(typeof(CreateOrderHandler));
+        services.AddConfiguredMediatR();
 
         services.AddGrpcClientWithConfig<OrderProtoService.OrderProtoServiceClient>(configuration, "GrpcSettings:OrderUrl");
         
