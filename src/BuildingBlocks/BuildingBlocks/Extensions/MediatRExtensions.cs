@@ -11,62 +11,47 @@ namespace BuildingBlocks.Extensions
     {
         /// <summary>
         /// ثبت کامل MediatR + FluentValidation از لایه‌های Api و Application
-        /// بدون نیاز به هیچ خط دستی در Startup
         /// </summary>
         public static IServiceCollection AddConfiguredMediatR(this IServiceCollection services)
         {
-            var entryAssembly = Assembly.GetExecutingAssembly(); // Ordering.Api
+            var apiAssembly = Assembly.GetExecutingAssembly();
 
-            // 1. اسمبلی Api
-            var apiAssembly = entryAssembly;
+            // پیدا کردن Application assembly با اولویت بالاتر
+            var applicationAssembly = FindApplicationAssembly(apiAssembly)
+                                      ?? throw new InvalidOperationException(
+                                                                             "Application assembly not found. Expected an assembly containing 'Application' in name. " +
+                                                                             "Referenced assemblies: " +
+                                                                             string.Join(", ", apiAssembly.GetReferencedAssemblies().Select(a => a.Name)));
 
-            // 2. پیدا کردن اسمبلی Application
-            string? applicationAssemblyName = entryAssembly
-                .GetReferencedAssemblies()
-                .FirstOrDefault(a => a.Name?.Contains("Application", StringComparison.OrdinalIgnoreCase) == true)
-                ?.Name;
-
-            Assembly? applicationAssembly = null;
-
-            if (!string.IsNullOrEmpty(applicationAssemblyName))
+            var assemblies = new[]
             {
-                applicationAssembly = Assembly.Load(applicationAssemblyName);
-            }
+                apiAssembly, applicationAssembly
+            }.Distinct().ToArray();
 
-            if (applicationAssembly == null)
-            {
-                applicationAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name?.Contains("Application", StringComparison.OrdinalIgnoreCase) == true);
-            }
-
-            var assemblies = new List<Assembly> { apiAssembly };
-
-            if (applicationAssembly != null && applicationAssembly != apiAssembly)
-            {
-                assemblies.Add(applicationAssembly);
-            }
-
-            // ثبت MediatR از همه اسمبلی‌های پیدا شده
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(assemblies.ToArray());
-
+                cfg.RegisterServicesFromAssemblies(assemblies);
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
                 cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
 
-            // ثبت خودکار Validatorها از لایه Application (یا همه اسمبلی‌ها)
-            if (applicationAssembly != null)
-            {
-                services.AddValidatorsFromAssembly(applicationAssembly);
-            }
-            else
-            {
-                // Fallback: از Api هم جستجو کن (اگر Validator در Api باشد)
-                services.AddValidatorsFromAssembly(apiAssembly);
-            }
+            services.AddValidatorsFromAssembly(applicationAssembly);
 
             return services;
+        }
+
+        private static Assembly? FindApplicationAssembly(Assembly entryAssembly)
+        {
+            // اولویت ۱: از ارجاع‌ها
+            var refName = entryAssembly.GetReferencedAssemblies()
+                                       .FirstOrDefault(a => a.Name?.Contains("Application", StringComparison.OrdinalIgnoreCase) == true);
+
+            if (refName != null)
+                return Assembly.Load(refName);
+
+            // اولویت ۲: از اسمبلی‌های لود شده
+            return AppDomain.CurrentDomain.GetAssemblies()
+                            .FirstOrDefault(a => a.GetName().Name?.Contains("Application", StringComparison.OrdinalIgnoreCase) == true);
         }
     }
 }
