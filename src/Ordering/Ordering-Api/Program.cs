@@ -1,6 +1,8 @@
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.Consumers;
 using Ordering.Api.Grpc;
@@ -21,7 +23,6 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<OrderingDbContext>>();
 
-builder.Services.AddOpenTelemetryWithJaeger("Ordering API");
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Ordering API");
@@ -30,6 +31,12 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+const string serviceName = "ordering-api";
+
+builder.Services.AddConfiguredOpenTelemetry(
+                                            serviceName: serviceName,
+                                            configuration: builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
 {

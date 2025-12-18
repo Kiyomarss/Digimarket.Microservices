@@ -9,7 +9,12 @@ builder.Host.UseConfiguredSerilog();
 builder.Host.UseSerilog();
 
 builder.Services.ConfigureServices(builder.Configuration);
-builder.Services.AddOpenTelemetryWithJaeger("Basket API");
+
+const string serviceName = "basket-api";
+
+builder.Services.AddConfiguredOpenTelemetry(
+                                            serviceName: serviceName,
+                                            configuration: builder.Configuration);
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Basket API");

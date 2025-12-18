@@ -24,7 +24,11 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 //builder.Services.AddHostedService<RecreateDatabaseHostedService<CatalogDbContext>>();
 
-builder.Services.AddOpenTelemetryWithJaeger("Catalog API");
+const string serviceName = "catalog-api";
+
+builder.Services.AddConfiguredOpenTelemetry(
+                                            serviceName: serviceName,
+                                            configuration: builder.Configuration);
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation("Catalog API");
