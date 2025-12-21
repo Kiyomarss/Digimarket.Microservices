@@ -51,7 +51,6 @@ _book
 /node_modules
 .vscode
 **/.idea/
-appsettings.Development.json
 package-lock.json
 
 

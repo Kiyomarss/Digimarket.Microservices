@@ -1,10 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-# مسیر پکیج‌های لوکال (از لینک داخل پروژه)
-COPY [".nuget/packages", "/root/.nuget/packages"]
-
-# مسیر پکیج‌ها در داخل کانتینر
-ENV NUGET_PACKAGES=/root/.nuget/packages
 
 # فقط csprojها را کپی کن
 COPY ["Basket/Basket-Api/Basket-Api.csproj", "Basket/Basket-Api/"]

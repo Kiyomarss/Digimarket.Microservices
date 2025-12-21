@@ -8,7 +8,7 @@ namespace Catalog.Api.Controllers
     {
         
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductDto dto)
+        public async Task<IActionResult> Create()
         {
             return Ok();
         }

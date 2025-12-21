@@ -1,24 +1,24 @@
-﻿version: "3.6"
+﻿version: "3.8"
+
+x-common-dotnet-env: &dotnet-env
+  OTLP_ENDPOINT: http://jaeger:4317
+  ASPNETCORE_ENVIRONMENT: Development
 
 services:
   jaeger:
-    image: jaegertracing/all-in-one:1.52
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
     ports:
-      - "5775:5775/udp"
-      - "6831:6831/udp"
-      - "6832:6832/udp"
-      - "5778:5778"
-      - "16686:16686"       # UI: http://localhost:16686
-      - "14250:14250"
-      - "14268:14268"
-      - "14269:14269"
-      - "9411:9411"         # برای سازگاری با Zipkin
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
 
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"       # پورت اصلی برای ارتباط اپ‌ها با RabbitMQ
-      - "15672:15672"     # پنل مدیریتی: http://localhost:15672
+      - "5672:5672"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -29,18 +29,14 @@ services:
       context: ./src
       dockerfile: Dockerfile.Basket.api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=BasketDb;
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-      - JAEGER_SAMPLER_TYPE=remote
-      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
-      - RabbitMq__Host=rabbitmq
-      - RabbitMq__Username=guest
-      - RabbitMq__Password=guest
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=BasketDb
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: guest
+      RabbitMq__Password: guest
     ports:
-      - "6001:80"
+      - "7000:80"
     depends_on:
       - jaeger
       - rabbitmq
@@ -51,18 +47,14 @@ services:
       context: ./src
       dockerfile: Dockerfile.Catalog.api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=CatalogDb;
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-      - JAEGER_SAMPLER_TYPE=remote
-      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
-      - RabbitMq__Host=rabbitmq
-      - RabbitMq__Username=guest
-      - RabbitMq__Password=guest
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=CatalogDb
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: guest
+      RabbitMq__Password: guest
     ports:
-      - "6002:80"
+      - "6000:80"
     depends_on:
       - jaeger
       - rabbitmq
@@ -73,18 +65,14 @@ services:
       context: ./src
       dockerfile: Dockerfile.Ordering.api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=OrderingDb;
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-      - JAEGER_SAMPLER_TYPE=remote
-      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
-      - RabbitMq__Host=rabbitmq
-      - RabbitMq__Username=guest
-      - RabbitMq__Password=guest
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=OrderingDb
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: guest
+      RabbitMq__Password: guest
     ports:
-      - "6003:80"
+      - "5000:80"
     depends_on:
       - jaeger
       - rabbitmq
@@ -95,15 +83,11 @@ services:
       context: ./src
       dockerfile: Dockerfile.Ordering.worker
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=host=host.docker.internal;user id=postgres;password=123;database=OrderingDb;
-      - JAEGER_AGENT_HOST=jaeger
-      - JAEGER_AGENT_PORT=6831
-      - JAEGER_SAMPLER_TYPE=remote
-      - JAEGER_SAMPLING_ENDPOINT=http://jaeger:5778/sampling
-      - RabbitMq__Host=rabbitmq
-      - RabbitMq__Username=guest
-      - RabbitMq__Password=guest
+      <<: *dotnet-env
+      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=OrderingDb
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: guest
+      RabbitMq__Password: guest
     depends_on:
       - jaeger
       - rabbitmq
