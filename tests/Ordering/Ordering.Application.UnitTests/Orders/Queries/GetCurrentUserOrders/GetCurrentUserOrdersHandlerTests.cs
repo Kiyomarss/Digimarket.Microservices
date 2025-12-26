@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using Ordering.Application.Orders.Queries;
 using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.Domain.Enum;
 using Ordering_Domain.Domain.RepositoryContracts;
 using Shared;
 
@@ -42,11 +43,11 @@ public class GetCurrentUserOrdersHandlerTests
         _orderRepositoryMock
             .Setup(x => x.GetOrdersForUserAsync(
                 _currentUserId,
-                "Shipped",
+                OrderState.Paid, 
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(allOrders.Where(o => o.State == "Shipped").ToList());
+            .ReturnsAsync(allOrders.Where(o => o.State == OrderState.Paid).ToList());
 
-        var query = new GetCurrentUserOrdersQuery("Shipped");
+        var query = new GetCurrentUserOrdersQuery("Paid");
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -64,11 +65,11 @@ public class GetCurrentUserOrdersHandlerTests
         _orderRepositoryMock
             .Setup(x => x.GetOrdersForUserAsync(
                 It.IsAny<Guid>(),
-                It.IsAny<string?>(),
+                It.IsAny<OrderState>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Order>());
 
-        var query = new GetCurrentUserOrdersQuery("AnyState");
+        var query = new GetCurrentUserOrdersQuery("Paid");
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -76,6 +77,6 @@ public class GetCurrentUserOrdersHandlerTests
         // Assert
         _currentUserServiceMock.Verify(x => x.GetRequiredUserId(), Times.Once);
         result.Orders.Should().BeEmpty();
-        _orderRepositoryMock.Verify(x => x.GetOrdersForUserAsync(_currentUserId, "AnyState", It.IsAny<CancellationToken>()), Times.Once);
+        _orderRepositoryMock.Verify(x => x.GetOrdersForUserAsync(_currentUserId, OrderState.Paid, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

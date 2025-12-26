@@ -1,4 +1,5 @@
 ﻿using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.Domain.Enum;
 using Shared;
 
 public class OrderBuilder
@@ -8,12 +9,11 @@ public class OrderBuilder
         Id = Guid.NewGuid(),
         UserId = TestGuids.Guid3,
         Customer = "Test Customer",
-        State = "Pending",
         Date = DateTime.Now,
         Items = new List<OrderItem>()
     };
 
-    public OrderBuilder WithState(string state)
+    public OrderBuilder WithState(OrderState state)
     {
         _order.State = state;
         return this;
@@ -40,7 +40,7 @@ public class OrderBuilder
     public Order Build() => _order;
 
     // متدهای آماده
-    public static OrderBuilder Processing() => new OrderBuilder().WithState("Processing");
-    public static OrderBuilder Shipped() => new OrderBuilder().WithState("Shipped");
-    public static OrderBuilder Pending() => new OrderBuilder().WithState("Pending");
+    public static OrderBuilder Processing() => new OrderBuilder().WithState(OrderState.Processing);
+    public static OrderBuilder Shipped() => new OrderBuilder().WithState(OrderState.Shipped);
+    public static OrderBuilder Pending() => new OrderBuilder().WithState(OrderState.Pending);
 }

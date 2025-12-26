@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Ordering\Ordering-Api\Ordering-Api.csproj" />
+        <ProjectReference Include="..\..\..\src\Ordering\Ordering.Api\Ordering.Api.csproj" />
         <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
         <ProjectReference Include="..\Ordering.TestingInfrastructure\Ordering.TestingInfrastructure.csproj" />
     </ItemGroup>

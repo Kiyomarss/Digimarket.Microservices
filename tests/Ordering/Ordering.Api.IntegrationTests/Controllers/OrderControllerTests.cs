@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 
@@ -27,15 +28,15 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
         var dbContext = _factory.DbContext;
 
         dbContext.Orders.AddRange(
-            new OrderBuilder().WithState("Processing")
+            new OrderBuilder().WithState(OrderState.Processing)
                               .WithItems((2, 100_000L), (1, 50_000L))
                               .Build(),
 
-            new OrderBuilder().WithState("Shipped")
+            new OrderBuilder().WithState(OrderState.Shipped)
                               .WithItems((3, 100_000L))
                               .Build(),
 
-            new OrderBuilder().WithState("Pending")
+            new OrderBuilder().WithState(OrderState.Pending)
                               .WithItems((1, 200_000L))
                               .Build()
         );
@@ -58,8 +59,8 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
         // Arrange
         var dbContext = _factory.DbContext;
         dbContext.Orders.AddRange(
-            new OrderBuilder().WithState("Shipped").Build(),
-            new OrderBuilder().WithState("Processing").Build()
+            new OrderBuilder().WithState(OrderState.Shipped).Build(),
+            new OrderBuilder().WithState(OrderState.Processing).Build()
         );
         await dbContext.SaveChangesAsync();
 

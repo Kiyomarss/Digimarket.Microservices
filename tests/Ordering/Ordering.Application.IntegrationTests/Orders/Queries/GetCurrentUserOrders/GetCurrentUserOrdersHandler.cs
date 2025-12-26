@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
@@ -16,7 +17,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     [Theory]
     [MemberData(nameof(OrderTestData))]
     public async Task Handle_Should_Return_Correct_TotalAmount_For_Given_State(
-        string state, 
+        OrderState state, 
         long expectedTotal, 
         (int quantity, long price)[] items)
     {
@@ -31,13 +32,13 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
 
         // سفارش‌های دیگر برای تست فیلتر
         DbContext.Orders.AddRange(
-                                  new OrderBuilder().WithState("Other").Build(),
-                                  new OrderBuilder().WithState("Cancelled").Build()
+                                  new OrderBuilder().WithState(OrderState.Processing).Build(),
+                                  new OrderBuilder().WithState(OrderState.Cancelled).Build()
                                  );
 
         await DbContext.SaveChangesAsync();
 
-        var result = await Sender.Send(new GetCurrentUserOrdersQuery(state));
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery(state.Code));
 
         result.Orders.Should().HaveCount(1);
         result.Orders[0].TotalPrice.Should().Be(expectedTotal);
