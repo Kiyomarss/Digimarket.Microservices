@@ -9,7 +9,7 @@ namespace Ordering_Infrastructure.Data.DbContext // مسیر دقیق DbContext 
     {
         public OrderingDbContext CreateDbContext(string[] args)
         {
-            // پیدا کردن خودکار مسیر پروژه Ordering-Api
+            // پیدا کردن خودکار مسیر پروژه Ordering.Api
             var currentDirectory = Directory.GetCurrentDirectory();
 
             var solutionDirectory = currentDirectory;
@@ -23,10 +23,10 @@ namespace Ordering_Infrastructure.Data.DbContext // مسیر دقیق DbContext 
             if (solutionDirectory == null)
                 throw new Exception("Solution directory not found!");
 
-            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Ordering", "Ordering-Api");
+            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Ordering", "Ordering.Api");
 
             if (!Directory.Exists(apiProjectPath))
-                throw new Exception($"Ordering-Api project not found at: {apiProjectPath}");
+                throw new Exception($"Ordering.Api project not found at: {apiProjectPath}");
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(apiProjectPath)

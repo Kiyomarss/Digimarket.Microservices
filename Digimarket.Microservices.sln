@@ -30,25 +30,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker", "src\Orde
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{4F40E0B8-5FF5-4965-A9B0-94C2E30AC7DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Api", "src\Basket\Basket-Api\Basket-Api.csproj", "{6DBE89A5-A5CE-4C53-9DE2-92D923525A4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Api", "src\Basket\Basket.Api\Basket.Api.csproj", "{6DBE89A5-A5CE-4C53-9DE2-92D923525A4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Domain", "src\Basket\Basket-Domain\Basket-Domain.csproj", "{4FEEF691-682F-41E0-94CB-F64B06B381A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Domain", "src\Basket\Basket.Domain\Basket.Domain.csproj", "{4FEEF691-682F-41E0-94CB-F64B06B381A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Worker", "src\Basket\Basket-Worker\Basket-Worker.csproj", "{AA602AC3-5608-47CA-8C93-88F29306068B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Worker", "src\Basket\Basket.Worker\Basket.Worker.csproj", "{AA602AC3-5608-47CA-8C93-88F29306068B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{1484FA4C-C096-4F08-A318-DB92CA1C22EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Api", "src\Catalog\Catalog-Api\Catalog-Api.csproj", "{6B61FCCA-8E8B-49A3-B5EC-31D19A21A59A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Api", "src\Catalog\Catalog.Api\Catalog.Api.csproj", "{6B61FCCA-8E8B-49A3-B5EC-31D19A21A59A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Application", "src\Catalog\Catalog-Application\Catalog-Application.csproj", "{20DB7E68-8A89-46F4-9350-7487C2E2CD5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Application", "src\Catalog\Catalog.Application\Catalog.Application.csproj", "{20DB7E68-8A89-46F4-9350-7487C2E2CD5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Worker", "src\Catalog\Catalog-Worker\Catalog-Worker.csproj", "{7556D892-45F8-411B-A15C-3A4409A64158}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Worker", "src\Catalog\Catalog.Worker\Catalog.Worker.csproj", "{7556D892-45F8-411B-A15C-3A4409A64158}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Infrastructure", "src\Basket\Basket-Infrastructure\Basket-Infrastructure.csproj", "{0472A157-4774-4F66-A63C-7BF8993F202B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Infrastructure", "src\Basket\Basket.Infrastructure\Basket.Infrastructure.csproj", "{0472A157-4774-4F66-A63C-7BF8993F202B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Infrastructure", "src\Ordering\Ordering.Infrastructure\Ordering.Infrastructure.csproj", "{2E488ABE-A0D8-4F42-B3EB-DDE30E315FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Infrastructure", "src\Catalog\Catalog-Infrastructure\Catalog-Infrastructure.csproj", "{D0B53765-43BB-4857-96D3-46FD48D4CA94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Infrastructure", "src\Catalog\Catalog.Infrastructure\Catalog.Infrastructure.csproj", "{D0B53765-43BB-4857-96D3-46FD48D4CA94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderGrpcContracts", "src\BuildingBlocks\Protos\OrderGrpcContracts\OrderGrpcContracts.csproj", "{F152D8D3-7074-44D9-A2BF-89C52CFF0607}"
 EndProject
@@ -62,9 +62,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3758E6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6D21C33D-0FBC-4814-9BF2-B734F464EFC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket-Application", "src\Basket\Basket-Application\Basket-Application.csproj", "{D73DF2C2-923B-416F-BECE-552BD7D18503}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "src\Basket\Basket.Application\Basket.Application.csproj", "{D73DF2C2-923B-416F-BECE-552BD7D18503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog-Domain", "src\Catalog\Catalog-Domain\Catalog-Domain.csproj", "{C3BB6302-1F06-4E73-A49D-66A6BB900C89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Domain", "src\Catalog\Catalog.Domain\Catalog.Domain.csproj", "{C3BB6302-1F06-4E73-A49D-66A6BB900C89}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{DD874FFC-5949-4375-B9D8-E76C9E93ACF1}"
 EndProject

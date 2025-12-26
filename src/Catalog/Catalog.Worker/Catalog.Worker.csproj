@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Basket.Worker-1CF756F5-CA47-4A27-A26F-6828A2C36AC7</UserSecretsId>
-    <RootNamespace>Basket.Worker</RootNamespace>
+    <UserSecretsId>dotnet-Catalog.Worker-1CF756F5-CA47-4A27-A26F-6828A2C36AC7</UserSecretsId>
+    <RootNamespace>Catalog.Worker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Basket-Domain\Basket-Domain.csproj" />
-    <ProjectReference Include="..\Basket-Infrastructure\Basket-Infrastructure.csproj" />
+    <ProjectReference Include="..\Catalog.Application\Catalog.Application.csproj" />
+    <ProjectReference Include="..\Catalog.Infrastructure\Catalog.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

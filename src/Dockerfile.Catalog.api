@@ -1,19 +1,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["Catalog/Catalog-Api/Catalog-Api.csproj", "Catalog/Catalog-Api/"]
-COPY ["Catalog/Catalog-Application/Catalog-Application.csproj", "Catalog/Catalog-Application/"]
-COPY ["Catalog/Catalog-Domain/Catalog-Domain.csproj", "Catalog/Catalog-Domain/"]
-COPY ["Catalog/Catalog-Infrastructure/Catalog-Infrastructure.csproj", "Catalog/Catalog-Infrastructure/"]
+COPY ["Catalog/Catalog.Api/Catalog.Api.csproj", "Catalog/Catalog.Api/"]
+COPY ["Catalog/Catalog.Application/Catalog.Application.csproj", "Catalog/Catalog.Application/"]
+COPY ["Catalog/Catalog.Domain/Catalog.Domain.csproj", "Catalog/Catalog.Domain/"]
+COPY ["Catalog/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Catalog/Catalog.Infrastructure/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/ProductGrpcContracts/ProductGrpcContracts.csproj", "BuildingBlocks/Protos/ProductGrpcContracts/"]
 COPY ["Shared/IntegrationEvents/IntegrationEvents.csproj", "Shared/IntegrationEvents/IntegrationEvents/"]
-RUN dotnet restore "Catalog/Catalog-Api/Catalog-Api.csproj"
+RUN dotnet restore "Catalog/Catalog.Api/Catalog.Api.csproj"
 
 COPY . .
-RUN dotnet publish -c Release -o /app Catalog/Catalog-Api/Catalog-Api.csproj
+RUN dotnet publish -c Release -o /app Catalog/Catalog.Api/Catalog.Api.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app ./
-ENTRYPOINT ["dotnet", "Catalog-Api.dll"]
+ENTRYPOINT ["dotnet", "Catalog.Api.dll"]
