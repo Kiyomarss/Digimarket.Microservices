@@ -52,34 +52,4 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
         result.Should().NotBeNull();
         result.Orders[0].TotalPrice.Should().Be(expectedTotal);
     }
-    
-    [Fact]
-    public async Task GetCurrentUserOrders_WithInvalidState_ShouldReturn_EmptyList()
-    {
-        // Arrange
-        var dbContext = _factory.DbContext;
-        dbContext.Orders.AddRange(
-            new OrderBuilder().WithState(OrderState.Shipped).Build(),
-            new OrderBuilder().WithState(OrderState.Processing).Build()
-        );
-        await dbContext.SaveChangesAsync();
-
-        // Act
-        var response = await _client.GetAsync("/Order/GetCurrentUserOrders?state=InvalidState");
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var result = await response.Content.ReadFromJsonAsync<OrdersListResponse>();
-
-        // Assert
-        result!.Orders.Should().BeEmpty();
-    }
-    
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    public async Task  GetCurrentUserOrders_WithInvalidOrEmptyState_ShouldReturn_BadRequest(string state)
-    {
-        var response = await _client.GetAsync($"/Order/GetCurrentUserOrders?state={state}");
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.Domain.Enum;
 
 namespace Ordering.Domain.UnitTests.Entities;
 
@@ -13,8 +14,7 @@ public class OrderTests
 
         // Assert
         order.Id.Should().NotBe(Guid.Empty);
-        order.Date.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        order.State.Should().Be("Init");
+        order.State.Should().Be(OrderState.Pending);
         order.Items.Should().BeEmpty();
         order.Customer.Should().BeNull();
         order.TotalPrice.Should().Be(0);

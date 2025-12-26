@@ -43,9 +43,9 @@ public class GetCurrentUserOrdersHandlerTests
         _orderRepositoryMock
             .Setup(x => x.GetOrdersForUserAsync(
                 _currentUserId,
-                OrderState.Paid, 
+                OrderState.Shipped, 
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(allOrders.Where(o => o.State == OrderState.Paid).ToList());
+            .ReturnsAsync(allOrders.Where(o => o.State == OrderState.Shipped).ToList());
 
         var query = new GetCurrentUserOrdersQuery("Paid");
 
