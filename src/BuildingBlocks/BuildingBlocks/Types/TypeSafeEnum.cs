@@ -1,19 +1,15 @@
 ﻿using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace BuildingBlocks.Types;
 
-/// <summary>
-/// پایه ژنریک برای پیاده‌سازی Type-Safe Enum Pattern
-/// </summary>
-/// <typeparam name="T">نوع خود enum (مثل OrderState)</typeparam>
-/// <typeparam name="TId">نوع شناسه (معمولاً int یا string)</typeparam>
 public abstract class TypeSafeEnum<T, TId> 
     where T : TypeSafeEnum<T, TId>
     where TId : IEquatable<TId>
 {
     public TId Id { get; }
     public string Code { get; }
-    public string Title { get; } // مثلاً عنوان فارسی یا انگلیسی برای نمایش
+    public string Title { get; }
 
     protected TypeSafeEnum(TId id, string code, string title)
     {
@@ -22,22 +18,23 @@ public abstract class TypeSafeEnum<T, TId>
         Title = title;
     }
 
-    // کش برای تمام مقادیر (thread-safe)
-    private static readonly ConcurrentDictionary<Type, IEnumerable<T>> _allValues = new();
+    // کش نهایی IReadOnlyList<T>
+    private static readonly ConcurrentDictionary<Type, IReadOnlyList<T>> _cachedAll = new();
 
     public static IReadOnlyList<T> All
     {
         get
         {
             var type = typeof(T);
-            return _allValues.GetOrAdd(type, _ => 
-                type.GetFields(System.Reflection.BindingFlags.Public | 
-                               System.Reflection.BindingFlags.Static | 
-                               System.Reflection.BindingFlags.FlattenHierarchy)
+            return _cachedAll.GetOrAdd(type, _ =>
+            {
+                var list = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                     .Where(f => f.FieldType == type)
                     .Select(f => (T)f.GetValue(null)!)
-                    .ToList()
-            ).ToList().AsReadOnly();
+                    .ToList();
+
+                return list.AsReadOnly(); // فقط یک بار AsReadOnly
+            });
         }
     }
 
@@ -62,9 +59,7 @@ public abstract class TypeSafeEnum<T, TId>
     public override string ToString() => Title;
 
     public override bool Equals(object? obj)
-    {
-        return obj is TypeSafeEnum<T, TId> other && Id.Equals(other.Id);
-    }
+        => obj is TypeSafeEnum<T, TId> other && Id.Equals(other.Id);
 
     public override int GetHashCode() => Id.GetHashCode();
 
