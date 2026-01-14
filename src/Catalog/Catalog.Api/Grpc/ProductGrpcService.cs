@@ -6,6 +6,7 @@ using ProductGrpc;
 
 namespace Catalog.Api.Grpc;
 
+//TODO شاید بهتر باشد برای این کلاس نیز مانند قسمت clint آن از اینترفیس استفاده شود
 public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
 {
     private readonly ISender _sender;
