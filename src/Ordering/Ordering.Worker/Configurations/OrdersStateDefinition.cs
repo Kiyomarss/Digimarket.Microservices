@@ -4,6 +4,7 @@ using Ordering.Worker.DbContext;
 
 namespace Ordering.Worker.Configurations;
 
+//TODO: کاربرد کد زیر چیست؟
 public class OrdersStateDefinition :
     SagaDefinition<OrderState>
 {

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ordering.Worker.Configurations.Saga;
 
+//TODO: کاربرد کد زیر چیست؟ چرا دیگر پراپرتی ها به کد زیر اضافه نشده؟
 public class OrderStateMap :
     SagaClassMap<OrderState>
 {
