@@ -15,11 +15,13 @@ public class OrderRepository : IOrderRepository
         _db = dbContext;
     }
     
+    //TODO: یک کلاس بیس تعریف شود و متد های پایه ای مانند زیر به آن انتقال داده شود
     public async Task AddOrder(Order order)
     {
         await _db.Set<Order>().AddAsync(order);
     }
     
+    //TODO: در تمام کد هایی که برای ریپوزیتوری نوشته شده از Set استفاده کرده ام. می‌تواز دستورات دیگری مانند Find، Add و ... استفاده کرد. در را بطه با این مورد تحقیق شود.
     public async Task<Order?> GetByIdWithItemsAsync(Guid id)
     {
         return await _db.Set<Order>()

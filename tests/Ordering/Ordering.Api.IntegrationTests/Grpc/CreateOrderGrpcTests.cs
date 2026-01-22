@@ -36,6 +36,8 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
 
         response.OrderId.Should().NotBeEmpty();
         var orderId = Guid.Parse(response.OrderId);
+        
+        //TODO: با توجه به متد موجود در لایه Api به نظر می‌رسد کد های زیر اضافه است
 
         var order = await DbContext.Orders
                                    .Include(o => o.Items)

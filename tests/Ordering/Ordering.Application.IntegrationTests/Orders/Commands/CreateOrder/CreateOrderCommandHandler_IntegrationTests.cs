@@ -38,7 +38,7 @@ public class CreateOrderCommandHandler_IntegrationTests : OrderingAppTestBase
             .FirstOrDefaultAsync(o => o.Id == orderId);
 
         order.Should().NotBeNull();
-        order!.Customer.Should().Be("Ali Ahmadi");
+        order.Customer.Should().Be("Ali Ahmadi");
         order.Items.Should().HaveCount(2);
 
         // Assert 2: پیام در Outbox ذخیره شده

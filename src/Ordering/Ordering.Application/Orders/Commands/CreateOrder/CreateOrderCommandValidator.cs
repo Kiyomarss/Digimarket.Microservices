@@ -37,6 +37,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .WithMessage("Duplicate products are not allowed in the order.");
     }
 
+    //TODO: متد زیر می‌تواند به تنهای استفاده شود و شروط دیگری در کنار آن به صورت اضافه ست نشود
     // متد کمکی برای چک GUID
     private static bool BeAValidGuid(string productId)
     {
