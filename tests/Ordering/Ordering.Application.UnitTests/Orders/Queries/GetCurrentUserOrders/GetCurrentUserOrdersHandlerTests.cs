@@ -4,7 +4,7 @@ using Moq;
 using Ordering.Application.Orders.Queries;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
-using Ordering_Domain.Domain.RepositoryContracts;
+using Ordering.Application.RepositoryContracts;
 using Shared;
 
 namespace Ordering.Application.UnitTests.Orders.Queries.GetCurrentUserOrders;
@@ -31,23 +31,19 @@ public class GetCurrentUserOrdersHandlerTests
     [Fact]
     public async Task Handle_WhenStateFilterApplied_Should_ReturnOnlyMatchingOrders()
     {
-        // Arrange
-        var allOrders = new List<Order>
+        var summaries = new List<OrderSummaryDto>
         {
-            OrderBuilder.Shipped().WithItems((1, 100_000L)).Build(),
-            OrderBuilder.Processing().WithItems((1, 50_000L)).Build(),
-            OrderBuilder.Shipped().WithItems((1, 200_000L)).Build(),
-            OrderBuilder.Pending().WithItems((1, 300_000L)).Build()
+            new(DateTime.UtcNow, 100_000L), new(DateTime.UtcNow, 200_000L)
         };
 
         _orderRepositoryMock
             .Setup(x => x.GetOrdersForUserAsync(
-                _currentUserId,
-                OrderState.Shipped, 
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(allOrders.Where(o => o.State == OrderState.Shipped).ToList());
+                                                _currentUserId,
+                                                OrderState.Shipped,
+                                                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(summaries);
 
-        var query = new GetCurrentUserOrdersQuery("Paid");
+        var query = new GetCurrentUserOrdersQuery(OrderState.Shipped.Code);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -67,9 +63,9 @@ public class GetCurrentUserOrdersHandlerTests
                 It.IsAny<Guid>(),
                 It.IsAny<OrderState>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Order>());
+            .ReturnsAsync(new List<OrderSummaryDto>());
 
-        var query = new GetCurrentUserOrdersQuery("Paid");
+        var query = new GetCurrentUserOrdersQuery(OrderState.Shipped.Code);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

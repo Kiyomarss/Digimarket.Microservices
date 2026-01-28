@@ -1,7 +1,8 @@
 ﻿using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
+using Ordering.Application.Orders.Queries;
 
-namespace Ordering_Domain.Domain.RepositoryContracts;
+namespace Ordering.Application.RepositoryContracts;
 
 public interface IOrderRepository
 {
@@ -11,5 +12,5 @@ public interface IOrderRepository
 
     Task<Order?> GetByIdAsync(Guid id);
 
-    Task<List<Order>> GetOrdersForUserAsync(Guid userId, OrderState state, CancellationToken cancellationToken);
+    Task<List<OrderSummaryDto>> GetOrdersForUserAsync(Guid userId, OrderState state, CancellationToken cancellationToken);
 }

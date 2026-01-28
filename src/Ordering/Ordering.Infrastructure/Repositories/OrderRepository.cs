@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
-using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Application.Orders.Queries;
+using Ordering.Application.RepositoryContracts;
 
 namespace Ordering_Infrastructure.Repositories;
 
@@ -35,14 +36,14 @@ public class OrderRepository : IOrderRepository
                         .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<List<Order>> GetOrdersForUserAsync(Guid userId, OrderState state, CancellationToken ct)
+    public async Task<List<OrderSummaryDto>> GetOrdersForUserAsync(Guid userId, OrderState state, CancellationToken ct)
     {
         return await _db.Set<Order>()
                         .Where(x => x.UserId == userId && x.State == state)
-                        .Select(x => new Order
-                        {
-                            Date = x.Date, Items = x.Items
-                        })
+                        .Select(x => new OrderSummaryDto
+                        (
+                            x.Date, x.Items.Sum(i => i.Price * i.Quantity)
+                        ))
                         .ToListAsync(ct);
     }
 }

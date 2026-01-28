@@ -3,10 +3,10 @@ using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Repositories;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
 

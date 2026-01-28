@@ -3,7 +3,7 @@ using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering_Domain.Domain.Entities;
-using Ordering_Domain.Domain.RepositoryContracts;
+using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
 using Shared.IntegrationEvents.Ordering;

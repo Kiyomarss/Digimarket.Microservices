@@ -5,8 +5,8 @@ using BuildingBlocks.UnitOfWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Ordering_Domain.Domain.Enum;
-using Ordering_Domain.Domain.RepositoryContracts;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.Application.RepositoryContracts;
 
 namespace Ordering.Application.Orders.Commands.UpdateOrderStatus;
 

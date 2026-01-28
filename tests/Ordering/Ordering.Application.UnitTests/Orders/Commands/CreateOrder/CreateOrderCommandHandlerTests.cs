@@ -4,12 +4,12 @@ using BuildingBlocks.Services;
 using FluentAssertions;
 using Moq;
 using Ordering_Domain.Domain.Entities;
-using Ordering_Domain.Domain.RepositoryContracts;
 using ProductGrpc;
 using Shared.IntegrationEvents.Ordering;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using Shared;
 
