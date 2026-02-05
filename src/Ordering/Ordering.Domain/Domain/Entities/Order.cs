@@ -12,4 +12,16 @@ public class Order
     
     public Guid UserId { get; set; }
     public string Customer { get; set; } = null!;
+    
+    private void ChangeStateInternal(OrderState newState)
+    {
+        State = newState;
+    }
+    
+    public void Pay() => ChangeStateInternal(OrderState.Paid);
+
+    public void Ship() => ChangeStateInternal(OrderState.Shipped);
+
+    public void Cancel() => ChangeStateInternal(OrderState.Cancelled);
+
 }

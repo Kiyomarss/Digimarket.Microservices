@@ -17,7 +17,7 @@ public class OrderRepository : IOrderRepository
     }
     
     //TODO: یک کلاس بیس تعریف شود و متد های پایه ای مانند زیر به آن انتقال داده شود
-    public async Task AddOrder(Order order)
+    public async Task Add(Order order)
     {
         await _db.Set<Order>().AddAsync(order);
     }

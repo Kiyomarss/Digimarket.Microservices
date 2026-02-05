@@ -46,7 +46,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         await PublishOrderInitiatedEvent(order.Id, request.Customer, cancellationToken);
 
         // 4. ذخیره در دیتابیس
-        await _orderRepository.AddOrder(order);
+        await _orderRepository.Add(order);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return order.Id;

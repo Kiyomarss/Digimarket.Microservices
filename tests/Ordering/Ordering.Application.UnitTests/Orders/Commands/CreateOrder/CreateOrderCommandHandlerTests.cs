@@ -77,7 +77,7 @@ public class CreateOrderCommandHandlerTests
 
         _currentUserServiceMock.Verify(r => r.GetRequiredUserId(), Times.Once);
         
-        _orderRepoMock.Verify(r => r.AddOrder(It.Is<Order>(o =>
+        _orderRepoMock.Verify(r => r.Add(It.Is<Order>(o =>
             o.Customer == "Ali Ahmadi" &&
             o.UserId == _currentUserId &&
             o.Items.Count == 2 &&
@@ -143,7 +143,7 @@ public class CreateOrderCommandHandlerTests
         };
 
         Order? capturedOrder = null;
-        _orderRepoMock.Setup(r => r.AddOrder(It.IsAny<Order>()))
+        _orderRepoMock.Setup(r => r.Add(It.IsAny<Order>()))
             .Callback<Order>(o => capturedOrder = o);
 
         await _handler.Handle(command, CancellationToken.None);

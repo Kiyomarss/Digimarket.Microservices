@@ -6,7 +6,7 @@ namespace Ordering.Application.RepositoryContracts;
 
 public interface IOrderRepository
 {
-    Task AddOrder(Order order);
+    Task Add(Order order);
 
     Task<Order?> GetByIdWithItemsAsync(Guid id);
 

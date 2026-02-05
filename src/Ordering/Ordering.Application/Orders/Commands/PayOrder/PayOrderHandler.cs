@@ -1,34 +1,30 @@
-﻿
-using BuildingBlocks.CQRS;
+﻿using BuildingBlocks.CQRS;
 using BuildingBlocks.Exceptions;
 using BuildingBlocks.UnitOfWork;
 using MediatR;
-using Microsoft.Extensions.Logging;
-using Ordering_Domain.Domain.Enum;
-using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.Application.RepositoryContracts;
 
-namespace Ordering.Application.Orders.Commands.UpdateOrderStatus;
+namespace Ordering.Application.Orders.Commands.PayOrder;
 
-public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand>
+public class PayOrderHandler : ICommandHandler<PayOrderCommand>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateOrderStatusHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
+    public PayOrderHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository)
     {
         _unitOfWork = unitOfWork;
         _orderRepository = orderRepository;
     }
 
-    public async Task<Unit> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(PayOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _orderRepository.GetByIdAsync(request.Id);
 
         if (order is null)
             throw new NotFoundException($"Order with id '{request.Id}' not found");
 
-        order.State = OrderState.FromCode(request.State);
+        order.Pay();
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Unit.Value;
