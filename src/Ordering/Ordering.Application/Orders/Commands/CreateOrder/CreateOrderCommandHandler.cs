@@ -66,30 +66,23 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         return response;
     }
 
-    private async Task<Order> CreateOrderFromProducts(CreateOrderCommand request, GetProductsResponse productResponse)
+    private async Task<Order> CreateOrderFromProducts(
+        CreateOrderCommand request,
+        GetProductsResponse products)
     {
-        var orderId = Guid.NewGuid();
         var userId = await _currentUser.GetRequiredUserId();
-        
-        var order = new Order
-        {
-            Id = orderId,
-            UserId = userId,
-        };
 
-        foreach (var grpcProduct in productResponse.Products)
-        {
-            var productId = Guid.Parse(grpcProduct.ProductId);
-            var requestedItem = request.Items.Single(i => i.ProductId == grpcProduct.ProductId);
+        var order = Order.Create(userId);
 
-            order.Items.Add(new OrderItem
-            {
-                OrderId = orderId,
-                ProductId = productId,
-                ProductName = grpcProduct.ProductName,
-                Price = grpcProduct.Price,
-                Quantity = requestedItem.Quantity
-            });
+        foreach (var product in products.Products)
+        {
+            var reqItem = request.Items.Single(i => i.ProductId == product.ProductId);
+
+            order.AddItem(
+                          Guid.Parse(product.ProductId),
+                          product.ProductName,
+                          product.Price,
+                          reqItem.Quantity);
         }
 
         return order;

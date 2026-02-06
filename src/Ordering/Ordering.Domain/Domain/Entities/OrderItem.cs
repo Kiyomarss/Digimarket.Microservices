@@ -23,4 +23,21 @@ public class OrderItem
     
     [Required]
     public long Price { get; set; } = default!;
+    
+    public static OrderItem Create(
+        Guid orderId,
+        Guid productId,
+        string productName,
+        long price,
+        int quantity)
+    {
+        return new OrderItem
+        {
+            OrderId = orderId,
+            ProductId = productId,
+            ProductName = productName,
+            Price = price,
+            Quantity = quantity
+        };
+    }
 }
