@@ -13,7 +13,6 @@ namespace Ordering.Application.Orders.Commands.CreateOrder;
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Guid>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IPublishEndpoint _publishEndpoint;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IProductService _productService;
     private readonly ICurrentUserService _currentUser;
@@ -26,7 +25,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         ICurrentUserService currentUser)
     {
         _orderRepository = orderRepository;
-        _publishEndpoint = publishEndpoint;
         _unitOfWork = unitOfWork;
         _productService = productService;
         _currentUser = currentUser;
@@ -41,10 +39,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
         // 2. ایجاد آبجکت Order
         var order = await CreateOrderFromProducts(request, productResponse);
-
-        // 3. انتشار event
-        await PublishOrderInitiatedEvent(order.Id, cancellationToken);
-
+        
         // 4. ذخیره در دیتابیس
         await _orderRepository.Add(order);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -86,16 +81,5 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         }
 
         return order;
-    }
-
-    private async Task PublishOrderInitiatedEvent(Guid orderId, CancellationToken ct)
-    {
-        var evt = new OrderInitiated
-        {
-            Id = orderId,
-            Date = DateTime.UtcNow
-        };
-
-        await _publishEndpoint.Publish(evt, ct);
     }
 }

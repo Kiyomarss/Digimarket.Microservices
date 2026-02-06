@@ -1,8 +1,10 @@
+using BuildingBlocks.Domain;
 using Ordering_Domain.Domain.Enum;
+using Ordering_Domain.DomainEvents;
 
 namespace Ordering_Domain.Domain.Entities;
 
-public class Order
+public class Order : AggregateRoot
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public DateTime Date { get; set; }
@@ -46,12 +48,16 @@ public class Order
     
     public static Order Create(Guid userId)
     {
-        return new Order
+        var order = new Order
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Date = DateTime.UtcNow,
+            Date = DateTime.Now,
             State = OrderState.Pending
         };
+
+        order.AddDomainEvent(new OrderInitiatedDomainEvent(order.Id));
+
+        return order;
     }
 }
