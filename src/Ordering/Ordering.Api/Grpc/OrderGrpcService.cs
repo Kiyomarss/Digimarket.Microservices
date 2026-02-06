@@ -18,7 +18,6 @@ public class OrderGrpcService : OrderProtoService.OrderProtoServiceBase
     {
         var command = new CreateOrderCommand
         {
-            Customer = request.Customer,
             Items = request.Items
                            .Select(i => new CreateOrderCommand.OrderItemDto
                            {

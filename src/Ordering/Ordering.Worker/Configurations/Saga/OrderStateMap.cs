@@ -13,6 +13,5 @@ public class OrderStateMap :
         entity.Property(x => x.CurrentState);
         
         entity.Property(x => x.Date);
-        entity.Property(x => x.Customer);
     }
 }

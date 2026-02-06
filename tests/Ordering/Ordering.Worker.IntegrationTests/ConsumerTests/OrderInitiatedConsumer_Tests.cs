@@ -24,7 +24,6 @@ namespace Ordering.Worker.IntegrationTests.ConsumerTests
             await Bus.Publish(new OrderInitiated
             {
                 Id = orderId,
-                Customer = "TestCustomer",
                 Date = now
             });
 
@@ -36,7 +35,6 @@ namespace Ordering.Worker.IntegrationTests.ConsumerTests
             saga.Should().NotBeNull("Saga should be created");
             saga!.CurrentState.Should().Be("WaitingForPayment");
             saga.Date.Should().Be(now);
-            saga.Customer.Should().Be("TestCustomer");
             saga.ReminderScheduleTokenId.Should().NotBeNull("Reminder should be scheduled");
             saga.CancelScheduleTokenId.Should().NotBeNull("CancelOrder should be scheduled");
         }

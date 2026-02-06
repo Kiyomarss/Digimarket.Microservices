@@ -8,7 +8,6 @@ public class OrderBuilder
     {
         Id = Guid.NewGuid(),
         UserId = TestGuids.Guid3,
-        Customer = "Test Customer",
         Date = DateTime.Now,
         Items = new List<OrderItem>()
     };

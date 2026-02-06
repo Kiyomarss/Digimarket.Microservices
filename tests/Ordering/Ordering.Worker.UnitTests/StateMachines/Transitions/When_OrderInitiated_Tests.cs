@@ -23,7 +23,6 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             await Harness.Bus.Publish(new OrderInitiated
             {
                 Id = orderId,
-                Customer = "TestCustomer",
                 Date = now
             });
 
@@ -37,7 +36,6 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             // بررسی وضعیت saga
             instance.CurrentState.Should().Be(Machine.WaitingForPayment.Name);
             instance.Date.Should().Be(now);
-            instance.Customer.Should().Be("TestCustomer");
 
             // بررسی پیام‌های منتشرشده
             (await Harness.Published.Any<ReduceInventory>(x => x.Context.Message.Id == orderId))

@@ -14,7 +14,6 @@ message OrderItemDto {
 }
 
 message CreateOrderRequest {
-  string customer = 1;
   repeated OrderItemDto items = 2;
 }
 

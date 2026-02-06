@@ -16,7 +16,6 @@ public class OrderTests
         order.Id.Should().NotBe(Guid.Empty);
         order.State.Should().Be(OrderState.Pending);
         order.Items.Should().BeEmpty();
-        order.Customer.Should().BeNull();
         order.TotalPrice.Should().Be(0);
     }
 
@@ -26,7 +25,6 @@ public class OrderTests
         // Arrange
         var order = new Order
         {
-            Customer = "Ali",
             Items =
             {
                 new OrderItem { Price = 1000, Quantity = 2 }, // 2000

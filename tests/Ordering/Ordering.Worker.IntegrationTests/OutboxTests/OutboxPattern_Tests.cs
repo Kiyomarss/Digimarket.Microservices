@@ -23,7 +23,6 @@ namespace Ordering.Worker.IntegrationTests.OutboxTests
             await Bus.Publish(new OrderInitiated
             {
                 Id = orderId,
-                Customer = "TestCustomer",
                 Date = now
             });
 

@@ -43,7 +43,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         var order = await CreateOrderFromProducts(request, productResponse);
 
         // 3. انتشار event
-        await PublishOrderInitiatedEvent(order.Id, request.Customer, cancellationToken);
+        await PublishOrderInitiatedEvent(order.Id, cancellationToken);
 
         // 4. ذخیره در دیتابیس
         await _orderRepository.Add(order);
@@ -75,7 +75,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         {
             Id = orderId,
             UserId = userId,
-            Customer = request.Customer,
         };
 
         foreach (var grpcProduct in productResponse.Products)
@@ -96,12 +95,11 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         return order;
     }
 
-    private async Task PublishOrderInitiatedEvent(Guid orderId, string customer, CancellationToken ct)
+    private async Task PublishOrderInitiatedEvent(Guid orderId, CancellationToken ct)
     {
         var evt = new OrderInitiated
         {
             Id = orderId,
-            Customer = customer,
             Date = DateTime.UtcNow
         };
 

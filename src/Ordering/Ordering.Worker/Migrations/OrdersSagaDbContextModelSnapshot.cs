@@ -204,10 +204,6 @@ namespace Ordering.Worker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Customer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 

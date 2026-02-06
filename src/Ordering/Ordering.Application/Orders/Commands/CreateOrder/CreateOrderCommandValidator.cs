@@ -6,12 +6,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {
     public CreateOrderCommandValidator()
     {
-        // 1. Customer
-        RuleFor(x => x.Customer)
-            .NotEmpty().WithMessage("Customer name is required.")
-            .NotNull().WithMessage("Customer name cannot be null.")
-            .MaximumLength(100).WithMessage("Customer name cannot exceed 100 characters.");
-
         // 2. Items list
         RuleFor(x => x.Items)
             .NotNull().WithMessage("Order items cannot be null.")

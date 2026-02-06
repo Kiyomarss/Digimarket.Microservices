@@ -27,7 +27,6 @@ namespace Ordering.Worker.StateMachines
                     .Then(context =>
                     {
                         context.Saga.Date = context.Message.Date;
-                        context.Saga.Customer = context.Message.Customer;
                     })
                     .ThenAsync(async context =>
                     {

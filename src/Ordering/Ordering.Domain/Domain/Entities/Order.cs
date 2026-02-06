@@ -11,7 +11,6 @@ public class Order
     public long TotalPrice => Items.Sum(x => x.Price * x.Quantity);
     
     public Guid UserId { get; set; }
-    public string Customer { get; set; } = null!;
     
     private void ChangeStateInternal(OrderState newState)
     {

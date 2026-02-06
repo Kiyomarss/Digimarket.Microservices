@@ -44,7 +44,6 @@ public class CreateOrderCommandHandlerTests
     {
         return new CreateOrderCommand
         {
-            Customer = "Ali Ahmadi",
             Items =
             {
                 new CreateOrderCommand.OrderItemDto { ProductId = TestGuids.Guid1, Quantity = 2 },
@@ -78,7 +77,6 @@ public class CreateOrderCommandHandlerTests
         _currentUserServiceMock.Verify(r => r.GetRequiredUserId(), Times.Once);
         
         _orderRepoMock.Verify(r => r.Add(It.Is<Order>(o =>
-            o.Customer == "Ali Ahmadi" &&
             o.UserId == _currentUserId &&
             o.Items.Count == 2 &&
             o.Items.Any(i => i.ProductId.ToString() == TestGuids.Guid1 && i.Quantity == 2) &&
@@ -87,7 +85,6 @@ public class CreateOrderCommandHandlerTests
 
         _publishMock.Verify(p => p.Publish(
             It.Is<OrderInitiated>(e =>
-                e.Customer == "Ali Ahmadi" &&
                 e.Id == orderId
             ),
             It.IsAny<CancellationToken>()
@@ -138,7 +135,6 @@ public class CreateOrderCommandHandlerTests
 
         var command = new CreateOrderCommand
         {
-            Customer = "Test",
             Items = { new CreateOrderCommand.OrderItemDto { ProductId = TestGuids.Guid1, Quantity = 5 } }
         };
 

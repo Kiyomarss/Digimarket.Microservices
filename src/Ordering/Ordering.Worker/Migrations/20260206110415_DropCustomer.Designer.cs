@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Ordering_Infrastructure.Data.DbContext;
+using Ordering.Worker.DbContext;
 
 #nullable disable
 
-namespace Ordering_Infrastructure.Migrations
+namespace Ordering.Worker.Migrations
 {
-    [DbContext(typeof(OrderingDbContext))]
-    partial class OrderingDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(OrdersSagaDbContext))]
+    [Migration("20260206110415_DropCustomer")]
+    partial class DropCustomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,79 +195,42 @@ namespace Ordering_Infrastructure.Migrations
                     b.ToTable("OutboxState");
                 });
 
-            modelBuilder.Entity("Ordering_Domain.Domain.Entities.Order", b =>
+            modelBuilder.Entity("Ordering.Worker.Configurations.Saga.OrderState", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CancelScheduleTokenId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CurrentState")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("State")
-                        .HasColumnType("integer")
-                        .HasColumnName("order_state_id");
+                    b.Property<bool>("IsBasketRemoved")
+                        .HasColumnType("boolean");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<bool>("IsInventoryReduced")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPaymentValidated")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsReminderSent")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("PaymentReference")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("Date");
-
-                    b.HasIndex("UserId", "State");
-
-                    b.ToTable("orders", (string)null);
-                });
-
-            modelBuilder.Entity("Ordering_Domain.Domain.Entities.OrderItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("ReminderScheduleTokenId")
                         .HasColumnType("uuid");
 
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint");
+                    b.HasKey("CorrelationId");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("order_items", (string)null);
-                });
-
-            modelBuilder.Entity("Ordering_Domain.Domain.Entities.OrderItem", b =>
-                {
-                    b.HasOne("Ordering_Domain.Domain.Entities.Order", "Order")
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("Ordering_Domain.Domain.Entities.Order", b =>
-                {
-                    b.Navigation("Items");
+                    b.ToTable("OrderState");
                 });
 #pragma warning restore 612, 618
         }

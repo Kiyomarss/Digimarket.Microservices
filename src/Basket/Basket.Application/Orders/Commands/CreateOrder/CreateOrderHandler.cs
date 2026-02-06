@@ -35,10 +35,7 @@ public class CreateOrderHandler
         if (basket == null)
             throw new Exception("Basket not found.");
 
-        var request = new CreateOrderRequest
-        {
-            Customer = _currentUser.GetUserName() ?? "unknown"
-        };
+        var request = new CreateOrderRequest();
 
         request.Items.AddRange(basket.Items.Select(x => new OrderItemDto
         {

@@ -24,7 +24,6 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
 
         var request = new CreateOrderRequest
         {
-            Customer = "Ali Ahmadi",
             Items =
             {
                 new OrderItemDto { ProductId = TestGuids.Guid1, Quantity = 2 },
@@ -44,7 +43,6 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
                                    .FirstAsync(o => o.Id == orderId);
 
         order.Should().NotBeNull();
-        order!.Customer.Should().Be("Ali Ahmadi");
         order.Items.Should().HaveCount(2);
 
         var outboxMessages = await DbContext.Set<OutboxMessage>()

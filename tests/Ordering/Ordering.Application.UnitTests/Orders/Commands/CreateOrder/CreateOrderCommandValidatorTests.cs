@@ -10,36 +10,12 @@ public class CreateOrderCommandValidatorTests
 {
     private readonly CreateOrderCommandValidator _validator = new();
 
-    [Fact]
-    public void Should_Have_Error_When_Customer_Is_Empty()
-    {
-        // Arrange
-        var command = new CreateOrderCommand
-        {
-            Customer = "",
-            Items = new List<CreateOrderCommand.OrderItemDto>
-            {
-                new() { ProductId = Guid.NewGuid().ToString(), Quantity = 1 }
-            }
-        };
-
-        // Act
-        ValidationResult result = _validator.Validate(command);
-
-        // Assert با FluentAssertions
-        result.Errors
-              .Should().ContainSingle(e => e.PropertyName == nameof(command.Customer))
-              .Which.ErrorMessage.Should().Be("Customer name is required.");
-    }
 
     [Fact]
     public void Should_Have_Error_When_Items_Is_Empty()
     {
         // Arrange
-        var command = new CreateOrderCommand
-        {
-            Customer = "John Doe",
-        };
+        var command = new CreateOrderCommand { };
 
         // Act
         var result = _validator.Validate(command);
@@ -56,7 +32,6 @@ public class CreateOrderCommandValidatorTests
         // Arrange
         var command = new CreateOrderCommand
         {
-            Customer = "John Doe",
             Items = new List<CreateOrderCommand.OrderItemDto>
             {
                 new() { ProductId = "invalid-guid", Quantity = 1 }
@@ -79,7 +54,6 @@ public class CreateOrderCommandValidatorTests
         var productId = Guid.NewGuid().ToString();
         var command = new CreateOrderCommand
         {
-            Customer = "John Doe",
             Items = new List<CreateOrderCommand.OrderItemDto>
             {
                 new() { ProductId = productId, Quantity = 1 },
@@ -102,7 +76,6 @@ public class CreateOrderCommandValidatorTests
         // Arrange
         var command = new CreateOrderCommand
         {
-            Customer = "John Doe",
             Items = new List<CreateOrderCommand.OrderItemDto>
             {
                 new() { ProductId = Guid.NewGuid().ToString(), Quantity = 5 },

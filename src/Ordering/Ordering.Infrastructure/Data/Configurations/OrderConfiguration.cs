@@ -33,11 +33,6 @@ namespace Ordering_Infrastructure.Data.Configurations
                    .IsRequired()
                    .HasColumnType("uuid");
 
-            builder.Property(x => x.Customer)
-                   .IsRequired()
-                   .HasMaxLength(200)
-                   .HasColumnType("varchar(200)");
-
             // ارتباط یک‌به‌چند بین Order و OrderItem
             builder.HasMany(x => x.Items)
                    .WithOne(i => i.Order)
