@@ -1,5 +1,5 @@
-﻿using Basket.Domain.Entities;
-using Basket.Domain.RepositoryContracts;
+﻿using Basket_Application.RepositoryContracts;
+using Basket.Domain.Entities;
 using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions.Caching;
 using Microsoft.Extensions.Caching.Distributed;

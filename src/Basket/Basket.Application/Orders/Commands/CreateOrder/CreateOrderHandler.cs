@@ -1,4 +1,4 @@
-﻿using Basket.Domain.RepositoryContracts;
+﻿using Basket_Application.RepositoryContracts;
 using BuildingBlocks.CQRS;
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;

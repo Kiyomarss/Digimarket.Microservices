@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
-using Catalog_Domain.RepositoryContracts;
 using Catalog_Infrastructure.Data.DbContext;
 using Catalog_Infrastructure.Repositories;
 using Catalog.Application.Products.Queries;
+using Catalog.Application.RepositoryContracts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
