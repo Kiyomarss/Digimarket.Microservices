@@ -20,8 +20,7 @@ namespace Ordering_Infrastructure.Data.Configurations
 
             builder.Property(x => x.Date)
                    .IsRequired()
-                   .HasColumnType("timestamp without time zone")
-                   .HasDefaultValueSql("NOW()");
+                   .HasColumnType("timestamptz");
 
             builder.Property(x => x.State)
                    .IsRequired()

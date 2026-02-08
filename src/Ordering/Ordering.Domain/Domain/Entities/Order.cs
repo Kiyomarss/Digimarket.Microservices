@@ -52,7 +52,7 @@ public class Order : AggregateRoot
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Date = DateTime.Now,
+            Date = DateTime.UtcNow,
             State = OrderState.Pending
         };
 
