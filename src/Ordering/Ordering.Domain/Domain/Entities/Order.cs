@@ -25,18 +25,14 @@ public class Order : AggregateRoot
     
     public void Pay() => ChangeStateInternal(OrderState.Paid);
 
-    public void Ship() => ChangeStateInternal(OrderState.Shipped);
-
-    public void Cancel() => ChangeStateInternal(OrderState.Cancelled);
-
     public void AddItem(
         Guid productId,
         string productName,
         long price,
         int quantity)
     {
-        if(quantity <= 0)
-            throw new InvalidOperationException("Quantity must be positive");
+        if (quantity <= 0)
+            throw new DomainException("Quantity must be positive");
 
         _items.Add(OrderItem.Create(
                                     Id,

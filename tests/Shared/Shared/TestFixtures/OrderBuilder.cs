@@ -2,44 +2,35 @@
 using Ordering_Domain.Domain.Enum;
 using Shared;
 
-public class OrderBuilder
+public sealed class OrderBuilder
 {
-    private readonly Order _order = new()
-    {
-        Id = Guid.NewGuid(),
-        UserId = TestGuids.Guid3,
-        Date = DateTime.Now,
-        Items = new List<OrderItem>()
-    };
+    private readonly Order _order;
 
-    public OrderBuilder WithState(OrderState state)
+    public OrderBuilder()
     {
-        _order.State = state;
-        return this;
+        _order = Order.Create(TestGuids.Guid3);
     }
 
     public OrderBuilder WithItems(params (int quantity, long price)[] items)
     {
-        _order.Items = items.Select(i => new OrderItem
+        foreach (var item in items)
         {
-            ProductId = Guid.NewGuid(),
-            ProductName = $"Product {Guid.NewGuid():N}".Substring(0, 8),
-            Quantity = i.quantity,
-            Price = i.price
-        }).ToList();
+            _order.AddItem(
+                           Guid.NewGuid(),
+                           $"Product {Guid.NewGuid():N}".Substring(0, 8),
+                           item.price,
+                           item.quantity);
+        }
+
         return this;
     }
 
-    public OrderBuilder WithUserId(Guid userId)
+    public OrderBuilder Paid()
     {
-        _order.UserId = userId;
+        _order.Pay();
+
         return this;
     }
 
     public Order Build() => _order;
-
-    // متدهای آماده
-    public static OrderBuilder Processing() => new OrderBuilder().WithState(OrderState.Processing);
-    public static OrderBuilder Shipped() => new OrderBuilder().WithState(OrderState.Shipped);
-    public static OrderBuilder Pending() => new OrderBuilder().WithState(OrderState.Pending);
 }

@@ -18,7 +18,7 @@ public class OrderItem
     public Guid OrderId { get; set; }   
     public Order Order { get; set; } = default!;
     public Guid ProductId { get; set; } = default!;
-    public string ProductName { get; set; } = default!;
+    public string ProductName { get; set; } = default!;// حذف شود
     public int Quantity { get; set; } = default!;
     
     [Required]
