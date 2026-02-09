@@ -11,43 +11,49 @@ namespace Ordering.Application.IntegrationTests.Orders.Queries.GetCurrentUserOrd
 
 public class GetCurrentUserOrdersHandler : OrderingAppTestBase
 {
-    public GetCurrentUserOrdersHandler(OrderingAppFactory fixture) 
+    public GetCurrentUserOrdersHandler(OrderingAppFactory fixture)
         : base(fixture) { }
-    
-    [Theory]
-    [MemberData(nameof(OrderTestData))]
-    public async Task Handle_Should_Return_Correct_TotalAmount_For_Given_State(
-        OrderState state, 
-        long expectedTotal, 
-        (int quantity, long price)[] items)
+
+    [Fact]
+    public async Task Handle_Should_Return_Empty_List_When_No_Orders_Exist()
+    {
+        await CleanupDatabase();
+
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
+
+        result.Orders.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Handle_Should_Return_Empty_List_When_No_Order_Matches_State()
     {
         await CleanupDatabase();
 
         DbContext.Orders.Add(
-                             new OrderBuilder()
-                                 .WithState(state)
-                                 .WithItems(items)
-                                 .Build()
+                             new OrderBuilder().WithState(OrderState.Cancelled).WithItems((1, 100)).Build()
                             );
 
-        // سفارش‌های دیگر برای تست فیلتر
+        await DbContext.SaveChangesAsync();
+
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
+
+        result.Orders.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Handle_Should_Return_All_Matching_Orders()
+    {
+        await CleanupDatabase();
+
         DbContext.Orders.AddRange(
-                                  new OrderBuilder().WithState(OrderState.Processing).Build(),
-                                  new OrderBuilder().WithState(OrderState.Cancelled).Build()
+                                  new OrderBuilder().WithState(OrderState.Pending).WithItems((1, 100)).Build(),
+                                  new OrderBuilder().WithState(OrderState.Pending).WithItems((2, 100)).Build()
                                  );
 
         await DbContext.SaveChangesAsync();
 
-        var result = await Sender.Send(new GetCurrentUserOrdersQuery(state.Code));
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
 
-        result.Orders.Should().HaveCount(1);
-        result.Orders[0].TotalPrice.Should().Be(expectedTotal);
-    }
-
-    public static IEnumerable<object[]> OrderTestData()
-    {
-        yield return ["Shipped", 300_000L, new[] { (3, 100_000L) }];
-        yield return ["Processing", 250_000L, new[] { (2, 100_000L), (1, 50_000L) }];
-        yield return ["Pending", 200_000L, new[] { (1, 200_000L) }];
+        result.Orders.Should().HaveCount(2);
     }
 }

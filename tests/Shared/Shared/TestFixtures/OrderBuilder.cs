@@ -10,6 +10,12 @@ public sealed class OrderBuilder
     {
         _order = Order.Create(TestGuids.Guid3);
     }
+    
+    public OrderBuilder WithState(OrderState state)
+    {
+        _order.State = state;
+        return this;
+    }
 
     public OrderBuilder WithItems(params (int quantity, long price)[] items)
     {
