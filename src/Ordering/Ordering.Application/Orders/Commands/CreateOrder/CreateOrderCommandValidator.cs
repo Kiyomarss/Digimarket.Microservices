@@ -8,7 +8,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     {
         // 2. Items list
         RuleFor(x => x.Items)
-            .NotNull().WithMessage("Order items cannot be null.")
             .NotEmpty().WithMessage("Order must contain at least one item.")
             .Must(items => items.Count <= 50).WithMessage("Order cannot contain more than 50 items."); // محدودیت منطقی
 

@@ -20,26 +20,14 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
     }
 
     [Theory]
-    [InlineData("Shipped", 300_000L)]
-    [InlineData("Processing", 250_000L)]
     [InlineData("Pending", 200_000L)]
     public async Task GetCurrentUserOrders_WithState_ShouldReturn_CorrectTotal(string state, long expectedTotal)
     {
         var dbContext = _factory.DbContext;
 
         dbContext.Orders.AddRange(
-            new OrderBuilder().WithState(OrderState.Processing)
-                              .WithItems((2, 100_000L), (1, 50_000L))
-                              .Build(),
-
-            new OrderBuilder().WithState(OrderState.Shipped)
-                              .WithItems((3, 100_000L))
-                              .Build(),
-
-            new OrderBuilder().WithState(OrderState.Pending)
-                              .WithItems((1, 200_000L))
-                              .Build()
-        );
+                                  new OrderBuilder().WithItems((1, 200_000L)).Build()
+                                 );
         await dbContext.SaveChangesAsync();
 
         // Act

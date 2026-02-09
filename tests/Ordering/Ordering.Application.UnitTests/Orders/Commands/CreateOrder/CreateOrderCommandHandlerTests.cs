@@ -18,7 +18,6 @@ namespace Ordering.Application.UnitTests.Orders.Commands.CreateOrder;
 public class CreateOrderCommandHandlerTests
 {
     private readonly Mock<IOrderRepository> _orderRepoMock = new();
-    private readonly Mock<IPublishEndpoint> _publishMock = new();
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IProductService> _productServiceMock = new();
     private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
@@ -34,7 +33,6 @@ public class CreateOrderCommandHandlerTests
 
         _handler = new CreateOrderCommandHandler(
             _orderRepoMock.Object,
-            _publishMock.Object,
             _unitOfWorkMock.Object,
             _productServiceMock.Object,
             _currentUserServiceMock.Object);
@@ -82,13 +80,6 @@ public class CreateOrderCommandHandlerTests
             o.Items.Any(i => i.ProductId.ToString() == TestGuids.Guid1 && i.Quantity == 2) &&
             o.Items.Any(i => i.ProductId.ToString() == TestGuids.Guid2 && i.Quantity == 1)
         )), Times.Once);
-
-        _publishMock.Verify(p => p.Publish(
-            It.Is<OrderInitiated>(e =>
-                e.Id == orderId
-            ),
-            It.IsAny<CancellationToken>()
-        ), Times.Once);
 
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -147,7 +138,7 @@ public class CreateOrderCommandHandlerTests
         capturedOrder.Should().NotBeNull();
         capturedOrder.UserId.Should().Be(_currentUserId);
         var item = capturedOrder!.Items.Single();
-        item.ProductName.Should().Be("Test Product");
+        item.ProductId.Should().Be(TestGuids.Guid1);
         item.Price.Should().Be(999);
         item.Quantity.Should().Be(5);
     }

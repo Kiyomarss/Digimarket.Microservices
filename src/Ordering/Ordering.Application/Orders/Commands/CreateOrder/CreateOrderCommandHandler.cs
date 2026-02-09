@@ -19,7 +19,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
     public CreateOrderCommandHandler(
         IOrderRepository orderRepository,
-        IPublishEndpoint publishEndpoint,
         IUnitOfWork unitOfWork,
         IProductService productService,
         ICurrentUserService currentUser)
