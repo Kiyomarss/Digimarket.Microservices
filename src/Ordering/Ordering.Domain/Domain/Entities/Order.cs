@@ -1,4 +1,5 @@
 using BuildingBlocks.Domain;
+using BuildingBlocks.Exceptions.Domain;
 using Ordering_Domain.Domain.Enum;
 using Ordering_Domain.DomainEvents;
 

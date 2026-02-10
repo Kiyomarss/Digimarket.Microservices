@@ -1,70 +1,75 @@
-﻿using FluentValidation;
+﻿using BuildingBlocks.Domain;
+using BuildingBlocks.Exceptions.Application;
+using BuildingBlocks.Exceptions.Domain;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Exceptions.Handler;
-public class CustomExceptionHandler
+
+public sealed class CustomExceptionHandler
     (ILogger<CustomExceptionHandler> logger)
     : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext context,
+        Exception exception,
+        CancellationToken cancellationToken)
     {
-        logger.LogError(
-            "Error Message: {exceptionMessage}, Time of occurrence {time}",
-            exception.Message, DateTime.UtcNow);
+        // Proper structured logging with full exception info
+        logger.LogError(exception,
+            "Unhandled exception occurred at {Time}",
+            DateTime.UtcNow);
 
-        (string Detail, string Title, int StatusCode) details = exception switch
+        var (detail, title, statusCode) = exception switch
         {
-            InternalServerException =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError
-            ),
-            ValidationException =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status400BadRequest
-            ),
-            BadRequestException =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status400BadRequest
-            ),
+            DomainException =>
+                (exception.Message, "DomainError", StatusCodes.Status400BadRequest),
+
+            ExternalServiceException =>
+                (
+                    exception.Message,
+                    exception.GetType().Name,
+                    context.Response.StatusCode = StatusCodes.Status502BadGateway
+                ),
+
+            ValidationException validationException =>
+                (validationException.Message, "ValidationError", StatusCodes.Status400BadRequest),
+
+            ForbiddenException =>
+                (exception.Message, "Forbidden", StatusCodes.Status403Forbidden),
+
             NotFoundException =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status404NotFound
-            ),
+                (exception.Message, "NotFound", StatusCodes.Status404NotFound),
+
             _ =>
-            (
-                exception.Message,
-                exception.GetType().Name,
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError
-            )
+                ("An unexpected error occurred",
+                 "InternalServerError",
+                 StatusCodes.Status500InternalServerError)
         };
+
+        context.Response.StatusCode = statusCode;
 
         var problemDetails = new ProblemDetails
         {
-            Title = details.Title,
-            Detail = details.Detail,
-            Status = details.StatusCode,
+            Title = title,
+            Detail = detail,
+            Status = statusCode,
             Instance = context.Request.Path
         };
 
+        // Correlation / Trace id
         problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
 
-        if (exception is ValidationException validationException)
+        // Attach validation errors if present
+        if (exception is ValidationException ve)
         {
-            problemDetails.Extensions.Add("ValidationErrors", validationException.Errors);
+            problemDetails.Extensions.Add("validationErrors", ve.Errors);
         }
 
-        await context.Response.WriteAsJsonAsync(problemDetails, cancellationToken: cancellationToken);
+        await context.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+
         return true;
     }
 }

@@ -32,8 +32,7 @@ public class OrderRepository : IOrderRepository
     
     public async Task<Order?> GetByIdAsync(Guid id)
     {
-        return await _db.Set<Order>()
-                        .FirstOrDefaultAsync(o => o.Id == id);
+        return await _db.Set<Order>().FindAsync(id);
     }
 
     public async Task<List<OrderSummaryDto>> GetOrdersForUserAsync(Guid userId, OrderState state, CancellationToken ct)

@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.CQRS;
 using BuildingBlocks.Exceptions;
+using BuildingBlocks.Exceptions.Application;
 using BuildingBlocks.UnitOfWork;
 using MediatR;
 using Ordering.Application.RepositoryContracts;

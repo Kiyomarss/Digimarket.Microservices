@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Domain;
+using BuildingBlocks.Exceptions.Domain;
 using FluentAssertions;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;

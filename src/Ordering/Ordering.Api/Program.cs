@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddGrpc(options =>
 {
+    options.Interceptors.Add<GrpcExceptionInterceptor>();
     options.EnableDetailedErrors = true;
 });
 builder.Host.UseConfiguredSerilog();

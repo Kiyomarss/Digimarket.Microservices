@@ -1,12 +1,11 @@
 ﻿using BuildingBlocks.CQRS;
+using BuildingBlocks.Exceptions.Application;
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
-using MassTransit;
 using Ordering_Domain.Domain.Entities;
 using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Application.Orders.Commands.CreateOrder;
 
@@ -55,7 +54,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         var response = await _productService.GetProductsByIdsAsync(productIds, ct);
 
         if (response == null || response.Products.Count == 0)
-            throw new InvalidOperationException("Products not found in gRPC service.");
+            throw new ExternalServiceException("Products not found in gRPC service.");
 
         return response;
     }
