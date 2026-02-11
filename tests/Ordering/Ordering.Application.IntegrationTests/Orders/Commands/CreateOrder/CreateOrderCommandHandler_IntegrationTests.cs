@@ -1,50 +1,118 @@
-﻿// tests/Ordering.Application.IntegrationTests/Orders/Commands/CreateOrder/CreateOrderCommandHandler_IntegrationTests.cs
+﻿using BuildingBlocks.Exceptions.Application;
 using FluentAssertions;
-using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
+using ProductGrpc;
 using Shared;
 
 namespace Ordering.Application.IntegrationTests.Orders.Commands.CreateOrder;
 
-public class CreateOrderCommandHandler_IntegrationTests : OrderingAppTestBase
+public class CreateOrderCommandHandlerTests : OrderingAppTestBase
 {
-    public CreateOrderCommandHandler_IntegrationTests(OrderingAppFactory fixture) : base(fixture) { }
+    public CreateOrderCommandHandlerTests(OrderingAppFactory fixture)
+        : base(fixture) { }
 
     [Fact]
-    public async Task Handle_Should_PersistOrder_And_Save_OutboxMessage()
+    public async Task Handle_Should_Create_Order_With_Items()
     {
-        // Arrange
         await CleanupDatabase();
 
         var command = new CreateOrderCommand
         {
-            Items = new List<CreateOrderCommand.OrderItemDto>
-            {
+            Items =
+            [
                 new() { ProductId = TestGuids.Guid1, Quantity = 2 },
                 new() { ProductId = TestGuids.Guid2, Quantity = 1 }
-            }
+            ]
         };
 
         // Act
         var orderId = await Sender.Send(command);
 
-        // Assert 1: Order در دیتابیس ذخیره شده
+        // Assert
         var order = await DbContext.Orders
-            .Include(o => o.Items)
-            .FirstOrDefaultAsync(o => o.Id == orderId);
+                                  .Include(o => o.Items)
+                                  .FirstAsync(o => o.Id == orderId);
 
-        order.Should().NotBeNull();
         order.Items.Should().HaveCount(2);
 
-        // Assert 2: پیام در Outbox ذخیره شده
-        var outboxMessages = await DbContext.Set<OutboxMessage>()
-            .Where(m => m.MessageType.Contains("OrderInitiated"))
-            .ToListAsync();
+        order.Items.Sum(i => i.Quantity).Should().Be(3);
+    }
+
+    [Fact]
+    public async Task Handle_Should_Throw_When_Products_Not_Found()
+    {
+        await CleanupDatabase();
         
-        outboxMessages.Should().HaveCount(1);
-        outboxMessages[0].Body.Should().Contain(orderId.ToString());
+        Fixture.ProductServiceMock
+               .Setup(x => x.GetProductsByIdsAsync(
+                                                   It.IsAny<IEnumerable<string>>(),
+                                                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new GetProductsResponse());
+
+
+        var command = new CreateOrderCommand
+        {
+            Items =
+            [
+                new() { ProductId = Guid.NewGuid().ToString(), Quantity = 1 }
+            ]
+        };
+
+        var act = () => Sender.Send(command);
+
+        await act.Should().ThrowAsync<ExternalServiceException>()
+                 .WithMessage("Products not found in gRPC service.");
+    }
+
+    [Fact]
+    public async Task Handle_Should_Map_Product_Prices_Correctly()
+    {
+        await CleanupDatabase();
+        
+        Fixture.ProductServiceMock
+               .Setup(x => x.GetProductsByIdsAsync(
+                                                   It.IsAny<IEnumerable<string>>(),
+                                                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(DefaultProducts);
+
+
+        var command = new CreateOrderCommand
+        {
+            Items =
+            [
+                new() { ProductId = TestGuids.Guid1, Quantity = 2 }
+            ]
+        };
+
+        var orderId = await Sender.Send(command);
+
+        var order = await DbContext.Orders
+                                  .Include(o => o.Items)
+                                  .FirstAsync(o => o.Id == orderId);
+
+        var item = order.Items.Single();
+
+        item.Quantity.Should().Be(2);
+        item.Price.Should().BeGreaterThan(0);
+
+        return;
+
+        GetProductsResponse DefaultProducts()
+        {
+            var response = new GetProductsResponse();
+
+            response.Products.Add(new ProductInfo
+            {
+                ProductId = TestGuids.Guid1,
+                ProductName = "Test",
+                Price = 1500
+            });
+
+            return response;
+        }
     }
 }

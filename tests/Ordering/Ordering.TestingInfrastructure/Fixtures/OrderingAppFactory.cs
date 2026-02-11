@@ -30,7 +30,10 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     // WebApplicationFactory already exposes "Services", so tests can use `Fixture.Services`
     public IBusControl Bus => Services.GetRequiredService<IBusControl>();
     public OrderingDbContext DbContext => Services.CreateScope().ServiceProvider.GetRequiredService<OrderingDbContext>();
+    
     public Mock<IOrderRepository> MockOrderRepository { get; } = new();
+    
+    public Mock<IProductService> ProductServiceMock { get; } = new();
 
     public OrderingAppFactory()
     {
@@ -68,12 +71,40 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             // ----- Replace real Product gRPC client/service with a mock IProductService -----
             services.RemoveAll<ProductProtoService.ProductProtoServiceClient>();
             services.RemoveAll<IProductService>();
-            var productServiceMock = new ProductServiceMockBuilder().WithDefaultProducts().Build();
-            services.AddSingleton(productServiceMock);
+            services.RemoveAll<IProductService>();
+
+            ProductServiceMock
+                .Setup(x => x.GetProductsByIdsAsync(
+                                                    It.IsAny<IEnumerable<string>>(),
+                                                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(DefaultProducts());
+
+            services.AddSingleton(ProductServiceMock.Object);
             
             var currentUserServiceMock = new MockCurrentUserService().WithDefaultUser().Build();
             services.AddSingleton(currentUserServiceMock);
         });
+    }
+    
+    private static GetProductsResponse DefaultProducts()
+    {
+        var response = new GetProductsResponse();
+
+        response.Products.Add(new ProductInfo
+        {
+            ProductId = TestGuids.Guid1,
+            ProductName = "Test",
+            Price = 1500
+        });
+
+        response.Products.Add(new ProductInfo
+        {
+            ProductId = TestGuids.Guid2,
+            ProductName = "Another",
+            Price = 2500
+        });
+
+        return response;
     }
 
     // IAsyncLifetime implementations: start/stop any background things (bus) when tests run

@@ -31,5 +31,7 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     {
         await DbContext.Database.EnsureDeletedAsync();
         await DbContext.Database.EnsureCreatedAsync();
+        
+        DbContext.ChangeTracker.Clear();
     }
 }
