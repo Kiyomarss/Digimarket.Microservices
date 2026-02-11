@@ -71,7 +71,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             // ----- Replace real Product gRPC client/service with a mock IProductService -----
             services.RemoveAll<ProductProtoService.ProductProtoServiceClient>();
             services.RemoveAll<IProductService>();
-            services.RemoveAll<IProductService>();
 
             ProductServiceMock
                 .Setup(x => x.GetProductsByIdsAsync(
