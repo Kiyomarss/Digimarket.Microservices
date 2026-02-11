@@ -18,7 +18,7 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
     [Fact]
     public async Task CreateOrder_ViaGrpc_Should_CreateOrder_And_StoreInOutbox()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         var grpcClient = new OrderProtoService.OrderProtoServiceClient(Fixture.CreateGrpcChannel());
 

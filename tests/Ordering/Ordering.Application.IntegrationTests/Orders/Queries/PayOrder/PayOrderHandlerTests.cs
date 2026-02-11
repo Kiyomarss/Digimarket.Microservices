@@ -3,7 +3,6 @@ using BuildingBlocks.Exceptions.Application;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Commands.PayOrder;
-using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 
@@ -17,7 +16,7 @@ public class PayOrderHandlerTests : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Set_Order_State_To_Paid()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         var order = new OrderBuilder()
                     .WithState(OrderState.Pending)
@@ -39,7 +38,7 @@ public class PayOrderHandlerTests : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Throw_NotFound_When_Order_Does_Not_Exist()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         var act = () => Sender.Send(new PayOrderCommand { Id = Guid.NewGuid() });
 

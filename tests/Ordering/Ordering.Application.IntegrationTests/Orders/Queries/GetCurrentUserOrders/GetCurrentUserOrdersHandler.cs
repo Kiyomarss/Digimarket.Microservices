@@ -17,7 +17,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Return_Empty_List_When_No_Orders_Exist()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
 
@@ -27,7 +27,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Return_Empty_List_When_No_Order_Matches_State()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         DbContext.Orders.Add(
                              new OrderBuilder().WithState(OrderState.Cancelled).WithItems((1, 100)).Build()
@@ -43,7 +43,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Return_All_Matching_Orders()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         DbContext.Orders.AddRange(
                                   new OrderBuilder().WithState(OrderState.Pending).WithItems((1, 100)).Build(),

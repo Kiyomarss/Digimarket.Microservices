@@ -27,11 +27,8 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     public Task InitializeAsync() => Task.CompletedTask;
     public Task DisposeAsync() => Task.CompletedTask;
 
-    protected async Task CleanupDatabase()
+    protected async Task ResetDatabase()
     {
-        await DbContext.Database.EnsureDeletedAsync();
-        await DbContext.Database.EnsureCreatedAsync();
-        
-        DbContext.ChangeTracker.Clear();
+        await Fixture.ResetDatabaseAsync();
     }
 }

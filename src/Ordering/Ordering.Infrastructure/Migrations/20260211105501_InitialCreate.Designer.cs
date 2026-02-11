@@ -12,8 +12,8 @@ using Ordering_Infrastructure.Data.DbContext;
 namespace Ordering_Infrastructure.Migrations
 {
     [DbContext(typeof(OrderingDbContext))]
-    [Migration("20260206104235_DropCustomer")]
-    partial class DropCustomer
+    [Migration("20260211105501_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,9 +203,7 @@ namespace Ordering_Infrastructure.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("State")
                         .HasColumnType("integer")

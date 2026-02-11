@@ -1,20 +1,26 @@
-﻿using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
+﻿using DotNet.Testcontainers.Containers;
 
-namespace Shared.TestFixtures
+namespace Shared.TestFixtures;
+public static class TestEnvironmentHelper
 {
-    public static class TestEnvironmentHelper
-    {
-        public static void SetPostgresConnectionString(IContainer postgresContainer)
-        {
-            Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING",
-                                               $"Host=localhost;Port={postgresContainer.GetMappedPublicPort(5432)};Database=OrderingDb;Username=postgres;Password=123;");
-        }
+    public static string PostgresConnectionString { get; private set; } = default!;
 
-        public static void SetRabbitMqHost(IContainer rabbitMqContainer)
-        {
-            Environment.SetEnvironmentVariable("RABBITMQ_HOST",
-                                               $"localhost:{rabbitMqContainer.GetMappedPublicPort(5672)}");
-        }
+    public static void SetPostgresConnectionString(IContainer postgresContainer)
+    {
+        PostgresConnectionString =
+            $"Host=localhost;Port={postgresContainer.GetMappedPublicPort(5432)};" +
+            $"Database=ordering_test_{Guid.NewGuid():N};" +
+            $"Username=postgres;Password=123;";
+        
+        Environment.SetEnvironmentVariable(
+                                           "DATABASE_CONNECTION_STRING",
+                                           PostgresConnectionString);
+    }
+
+    public static void SetRabbitMqHost(IContainer rabbitMqContainer)
+    {
+        Environment.SetEnvironmentVariable(
+                                           "RABBITMQ_HOST",
+                                           $"localhost:{rabbitMqContainer.GetMappedPublicPort(5672)}");
     }
 }

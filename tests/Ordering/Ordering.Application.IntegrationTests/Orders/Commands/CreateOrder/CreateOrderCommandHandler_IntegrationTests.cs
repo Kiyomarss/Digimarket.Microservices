@@ -18,7 +18,7 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Create_Order_With_Items()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
 
         var command = new CreateOrderCommand
         {
@@ -45,7 +45,7 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Throw_When_Products_Not_Found()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
         
         Fixture.ProductServiceMock
                .Setup(x => x.GetProductsByIdsAsync(
@@ -71,7 +71,7 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
     [Fact]
     public async Task Handle_Should_Map_Product_Prices_Correctly()
     {
-        await CleanupDatabase();
+        await ResetDatabase();
         
         Fixture.ProductServiceMock
                .Setup(x => x.GetProductsByIdsAsync(

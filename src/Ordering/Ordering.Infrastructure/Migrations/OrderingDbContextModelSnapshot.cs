@@ -200,9 +200,7 @@ namespace Ordering_Infrastructure.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<DateTime>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("State")
                         .HasColumnType("integer")

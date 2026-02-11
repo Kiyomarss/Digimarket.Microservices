@@ -10,11 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using Npgsql;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api;
 using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
+using Respawn;
 using Shared;
 using Shared.TestFixtures;
 using Xunit;
@@ -25,6 +27,9 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly IContainer _rabbitMqContainer;
     private readonly IContainer _postgresContainer;
+    private Respawner _respawner = default!;
+    private string _connectionString = default!;
+
 
     // public properties (tests expect to access Services, Bus, DbContext)
     // WebApplicationFactory already exposes "Services", so tests can use `Fixture.Services`
@@ -47,13 +52,8 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "IntegrationTest");
 
         TestEnvironmentHelper.SetPostgresConnectionString(_postgresContainer);
+        _connectionString = TestEnvironmentHelper.PostgresConnectionString;
         TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
-
-        // Force creation of the host now so Services is available to tests immediately.
-        // CreateDefaultClient triggers the host to build and run (in-memory test server).
-        // We don't keep the HttpClient here — we just ensure host creation now.
-        // (This will call ConfigureWebHost below.)
-        _ = CreateDefaultClient();
     }
 
     // Override ConfigureWebHost to register/override services inside the factory's host
@@ -106,12 +106,38 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         return response;
     }
 
-    // IAsyncLifetime implementations: start/stop any background things (bus) when tests run
     public async Task InitializeAsync()
     {
-        // Ensure bus is started before tests run
         var bus = Services.GetRequiredService<IBusControl>();
         await bus.StartAsync();
+
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+
+        // 1. اجرای migrations
+        await using var scope = Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        
+        await db.Database.MigrateAsync();
+
+        // 2. ساخت Respawner
+        _respawner = await Respawner.CreateAsync(conn, new RespawnerOptions
+        {
+            DbAdapter = DbAdapter.Postgres,
+            TablesToIgnore = ["__EFMigrationsHistory"]
+        });
+    }
+    
+    public async Task ResetDatabaseAsync()
+    {
+        await using var conn = new NpgsqlConnection(_connectionString);
+        await conn.OpenAsync();
+
+        await _respawner.ResetAsync(conn);
+
+        // VACUUM must be executed outside EF transaction
+        /*await using var vacuumCmd = new NpgsqlCommand("VACUUM;", conn);
+        await vacuumCmd.ExecuteNonQueryAsync();*/
     }
 
     public async Task StartAsync()
