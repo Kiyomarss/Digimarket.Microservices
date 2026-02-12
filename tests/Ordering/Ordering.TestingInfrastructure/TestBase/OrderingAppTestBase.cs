@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using MassTransit.Testing;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +16,14 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected readonly ISender Sender;
     protected readonly OrderingDbContext DbContext;
     protected readonly IBusControl Bus;
+    protected readonly ITestHarness Harness;
 
     protected OrderingAppTestBase(OrderingAppFactory fixture)
     {
         Fixture = fixture;
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
+        Harness = Fixture.Services.GetRequiredService<ITestHarness>();
         Bus = Fixture.Services.GetRequiredService<IBusControl>();
     }
 

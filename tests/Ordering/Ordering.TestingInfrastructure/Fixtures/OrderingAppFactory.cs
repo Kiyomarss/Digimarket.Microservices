@@ -1,6 +1,5 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
 
-using BuildingBlocks.UnitOfWork;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +12,6 @@ using Moq;
 using Npgsql;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api;
-using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
 using Respawn;
@@ -92,6 +90,8 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
                     sqlOptions.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
                 });
             });
+            
+            services.AddMassTransitTestHarness();
         });
     }
     

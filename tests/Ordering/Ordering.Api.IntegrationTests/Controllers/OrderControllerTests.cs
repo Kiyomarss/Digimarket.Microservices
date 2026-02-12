@@ -20,13 +20,13 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
     }
 
     [Theory]
-    [InlineData("Pending", 200_000L)]
+    [InlineData("Pending", 200000)]
     public async Task GetCurrentUserOrders_WithState_ShouldReturn_CorrectTotal(string state, long expectedTotal)
     {
         var dbContext = _factory.DbContext;
 
         dbContext.Orders.AddRange(
-                                  new OrderBuilder().WithItems((1, 200_000L)).Build()
+                                  new OrderBuilder().WithItems((1, 200000)).Build()
                                  );
         await dbContext.SaveChangesAsync();
 
