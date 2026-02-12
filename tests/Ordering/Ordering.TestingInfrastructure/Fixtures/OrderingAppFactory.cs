@@ -29,14 +29,13 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     private readonly IContainer _postgresContainer;
     private Respawner _respawner = default!;
     private string _connectionString = default!;
+    private string _dbName = default!;
 
 
     // public properties (tests expect to access Services, Bus, DbContext)
     // WebApplicationFactory already exposes "Services", so tests can use `Fixture.Services`
     public IBusControl Bus => Services.GetRequiredService<IBusControl>();
     public OrderingDbContext DbContext => Services.CreateScope().ServiceProvider.GetRequiredService<OrderingDbContext>();
-    
-    public Mock<IOrderRepository> MockOrderRepository { get; } = new();
     
     public Mock<IProductService> ProductServiceMock { get; } = new();
 
@@ -51,8 +50,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // Make ASPNETCORE_ENVIRONMENT available early (keeps behavior consistent)
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "IntegrationTest");
 
-        TestEnvironmentHelper.SetPostgresConnectionString(_postgresContainer);
-        _connectionString = TestEnvironmentHelper.PostgresConnectionString;
         TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
     }
 
@@ -82,6 +79,19 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             
             var currentUserServiceMock = new MockCurrentUserService().WithDefaultUser().Build();
             services.AddSingleton(currentUserServiceMock);
+            
+            // حذف DbContext قبلی
+            services.RemoveAll<DbContextOptions<OrderingDbContext>>();
+
+            // اضافه کردن DbContext با connection string رندوم
+            services.AddDbContext<OrderingDbContext>(options =>
+            {
+                options.UseNpgsql(_connectionString, sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly("Ordering.Infrastructure");
+                    sqlOptions.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
+                });
+            });
         });
     }
     
@@ -108,26 +118,46 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var bus = Services.GetRequiredService<IBusControl>();
-        await bus.StartAsync();
+        _dbName = $"OrderingDb_{Guid.NewGuid():N}";
+
+        // connect to postgres system db
+        var adminConn =
+            $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};" +
+            $"Database=postgres;Username=postgres;Password=123;";
+
+        await using (var admin = new NpgsqlConnection(adminConn))
+        {
+            await admin.OpenAsync();
+
+            await new NpgsqlCommand(
+                                    $"CREATE DATABASE \"{_dbName}\";",
+                                    admin).ExecuteNonQueryAsync();
+        }
+
+        // build real connection string
+        _connectionString =
+            $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};" +
+            $"Database={_dbName};Username=postgres;Password=123;";
+
+        Environment.SetEnvironmentVariable(
+                                           "DATABASE_CONNECTION_STRING",
+                                           _connectionString);
+
+        await using var scope = Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+
+        await db.Database.MigrateAsync();
 
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
 
-        // 1. اجرای migrations
-        await using var scope = Services.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
-        
-        await db.Database.MigrateAsync();
-
-        // 2. ساخت Respawner
         _respawner = await Respawner.CreateAsync(conn, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
     }
-    
+
     public async Task ResetDatabaseAsync()
     {
         await using var conn = new NpgsqlConnection(_connectionString);
