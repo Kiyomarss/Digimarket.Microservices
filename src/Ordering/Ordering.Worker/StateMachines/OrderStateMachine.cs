@@ -48,10 +48,9 @@ namespace Ordering.Worker.StateMachines
                             new CancelOrder(orderId)
                         );
                         context.Saga.CancelScheduleTokenId = scheduledCancel.TokenId;
-                        await context.Publish(new OrderStatusChanged
+                        await context.Publish(new OrderPaid
                         {
-                            Id = context.Saga.CorrelationId,
-                            State = WaitingForPayment.Name
+                            Id = context.Saga.CorrelationId
                         });
                     })
                     .TransitionTo(WaitingForPayment)
@@ -98,10 +97,9 @@ namespace Ordering.Worker.StateMachines
                    When(ProcessingStarted)
                        .ThenAsync(async context =>
                        {
-                           await context.Publish(new OrderStatusChanged
+                           await context.Publish(new OrderPaid
                            {
-                               Id = context.Saga.CorrelationId,
-                               State = Processing.Name
+                               Id = context.Saga.CorrelationId
                            });
                        })
                        .TransitionTo(Processing)

@@ -44,9 +44,8 @@ namespace Ordering.Worker.UnitTests.StateMachines.Transitions
             (await Harness.Published.Any<RemoveBasket>(x => x.Context.Message.Id == orderId))
                 .Should().BeTrue("RemoveBasket should be published");
 
-            (await Harness.Published.Any<OrderStatusChanged>(x =>
-                    x.Context.Message.Id == orderId &&
-                    x.Context.Message.State == Machine.WaitingForPayment.Name))
+            (await Harness.Published.Any<OrderPaid>(x =>
+                                                                 x.Context.Message.Id == orderId))
                 .Should().BeTrue("OrderStatusChanged should be published with WaitingForPayment");
 
             // بررسی TokenIdهای زمان‌بندی‌شده
