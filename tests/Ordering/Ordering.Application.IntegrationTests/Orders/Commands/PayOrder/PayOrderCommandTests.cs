@@ -33,7 +33,7 @@ public class PayOrderCommandHandlerTests : OrderingAppTestBase
         await Sender.Send(command);
 
         // Refresh the entity to get updated state
-        await DbContext.Entry(order).ReloadAsync();
+        await ReloadEntityAsync(order);
 
         // Assert
         order.State.Should().Be(OrderState.Paid);

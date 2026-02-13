@@ -34,4 +34,9 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     {
         await Fixture.ResetDatabaseAsync();
     }
+    
+    protected async Task ReloadEntityAsync<TEntity>(TEntity entity) where TEntity : class
+    {
+        await DbContext.Entry(entity).ReloadAsync();
+    }
 }
