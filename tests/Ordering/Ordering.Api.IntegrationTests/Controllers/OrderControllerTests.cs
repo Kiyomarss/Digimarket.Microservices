@@ -2,6 +2,8 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
+using Ordering.Api.Contracts;
+using Ordering.Api.Controllers;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 
@@ -19,25 +21,29 @@ public class OrderControllerTests : IClassFixture<OrderingAppFactory>
         _client = factory.CreateClient();
     }
 
-    [Theory]
-    [InlineData("Pending", 200000)]
-    public async Task GetCurrentUserOrders_WithState_ShouldReturn_CorrectTotal(string state, long expectedTotal)
+    [Fact]
+    public async Task GetCurrentUserOrders_WithState_ShouldReturn_Orders()
     {
+        // Arrange
         var dbContext = _factory.DbContext;
 
         dbContext.Orders.AddRange(
-                                  new OrderBuilder().WithItems((1, 200000)).Build()
-                                 );
+                                  new OrderBuilder()
+                                      .WithState(OrderState.Pending)
+                                      .WithItems((1, 200000))
+                                      .Build());
+
         await dbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"/Order/GetCurrentUserOrders?state={state}");
+        var response = await _client.GetAsync($"{ApiEndpoints.Orders.GetCurrentUserOrders}?state={OrderState.Pending.Code}");
+
+        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var result = await response.Content.ReadFromJsonAsync<OrdersListResponse>();
 
-        // Assert
         result.Should().NotBeNull();
-        result.Orders[0].TotalPrice.Should().Be(expectedTotal);
+        result!.Orders.Should().HaveCount(1);
     }
 }

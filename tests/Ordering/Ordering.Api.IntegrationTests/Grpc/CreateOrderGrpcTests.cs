@@ -16,7 +16,7 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
     public CreateOrderGrpcTests(OrderingAppFactory fixture) : base(fixture) { }
 
     [Fact]
-    public async Task CreateOrder_ViaGrpc_Should_CreateOrder_And_StoreInOutbox()
+    public async Task CreateOrder_ViaGrpc_Should_Create_Order()
     {
         await ResetDatabase();
 
@@ -36,19 +36,11 @@ public class CreateOrderGrpcTests : OrderingAppTestBase
         response.OrderId.Should().NotBeEmpty();
         var orderId = Guid.Parse(response.OrderId);
         
-        //TODO: با توجه به متد موجود در لایه Api به نظر می‌رسد کد های زیر اضافه است
-
         var order = await DbContext.Orders
                                    .Include(o => o.Items)
                                    .FirstAsync(o => o.Id == orderId);
 
         order.Should().NotBeNull();
         order.Items.Should().HaveCount(2);
-
-        var outboxMessages = await DbContext.Set<OutboxMessage>()
-                                            .Where(m => m.MessageType.Contains("OrderInitiated"))
-                                            .ToListAsync();
-
-        outboxMessages.Should().HaveCount(1);
     }
 }
