@@ -15,7 +15,6 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected readonly OrderingAppFactory Fixture;
     protected readonly ISender Sender;
     protected readonly OrderingDbContext DbContext;
-    protected readonly IBusControl Bus;
     protected readonly ITestHarness Harness;
 
     protected OrderingAppTestBase(OrderingAppFactory fixture)
@@ -24,7 +23,7 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
         Harness = Fixture.Services.GetRequiredService<ITestHarness>();
-        Bus = Fixture.Services.GetRequiredService<IBusControl>();
+        Fixture.Services.GetRequiredService<IBusControl>();
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
@@ -38,16 +37,6 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected async Task ReloadEntityAsync<TEntity>(TEntity entity) where TEntity : class
     {
         await DbContext.Entry(entity).ReloadAsync();
-    }
-    
-    protected Task<TResponse> SendCommandAsync<TResponse>(IRequest<TResponse> command)
-    {
-        return Sender.Send(command);
-    }
-
-    protected Task SendCommandAsync(IRequest command)
-    {
-        return Sender.Send(command);
     }
     
     protected Task PublishEventAsync<TEvent>(TEvent @event) where TEvent : class
