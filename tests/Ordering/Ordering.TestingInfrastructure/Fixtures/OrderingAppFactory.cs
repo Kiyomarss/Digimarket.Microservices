@@ -94,7 +94,7 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             
             services.AddMassTransitTestHarness(x =>
             {
-                x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
+                x.AddConsumers(typeof(OrderPaidConsumer).Assembly);
             });
 
         });

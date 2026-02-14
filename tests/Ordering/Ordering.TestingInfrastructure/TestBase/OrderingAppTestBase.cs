@@ -52,7 +52,7 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     
     protected Task PublishEventAsync<TEvent>(TEvent @event) where TEvent : class
     {
-        return Bus.Publish(@event);
+        return Harness.Bus.Publish(@event);
     }
 
     protected async Task AssertPublishedAsync<TEvent>(int timeoutSeconds = 5)

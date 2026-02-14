@@ -6,9 +6,9 @@ using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.IntegrationTests.Consumer;
 
-public class OrderStatusChangedConsumerTests : OrderingAppTestBase
+public class OrderPaidConsumerTests : OrderingAppTestBase
 {
-    public OrderStatusChangedConsumerTests(OrderingAppFactory fixture)
+    public OrderPaidConsumerTests(OrderingAppFactory fixture)
         : base(fixture) { }
 
     [Fact]
@@ -22,13 +22,17 @@ public class OrderStatusChangedConsumerTests : OrderingAppTestBase
 
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();
-
-        await Harness.Bus.Publish(new OrderPaid
+        
+        await PublishEventAsync(new OrderPaid
         {
             Id = order.Id
         });
         
-        var orderAfter = await DbContext.Orders.FindAsync(order.Id);
-        orderAfter!.State.Should().Be(OrderState.Paid);
+        // صبر کن تا تمام فعالیت‌های bus تمام شود
+        await Harness.InactivityTask;
+        
+        await ReloadEntityAsync(order);
+
+        order.State.Should().Be(OrderState.Paid);
     }
 }

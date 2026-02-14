@@ -5,11 +5,11 @@ using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.Consumers
 {
-    public class OrderStatusChangedConsumer : IConsumer<OrderPaid>
+    public class OrderPaidConsumer : IConsumer<OrderPaid>
     {
         private readonly ISender _sender;
 
-        public OrderStatusChangedConsumer(ISender sender)
+        public OrderPaidConsumer(ISender sender)
         {
             _sender = sender;
         }
