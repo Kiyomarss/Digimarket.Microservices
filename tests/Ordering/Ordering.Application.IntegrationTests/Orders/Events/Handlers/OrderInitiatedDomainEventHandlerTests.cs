@@ -29,6 +29,6 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
         await Sender.Send(command);
 
         // Assert
-        (await Harness.Published.Any<OrderInitiated>()).Should().BeTrue();
+        await AssertPublishedAsync<OrderInitiated>();
     }
 }

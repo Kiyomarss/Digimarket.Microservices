@@ -1,6 +1,7 @@
-﻿using Ordering.TestingInfrastructure.Fixtures;
+﻿using FluentAssertions;
+using Ordering_Domain.Domain.Enum;
+using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared;
 using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.IntegrationTests.Consumer;
@@ -11,12 +12,23 @@ public class OrderStatusChangedConsumerTests : OrderingAppTestBase
         : base(fixture) { }
 
     [Fact]
-    public async Task CreateOrder_Should_Publish_OrderInitiated_Event()
+    public async Task Publish_OrderPaid_Event()
     {
         await ResetDatabase();
+        
+        var order = new OrderBuilder()
+                    .WithItems((1, 100))
+                    .Build();
 
-        await Harness.Bus.Publish(new OrderPaid { Id = TestGuids.Guid3 });
+        DbContext.Orders.Add(order);
+        await DbContext.SaveChangesAsync();
 
-        Assert.True(await Harness.Consumed.Any<OrderPaid>(), "OrderPaid event not consumed");
+        await Harness.Bus.Publish(new OrderPaid
+        {
+            Id = order.Id
+        });
+        
+        var orderAfter = await DbContext.Orders.FindAsync(order.Id);
+        orderAfter!.State.Should().Be(OrderState.Paid);
     }
 }

@@ -12,6 +12,7 @@ using Moq;
 using Npgsql;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api;
+using Ordering.Api.Consumers;
 using Ordering.Application.Services;
 using ProductGrpc;
 using Respawn;
@@ -91,7 +92,11 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 });
             });
             
-            services.AddMassTransitTestHarness();
+            services.AddMassTransitTestHarness(x =>
+            {
+                x.AddConsumers(typeof(OrderStatusChangedConsumer).Assembly);
+            });
+
         });
     }
     

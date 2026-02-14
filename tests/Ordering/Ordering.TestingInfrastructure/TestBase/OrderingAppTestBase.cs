@@ -1,7 +1,7 @@
-﻿using MassTransit;
+﻿using FluentAssertions;
+using MassTransit;
 using MassTransit.Testing;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.TestingInfrastructure.Fixtures;
@@ -38,5 +38,30 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected async Task ReloadEntityAsync<TEntity>(TEntity entity) where TEntity : class
     {
         await DbContext.Entry(entity).ReloadAsync();
+    }
+    
+    protected Task<TResponse> SendCommandAsync<TResponse>(IRequest<TResponse> command)
+    {
+        return Sender.Send(command);
+    }
+
+    protected Task SendCommandAsync(IRequest command)
+    {
+        return Sender.Send(command);
+    }
+    
+    protected Task PublishEventAsync<TEvent>(TEvent @event) where TEvent : class
+    {
+        return Bus.Publish(@event);
+    }
+
+    protected async Task AssertPublishedAsync<TEvent>(int timeoutSeconds = 5)
+        where TEvent : class
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+
+        var published = await Harness.Published.Any<TEvent>(cts.Token);
+
+        published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
     }
 }
