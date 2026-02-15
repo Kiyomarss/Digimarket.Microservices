@@ -1,5 +1,7 @@
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.StateMachines.Activities.Initialize;
+using Ordering.Worker.StateMachines.Activities.Payment;
 using Ordering.Worker.StateMachines.Events;
 using Shared.IntegrationEvents.Ordering;
 
@@ -7,8 +9,6 @@ namespace Ordering.Worker.StateMachines
 {
     public class OrderStateMachine : MassTransitStateMachine<OrderState>
     {
-        private static readonly Uri QuartzSchedulerUri = new("queue:quartz");
-
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -23,66 +23,18 @@ namespace Ordering.Worker.StateMachines
 
             //TODO: در زیر کد های مربوط به هر وضعیت شاید بهتر باشد به صورت جدا و متد وار نوشته شود در این صورت تست نویسی نیز می‌تواند ساده تر باشد
             Initially(
-                When(OrderInitiated)
-                    .Then(context =>
-                    {
-                        context.Saga.Date = context.Message.Date;
-                    })
-                    .ThenAsync(async context =>
-                    {
-                        var orderId = context.Saga.CorrelationId;
-
-                        await Task.WhenAll(
-                            context.Publish(new ReduceInventory(orderId)),
-                            context.Publish(new RemoveBasket(orderId))
-                        );
-                        
-                        var scheduledReminder = await context.ScheduleSend(
-                            DateTime.UtcNow.AddMinutes(1),
-                            new SendReminder(orderId)
-                        );
-                        context.Saga.ReminderScheduleTokenId = scheduledReminder.TokenId;
-
-                        var scheduledCancel = await context.ScheduleSend(
-                            DateTime.UtcNow.AddMinutes(2),
-                            new CancelOrder(orderId)
-                        );
-                        context.Saga.CancelScheduleTokenId = scheduledCancel.TokenId;
-                        await context.Publish(new OrderPaid
-                        {
-                            Id = context.Saga.CorrelationId
-                        });
-                    })
-                    .TransitionTo(WaitingForPayment)
-            );
+                      When(OrderInitiated)
+                          .Activity(x => x.OfType<InitializeOrderActivity>())
+                          .Activity(x => x.OfType<ScheduleOrderActivity>())
+                          .TransitionTo(WaitingForPayment)
+                     );
             
             During(WaitingForPayment,
-                When(PaymentCompleted)
-                    .Then(context =>
-                    {
-                        context.Saga.IsPaymentValidated = true;
-                        context.Saga.PaymentReference = context.Message.CorrelationId;
-                    })
-                    .ThenAsync(async context =>
-                    {
-                        if (context.Saga.ReminderScheduleTokenId != null && !context.Saga.IsReminderSent)
-                        {
-                            var scheduler = context.GetPayload<MessageSchedulerContext>();
-                            await scheduler.CancelScheduledSend(QuartzSchedulerUri, context.Saga.ReminderScheduleTokenId.Value);
-                            context.Saga.ReminderScheduleTokenId = null;
-                        }
-
-                        if (context.Saga.CancelScheduleTokenId != null)
-                        {
-                            var scheduler = context.GetPayload<MessageSchedulerContext>();
-                            await scheduler.CancelScheduledSend(QuartzSchedulerUri, context.Saga.CancelScheduleTokenId.Value);
-                            context.Saga.CancelScheduleTokenId = null;
-                        }
-
-                        await context.Publish(new ProcessingStarted(context.Saga.CorrelationId));
-                    })
-                    .TransitionTo(WaitingForProcessing)
-            );
+                   When(PaymentCompleted)
+                       .Activity(x => x.OfType<ValidatePaymentActivity>())
+                       .Activity(x => x.OfType<CancelTimeoutsActivity>())
+                       .TransitionTo(WaitingForProcessing)
+                  );
 
             During(WaitingForPayment,
                 When(CancelOrder)

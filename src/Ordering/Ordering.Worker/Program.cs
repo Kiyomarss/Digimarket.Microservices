@@ -1,5 +1,4 @@
 using Ordering.Worker.Extensions;
-using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 

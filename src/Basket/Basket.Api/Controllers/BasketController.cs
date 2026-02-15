@@ -1,5 +1,4 @@
-﻿using Basket_Application.DTO;
-using Basket_Application.Orders.Commands.CreateOrder;
+﻿using Basket_Application.Orders.Commands.CreateOrder;
 using BuildingBlocks.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Basket.Api.Controllers
 {
+    [Route("/Basket")]
     public class BasketController : BaseController
     {
         private readonly ISender _sender;
@@ -16,14 +16,14 @@ namespace Basket.Api.Controllers
             _sender = sender;
         }
 
-        [HttpPost()]
+        /*[HttpPost()]
         [Authorize]
-        public async Task<IActionResult> AddItem([FromBody] BasketItemDto dto)
+        public Task<IActionResult> AddItem([FromBody] BasketItemDto dto)
         {
-            return Ok(new { message = "Item added to basket successfully." });
-        }
+            return Task.FromResult<IActionResult>(Ok(new { message = "Item added to basket successfully." }));
+        }*/
         
-        [HttpPost]
+        [HttpPost("/Basket/Checkout")]
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
@@ -34,10 +34,10 @@ namespace Basket.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id:guid}")]
+        /*[HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveItem(Guid id)
         {
             return Ok();
-        }
+        }*/
     }
 }
