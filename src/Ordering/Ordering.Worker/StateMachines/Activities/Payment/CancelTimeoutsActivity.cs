@@ -8,8 +8,6 @@ namespace Ordering.Worker.StateMachines.Activities.Payment
     public class CancelTimeoutsActivity :
         BaseActivity<OrderState, PaymentCompleted>
     {
-        private static readonly Uri QuartzSchedulerUri = new("queue:quartz");
-
         public override async Task Execute(
             BehaviorContext<OrderState, PaymentCompleted> context,
             IBehavior<OrderState, PaymentCompleted> next)

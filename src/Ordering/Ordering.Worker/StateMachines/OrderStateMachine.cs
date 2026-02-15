@@ -1,7 +1,9 @@
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Initialize;
+using Ordering.Worker.StateMachines.Activities.Inventory;
 using Ordering.Worker.StateMachines.Activities.Payment;
+using Ordering.Worker.StateMachines.Activities.Processing;
 using Ordering.Worker.StateMachines.Events;
 using Shared.IntegrationEvents.Ordering;
 
@@ -37,23 +39,14 @@ namespace Ordering.Worker.StateMachines
                   );
 
             During(WaitingForPayment,
-                When(CancelOrder)
-                    .ThenAsync(async context =>
-                    {
-                        await context.Publish(new ReleaseInventory(context.Saga.CorrelationId));
-                    })
-                    .TransitionTo(Cancelled)
-            );
+                   When(CancelOrder)
+                       .Activity(x => x.OfType<ReleaseInventoryActivity>())
+                       .TransitionTo(Cancelled)
+                  );
 
             During(WaitingForProcessing,
                    When(ProcessingStarted)
-                       .ThenAsync(async context =>
-                       {
-                           await context.Publish(new OrderPaid
-                           {
-                               Id = context.Saga.CorrelationId
-                           });
-                       })
+                       .Activity(x => x.OfType<PublishOrderPaidActivity>())
                        .TransitionTo(Processing)
                   );
         }
@@ -66,7 +59,7 @@ namespace Ordering.Worker.StateMachines
         public Event<OrderInitiated> OrderInitiated { get; private set; } = null!;
         public Event<PaymentCompleted> PaymentCompleted { get; private set; } = null!;
         public Event<InventoryReduced> InventoryReduced { get; private set; } = null!;
-        public Event<BasketRemoved> BasketRemoved { get; private set; } = null!;
+        private Event<BasketRemoved> BasketRemoved { get; set; } = null!;
         public Event<SendReminder> SendReminder { get; private set; } = null!;
         public Event<CancelOrder> CancelOrder { get; private set; } = null!;
         public Event<ProcessingStarted> ProcessingStarted { get; private set; } = null!;

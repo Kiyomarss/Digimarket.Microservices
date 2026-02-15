@@ -8,6 +8,8 @@ namespace Ordering.Worker.StateMachines.Activities.Common
         where TSaga : OrderState
         where TEvent : class
     {
+        protected static readonly Uri QuartzSchedulerUri = new("queue:quartz");
+
         public abstract Task Execute(
             BehaviorContext<TSaga, TEvent> context,
             IBehavior<TSaga, TEvent> next);
