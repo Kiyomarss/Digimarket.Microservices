@@ -6,7 +6,6 @@ using MassTransit.Metadata;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Ordering.Worker.Configurations.Saga;
-using Ordering.Worker.Consumers;
 using Ordering.Worker.StateMachines;
 using Quartz;
 
@@ -30,7 +29,6 @@ namespace Ordering.Worker.Extensions
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumers(typeof(OrderInitiatedConsumer).Assembly);
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                     .EntityFrameworkRepository(r =>
                     {
