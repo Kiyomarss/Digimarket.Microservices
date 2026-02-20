@@ -1,19 +1,20 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.PersistenceTests.Fixtures;
 using Shared.IntegrationEvents.Ordering;
+using Xunit;
 
-namespace Ordering.Worker.IntegrationTests.ConsumerTests
+namespace Ordering.Worker.PersistenceTests.StateMachineTests
 {
-    public class OrderInitiatedConsumer_Tests : TestBase.OrderStateMachineIntegrationTestBase
+    [Collection("DatabaseCollection")]
+    public class When_OrderInitiated_Tests : TestBase.OrderStateMachineIntegrationTestBase
     {
-        private readonly Fixtures.OrderStateMachineFixture _fixture;
-
-        public OrderInitiatedConsumer_Tests(Fixtures.OrderStateMachineFixture fixture) : base(fixture)
-        {
-            _fixture = fixture;
-        }
+        public When_OrderInitiated_Tests(OrderStateMachineFixture fixture) : base(fixture) { }
 
         [Fact]
-        public async Task Should_consume_order_initiated_message()
+        public async Task Should_create_saga_and_publish_messages()
         {
             // Arrange
             await CleanupDatabase();
@@ -27,14 +28,13 @@ namespace Ordering.Worker.IntegrationTests.ConsumerTests
                 Date = now
             });
 
-            // انتظار برای پردازش پیام
-            await Task.Delay(1000);
+            // انتظار برای پردازش پیام‌ها (به دلیل Outbox و RabbitMQ)
+            await Task.Delay(8000);
 
             // Assert
             var saga = await GetSagaState(orderId);
             saga.Should().NotBeNull("Saga should be created");
             saga!.CurrentState.Should().Be("WaitingForPayment");
-            saga.Date.Should().Be(now);
             saga.ReminderScheduleTokenId.Should().NotBeNull("Reminder should be scheduled");
             saga.CancelScheduleTokenId.Should().NotBeNull("CancelOrder should be scheduled");
         }

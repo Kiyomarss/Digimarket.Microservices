@@ -72,9 +72,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity-Infrastructure", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9786A37F-5E10-4EF0-9E02-4F8D14A50DDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker.UnitTests", "tests\Ordering\Ordering.Worker.UnitTests\Ordering.Worker.UnitTests.csproj", "{F0139F44-3636-4518-93AC-EAA67B4C4119}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker.IntegrationTests", "tests\Ordering\Ordering.Worker.IntegrationTests\Ordering.Worker.IntegrationTests.csproj", "{F0139F44-3636-4518-93AC-EAA67B4C4119}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker.IntegrationTests", "tests\Ordering\Ordering.Worker.IntegrationTests\Ordering.Worker.IntegrationTests.csproj", "{90683CBE-ABEA-483D-B6E7-6507CEE4C94A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker.PersistenceTests", "tests\Ordering\Ordering.Worker.PersistenceTests\Ordering.Worker.PersistenceTests.csproj", "{90683CBE-ABEA-483D-B6E7-6507CEE4C94A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Application.IntegrationTests", "tests\Ordering\Ordering.Application.IntegrationTests\Ordering.Application.IntegrationTests.csproj", "{34DB3002-831C-4973-8587-D3F2CF6C1A82}"
 EndProject

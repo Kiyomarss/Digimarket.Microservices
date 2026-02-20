@@ -1,4 +1,4 @@
-﻿namespace Ordering.Worker.IntegrationTests.Fixtures
+﻿namespace Ordering.Worker.PersistenceTests.Fixtures
 {
     [CollectionDefinition("DatabaseCollection")]
     public class DatabaseCollection : ICollectionFixture<OrderStateMachineFixture> { }

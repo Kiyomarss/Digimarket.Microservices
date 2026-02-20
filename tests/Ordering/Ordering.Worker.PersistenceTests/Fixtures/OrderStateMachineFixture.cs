@@ -13,7 +13,7 @@ using Ordering.Worker.DbContext;
 using Ordering.Worker.Extensions;
 using Shared.TestFixtures;
 
-namespace Ordering.Worker.IntegrationTests.Fixtures;
+namespace Ordering.Worker.PersistenceTests.Fixtures;
 
 public class OrderStateMachineFixture : IAsyncDisposable
 {

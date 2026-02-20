@@ -3,7 +3,7 @@ using MassTransit.Testing;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines;
 
-namespace Ordering.Worker.UnitTests.StateMachines.Fixtures
+namespace Ordering.Worker.IntegrationTests.StateMachines.Fixtures
 {
     public class OrderStateMachineFixture : IAsyncDisposable
     {

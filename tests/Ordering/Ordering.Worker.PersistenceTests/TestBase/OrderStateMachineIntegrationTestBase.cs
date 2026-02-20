@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
-using Ordering.Worker.IntegrationTests.Fixtures;
+using Ordering.Worker.PersistenceTests.Fixtures;
 using Xunit;
 
-namespace Ordering.Worker.IntegrationTests.TestBase
+namespace Ordering.Worker.PersistenceTests.TestBase
 {
     public abstract class OrderStateMachineIntegrationTestBase : IAsyncLifetime
     {

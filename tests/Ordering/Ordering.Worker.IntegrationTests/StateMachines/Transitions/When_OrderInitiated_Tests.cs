@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using Ordering.Worker.StateMachines.Events;
-using Ordering.Worker.UnitTests.StateMachines.Fixtures;
-using Ordering.Worker.UnitTests.StateMachines.TestBases;
+using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
+using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
 using Shared.IntegrationEvents.Ordering;
 
-namespace Ordering.Worker.UnitTests.StateMachines.Transitions
+namespace Ordering.Worker.IntegrationTests.StateMachines.Transitions
 {
     public class When_OrderInitiated_Tests : OrderStateMachineTestBase
     {
