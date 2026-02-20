@@ -5,20 +5,22 @@ using Ordering.Worker.StateMachines;
 
 namespace Ordering.Worker.IntegrationTests.StateMachines.Fixtures
 {
-    public class OrderStateMachineFixture : IAsyncDisposable
+    public class OrderSagaFixture : IAsyncDisposable
     {
         public InMemoryTestHarness Harness { get; }
         public ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness { get; }
         private bool _started;
 
-        public OrderStateMachineFixture()
+        public OrderSagaFixture()
         {
-            Harness = new InMemoryTestHarness();
-
-            // تنظیم Message Scheduler برای تست پیام‌های زمان‌بندی‌شده
-            Harness.OnConfigureInMemoryBus += configurator =>
+            Harness = new InMemoryTestHarness
             {
-                configurator.UseMessageScheduler(new Uri("queue:quartz"));
+                TestTimeout = TimeSpan.FromSeconds(30)
+            };
+
+            Harness.OnConfigureInMemoryBus += cfg =>
+            {
+                cfg.UseDelayedMessageScheduler();
             };
 
             var machine = new OrderStateMachine();
