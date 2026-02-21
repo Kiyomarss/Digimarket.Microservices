@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Ordering.Worker.Configurations.Saga;
-using Ordering.Worker.PersistenceTests.Fixtures;
 using Ordering.Worker.PersistenceTests.TestBase;
 using Ordering.Worker.StateMachines.Activities.Initialize;
 using Shared.IntegrationEvents.Ordering;
@@ -11,11 +10,6 @@ namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
 
 public class ScheduleOrderActivityTests : WorkerPersistenceTestBase
 {
-    public ScheduleOrderActivityTests(OrderingWorkerPersistenceFixture fixture)
-        : base(fixture)
-    {
-    }
-
     [Fact]
     public async Task Should_schedule_reminder_and_cancel_and_publish_order_paid()
     {

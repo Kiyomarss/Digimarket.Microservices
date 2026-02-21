@@ -65,12 +65,12 @@ public class OrderingWorkerPersistenceFixture : IAsyncDisposable, IAsyncLifetime
 
         var machine = new OrderStateMachine();
         var repository = new InMemorySagaRepository<OrderState>();
-
         SagaHarness = harness.StateMachineSaga(machine, repository);
-        Bus = harness.BusControl;
 
         await harness.Start();
 
+        Bus = harness.BusControl; // Bus بعد از Start مقداردهی شود
+        
         // Respawner برای ریست دیتابیس قبل از هر تست
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync();
@@ -101,4 +101,7 @@ public class OrderingWorkerPersistenceFixture : IAsyncDisposable, IAsyncLifetime
 
         await _postgresContainer.DisposeAsync();
     }
+    
+    protected async Task PublishEventAsync<TEvent>(TEvent @event) where TEvent : class
+        => await Bus.Publish(@event);
 }
