@@ -55,8 +55,8 @@ public class CreateOrderCommandHandlerTests
     {
         // Arrange
         var grpcResponse = new GetProductsResponse();
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, ProductName = "Product A", Price = 1500 });
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid2, ProductName = "Product B", Price = 2500 });
+        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, Price = 1500 });
+        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid2, Price = 2500 });
 
         _productServiceMock
             .Setup(x => x.GetProductsByIdsAsync(
@@ -118,7 +118,7 @@ public class CreateOrderCommandHandlerTests
     public async Task Handle_Should_Map_ProductName_Price_And_Quantity_Correctly()
     {
         var grpcResponse = new GetProductsResponse();
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, ProductName = "Test Product", Price = 999 });
+        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, Price = 999 });
 
         _productServiceMock
             .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))

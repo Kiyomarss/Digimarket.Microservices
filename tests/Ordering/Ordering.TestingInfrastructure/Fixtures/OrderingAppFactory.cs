@@ -107,14 +107,12 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         response.Products.Add(new ProductInfo
         {
             ProductId = TestGuids.Guid1,
-            ProductName = "Test",
             Price = 1500
         });
 
         response.Products.Add(new ProductInfo
         {
             ProductId = TestGuids.Guid2,
-            ProductName = "Another",
             Price = 2500
         });
 

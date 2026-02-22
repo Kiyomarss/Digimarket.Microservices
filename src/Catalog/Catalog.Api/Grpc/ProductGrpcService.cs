@@ -29,7 +29,6 @@ public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
             response.Products.Add(new ProductInfo
             {
                 ProductId = p.Id.ToString(),
-                ProductName = p.Name,
                 Price = p.Price
             });
         }

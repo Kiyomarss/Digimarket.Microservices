@@ -28,7 +28,6 @@ public class Order : AggregateRoot
 
     public void AddItem(
         Guid productId,
-        string productName,
         long price,
         int quantity)
     {
@@ -38,7 +37,6 @@ public class Order : AggregateRoot
         _items.Add(OrderItem.Create(
                                     Id,
                                     productId,
-                                    productName,
                                     price,
                                     quantity));
     }

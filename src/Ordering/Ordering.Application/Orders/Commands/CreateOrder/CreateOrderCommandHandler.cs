@@ -73,7 +73,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
             order.AddItem(
                           Guid.Parse(product.ProductId),
-                          product.ProductName,
                           product.Price,
                           reqItem.Quantity);
         }

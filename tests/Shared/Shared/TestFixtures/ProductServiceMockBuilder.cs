@@ -11,8 +11,8 @@ public class ProductServiceMockBuilder
     public ProductServiceMockBuilder WithDefaultProducts()
     {
         var response = new GetProductsResponse();
-        response.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, ProductName = "Test Product", Price = 1500 });
-        response.Products.Add(new ProductInfo { ProductId = TestGuids.Guid2, ProductName = "Another Product", Price = 2500 });
+        response.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, Price = 1500 });
+        response.Products.Add(new ProductInfo { ProductId = TestGuids.Guid2, Price = 2500 });
 
         _mock.Setup(x => x.GetProductsByIdsAsync(
                                                  It.IsAny<IEnumerable<string>>(), 

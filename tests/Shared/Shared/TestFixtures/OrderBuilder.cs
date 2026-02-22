@@ -23,7 +23,6 @@ public sealed class OrderBuilder
         {
             _order.AddItem(
                            Guid.NewGuid(),
-                           $"Product {Guid.NewGuid():N}".Substring(0, 8),
                            item.price,
                            item.quantity);
         }

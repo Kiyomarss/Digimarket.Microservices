@@ -28,8 +28,8 @@ public class OrderTests
         // Arrange
         var order =  new OrderBuilder().Build();
 
-        order.AddItem(Guid.NewGuid(), $"Product {Guid.NewGuid():N}".Substring(0, 8), 1000, 2);
-        order.AddItem(Guid.NewGuid(), $"Product {Guid.NewGuid():N}".Substring(0, 8), 500, 3);
+        order.AddItem(Guid.NewGuid(), 1000, 2);
+        order.AddItem(Guid.NewGuid(), 500, 3);
 
         // Act
         var total = order.TotalPrice;
@@ -43,7 +43,7 @@ public class OrderTests
     {
         // Arrange
         var order =  new OrderBuilder().Build();
-        order.AddItem(Guid.NewGuid(), $"Product {Guid.NewGuid():N}".Substring(0, 8), 1000, 3);
+        order.AddItem(Guid.NewGuid(), 1000, 3);
 
         // Assert
         order.TotalPrice.Should().Be(3000);
@@ -77,7 +77,7 @@ public class OrderTests
         var order = new OrderBuilder().Build();
 
         // Act
-        order.AddItem(Guid.NewGuid(), "Product", 1000, 2);
+        order.AddItem(Guid.NewGuid(), 1000, 2);
 
         // Assert
         order.Items.Should().HaveCount(1);
@@ -92,7 +92,7 @@ public class OrderTests
         var order = new OrderBuilder().Build();
 
         // Act
-        var act = () => order.AddItem(Guid.NewGuid(), "Product", 1000, quantity);
+        var act = () => order.AddItem(Guid.NewGuid(), 1000, quantity);
 
         // Assert
         act.Should().Throw<DomainException>();

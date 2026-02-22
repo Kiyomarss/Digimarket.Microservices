@@ -18,6 +18,5 @@ message GetProductsResponse {
 
 message ProductInfo {
   string productId = 1;
-  string ProductName = 2;
-  int64 price = 3;
+  int64 price = 2;
 }

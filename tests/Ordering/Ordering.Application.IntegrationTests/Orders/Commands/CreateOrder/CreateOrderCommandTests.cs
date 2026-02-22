@@ -108,7 +108,6 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
             response.Products.Add(new ProductInfo
             {
                 ProductId = TestGuids.Guid1,
-                ProductName = "Test",
                 Price = 1500
             });
 

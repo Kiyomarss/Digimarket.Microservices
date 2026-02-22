@@ -10,17 +10,15 @@ public class OrderItemTests
     {
         // Arrange
         var productId = Guid.NewGuid();
-        var productName = "Test Product";
         var quantity = 3;
         var price = 1000;
 
         // Act
-        var item = new OrderItem(productId, productName, quantity, price);
+        var item = new OrderItem(productId, quantity, price);
 
         // Assert
         item.Id.Should().NotBe(Guid.Empty);
         item.ProductId.Should().Be(productId);
-        item.ProductName.Should().Be(productName);
         item.Quantity.Should().Be(quantity);
         item.Price.Should().Be(price);
     }
@@ -31,18 +29,16 @@ public class OrderItemTests
         // Arrange
         var orderId = Guid.NewGuid();
         var productId = Guid.NewGuid();
-        var productName = "Test Product";
         var quantity = 2;
         var price = 500;
 
         // Act
-        var item = OrderItem.Create(orderId, productId, productName, price, quantity);
+        var item = OrderItem.Create(orderId, productId, price, quantity);
 
         // Assert
         item.Id.Should().NotBe(Guid.Empty);
         item.OrderId.Should().Be(orderId);
         item.ProductId.Should().Be(productId);
-        item.ProductName.Should().Be(productName);
         item.Quantity.Should().Be(quantity);
         item.Price.Should().Be(price);
     }
