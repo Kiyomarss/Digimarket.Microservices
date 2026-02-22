@@ -24,32 +24,22 @@ namespace Ordering.TestingInfrastructure.Fixtures;
 
 public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly IContainer _rabbitMqContainer;
     private readonly IContainer _postgresContainer;
     private Respawner _respawner = default!;
     private string _connectionString = default!;
     private string _dbName = default!;
-
-
-    // public properties (tests expect to access Services, Bus, DbContext)
-    // WebApplicationFactory already exposes "Services", so tests can use `Fixture.Services`
-    public IBusControl Bus => Services.GetRequiredService<IBusControl>();
+    
     public OrderingDbContext DbContext => Services.CreateScope().ServiceProvider.GetRequiredService<OrderingDbContext>();
     
     public Mock<IProductService> ProductServiceMock { get; } = new();
 
     public OrderingAppFactory()
     {
-        _rabbitMqContainer = TestContainerFactory.CreateRabbitMqContainer();
-        _rabbitMqContainer.StartAsync().GetAwaiter().GetResult();
-
         _postgresContainer = TestContainerFactory.CreatePostgresContainer();
         _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
         // Make ASPNETCORE_ENVIRONMENT available early (keeps behavior consistent)
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "IntegrationTest");
-
-        TestEnvironmentHelper.SetRabbitMqHost(_rabbitMqContainer);
     }
 
     // Override ConfigureWebHost to register/override services inside the factory's host
@@ -198,7 +188,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         }
 
         // Dispose containers
-        await _rabbitMqContainer.DisposeAsync();
         await _postgresContainer.DisposeAsync();
 
         // Dispose the factory host (base) so it cleans up server and services properly

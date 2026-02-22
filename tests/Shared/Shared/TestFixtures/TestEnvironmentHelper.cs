@@ -16,11 +16,4 @@ public static class TestEnvironmentHelper
                                            "DATABASE_CONNECTION_STRING",
                                            PostgresConnectionString);
     }
-
-    public static void SetRabbitMqHost(IContainer rabbitMqContainer)
-    {
-        Environment.SetEnvironmentVariable(
-                                           "RABBITMQ_HOST",
-                                           $"localhost:{rabbitMqContainer.GetMappedPublicPort(5672)}");
-    }
 }
