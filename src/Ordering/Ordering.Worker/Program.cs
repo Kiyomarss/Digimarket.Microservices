@@ -8,7 +8,7 @@ builder.Configuration
        .AddEnvironmentVariables();
 
 // ---------- Services ----------
-builder.Services.AddOrderingServices(builder.Configuration, builder.Environment);
+builder.Services.AddOrderingServices(builder.Configuration);
 
 // ---------- Build & Run ----------
 var host = builder.Build();

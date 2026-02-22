@@ -13,7 +13,7 @@ namespace Ordering.Worker.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddOrderingServices(this IServiceCollection services, IConfiguration configuration,  IHostEnvironment environment)
+        public static IServiceCollection AddOrderingServices(this IServiceCollection services, IConfiguration configuration)
         {
             // استخراج تنظیمات دیتابیس
             var connectionString = configuration.GetConnectionString("Default");
