@@ -1,5 +1,6 @@
 ﻿// tests/Ordering.Application.UnitTests/Orders/Commands/CreateOrder/CreateOrderCommandHandlerTests.cs
 
+using BuildingBlocks.Exceptions.Application;
 using BuildingBlocks.Services;
 using FluentAssertions;
 using Moq;
@@ -95,7 +96,7 @@ public class CreateOrderCommandHandlerTests
 
         var act = () => _handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
+        await act.Should().ThrowAsync<ExternalServiceException>()
             .WithMessage("Products not found in gRPC service.");
     }
 
@@ -110,7 +111,7 @@ public class CreateOrderCommandHandlerTests
 
         var act = () => _handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
+        await act.Should().ThrowAsync<ExternalServiceException>()
             .WithMessage("Products not found in gRPC service.");
     }
 
