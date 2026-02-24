@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using Ordering.TestingInfrastructure.Fixtures;
+using Xunit;
 
-namespace Ordering.TestingInfrastructure.Fixtures;
+namespace Ordering.TestingInfrastructure.TestBase;
 
 [CollectionDefinition("ApiIntegration")]
 public class ApiIntegrationCollection : ICollectionFixture<OrderingAppFactory>

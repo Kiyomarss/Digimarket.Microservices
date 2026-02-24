@@ -9,7 +9,6 @@ using Ordering.TestingInfrastructure.TestBase;
 
 namespace Ordering.Api.IntegrationTests.Controllers;
 
-[Collection("ApiIntegration")]
 public class OrderControllerTests : OrderingAppTestBase
 {
     private readonly HttpClient _client;

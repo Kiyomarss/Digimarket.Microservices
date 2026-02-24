@@ -6,7 +6,6 @@ using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.IntegrationTests.Consumer;
 
-[Collection("ApiIntegration")]
 public class OrderPaidConsumerTests : OrderingAppTestBase
 {
     public OrderPaidConsumerTests(OrderingAppFactory fixture)

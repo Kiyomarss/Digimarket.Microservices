@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using MassTransit;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

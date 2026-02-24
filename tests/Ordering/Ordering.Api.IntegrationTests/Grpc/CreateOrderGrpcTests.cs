@@ -10,7 +10,6 @@ using Shared.Grpc;
 
 namespace Ordering.Api.IntegrationTests.Grpc;
 
-[Collection("ApiIntegration")]
 public class CreateOrderGrpcTests : OrderingAppTestBase
 {
     public CreateOrderGrpcTests(OrderingAppFactory fixture) : base(fixture) { }
