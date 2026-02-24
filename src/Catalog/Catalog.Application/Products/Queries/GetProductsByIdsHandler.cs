@@ -18,9 +18,7 @@ public class GetProductsByIdsHandler
         CancellationToken cancellationToken)
     {
         var products = await _productRepository.GetProductByIds(query.ProductIds, cancellationToken);
-
-        var result = products.Select(p => new ProductDto(p.Id, p.Name, p.Price)).ToList();
-
-        return new GetProductsByIdsResponse(result);
+        
+        return new GetProductsByIdsResponse(products);
     }
 }

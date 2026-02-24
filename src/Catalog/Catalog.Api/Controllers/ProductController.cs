@@ -1,5 +1,4 @@
 ﻿using BuildingBlocks.Controllers;
-using Catalog.Application.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Controllers

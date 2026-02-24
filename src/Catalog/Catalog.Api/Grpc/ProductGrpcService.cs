@@ -16,23 +16,24 @@ public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
         _sender = sender;
     }
 
-    public override async Task<GetProductsResponse> GetProductsByIds(GetProductsRequest request, ServerCallContext context)
+    public override async Task<GetProductsResponse> GetProductsByIds(
+        GetProductsRequest request,
+        ServerCallContext context)
     {
-        var productIds = request.ProductIds.ToValidGuids().ToList();
+        var productIds = request.ProductIds.ToValidGuids();
 
         var query = new GetProductsByIdsQuery(productIds);
         var result = await _sender.Send(query);
 
         var response = new GetProductsResponse();
-        foreach (var p in result.Products)
-        {
-            response.Products.Add(new ProductInfo
-            {
-                ProductId = p.Id.ToString(),
-                Price = p.Price
-            });
-        }
+        response.Products.AddRange(
+                                   result.Products.Select(p => new ProductInfo
+                                   {
+                                       ProductId = p.Id.ToString(), Price = p.Price
+                                   })
+                                  );
 
         return response;
     }
+    
 }

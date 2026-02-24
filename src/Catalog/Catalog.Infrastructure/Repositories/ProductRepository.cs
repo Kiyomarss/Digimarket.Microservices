@@ -1,5 +1,6 @@
 ﻿using Catalog_Domain.Entities;
 using Catalog_Infrastructure.Data.DbContext;
+using Catalog.Application.Products.Queries;
 using Catalog.Application.RepositoryContracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,14 @@ public class ProductRepository : IProductRepository
     {
         _db = dbContext;
     }
-    
-    public async Task<List<Product>> GetProductByIds(List<Guid> productIds, CancellationToken ct)
+
+    public async Task<IEnumerable<ProductDto>> GetProductByIds(IEnumerable<Guid> productIds,
+                                                               CancellationToken ct)
     {
         return await _db.Set<Product>()
+                        .AsNoTracking()
                         .Where(x => productIds.Contains(x.Id))
+                        .Select(x => new ProductDto(x.Id, x.Price))
                         .ToListAsync(ct);
     }
     
