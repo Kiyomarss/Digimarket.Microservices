@@ -29,8 +29,6 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     private string _connectionString = default!;
     private string _dbName = default!;
     
-    public OrderingDbContext DbContext => Services.CreateScope().ServiceProvider.GetRequiredService<OrderingDbContext>();
-    
     public Mock<IProductService> ProductServiceMock { get; } = new();
 
     public OrderingAppFactory()
@@ -84,9 +82,8 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             
             services.AddMassTransitTestHarness(x =>
             {
-                x.AddConsumers(typeof(OrderPaidConsumer).Assembly);
+                x.AddConsumer<OrderPaidConsumer>();
             });
-
         });
     }
     

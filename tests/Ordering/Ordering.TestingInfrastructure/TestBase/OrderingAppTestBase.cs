@@ -23,11 +23,17 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
         Sender = Fixture.Services.GetRequiredService<ISender>();
         DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
         Harness = Fixture.Services.GetRequiredService<ITestHarness>();
-        Fixture.Services.GetRequiredService<IBusControl>();// بررسی جهت حذف
     }
 
-    public Task InitializeAsync() => Task.CompletedTask;
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task InitializeAsync()
+    {
+        await Harness.Start();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await Harness.Stop();
+    }
 
     protected async Task ResetDatabase()
     {

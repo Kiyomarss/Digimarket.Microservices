@@ -6,6 +6,7 @@ using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.IntegrationTests.Consumer;
 
+[Collection("ApiIntegration")]
 public class OrderPaidConsumerTests : OrderingAppTestBase
 {
     public OrderPaidConsumerTests(OrderingAppFactory fixture)
@@ -28,8 +29,8 @@ public class OrderPaidConsumerTests : OrderingAppTestBase
             Id = order.Id
         });
         
-        // صبر کن تا تمام فعالیت‌های bus تمام شود
-        await Harness.InactivityTask;
+        // صبر کن تا مصرف پیام تمام شود
+        (await Harness.Consumed.Any<OrderPaid>()).Should().BeTrue();
         
         await ReloadEntityAsync(order);
 

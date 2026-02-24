@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MassTransit;
 using MassTransit.Testing;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
 using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
@@ -67,9 +68,13 @@ public class OrderInitiatedTests : OrderSagaTestBase
             Date = DateTime.UtcNow
         });
 
-        await Harness.InactivityTask;
+        // مطمئن شو پیام مصرف شده
+        (await SagaHarness.Consumed.Any<OrderInitiated>()).Should().BeTrue();
 
-        var instance = SagaHarness.Created.Contains(orderId);
+        var instance = SagaHarness.Created.ContainsInState(
+                                                           orderId,
+                                                           Machine,
+                                                           Machine.WaitingForPayment);
 
         instance.Should().NotBeNull();
         instance.ReminderScheduleTokenId.Should().NotBeNull();

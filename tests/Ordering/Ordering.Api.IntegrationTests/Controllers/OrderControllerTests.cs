@@ -3,37 +3,36 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Api.Contracts;
-using Ordering.Api.Controllers;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
+using Ordering.TestingInfrastructure.TestBase;
 
 namespace Ordering.Api.IntegrationTests.Controllers;
 
 [Collection("ApiIntegration")]
-public class OrderControllerTests : IClassFixture<OrderingAppFactory>
+public class OrderControllerTests : OrderingAppTestBase
 {
     private readonly HttpClient _client;
-    private readonly OrderingAppFactory _factory;
 
-    public OrderControllerTests(OrderingAppFactory factory)
+    public OrderControllerTests(OrderingAppFactory fixture) : base(fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
+        _client = fixture.CreateClient();
     }
+
 
     [Fact]
     public async Task GetCurrentUserOrders_WithState_ShouldReturn_Orders()
     {
-        // Arrange
-        var dbContext = _factory.DbContext;
+        await ResetDatabase();
 
-        dbContext.Orders.AddRange(
+        // Arrange
+        DbContext.Orders.AddRange(
                                   new OrderBuilder()
                                       .WithState(OrderState.Pending)
                                       .WithItems((1, 200000))
                                       .Build());
 
-        await dbContext.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
         // Act
         var response = await _client.GetAsync($"{ApiEndpoints.Orders.GetCurrentUserOrders}?state={OrderState.Pending.Code}");
