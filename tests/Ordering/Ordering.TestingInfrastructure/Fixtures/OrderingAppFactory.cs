@@ -154,36 +154,11 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await conn.OpenAsync();
 
         await _respawner.ResetAsync(conn);
-
-        // VACUUM must be executed outside EF transaction
-        /*await using var vacuumCmd = new NpgsqlCommand("VACUUM;", conn);
-        await vacuumCmd.ExecuteNonQueryAsync();*/
-    }
-
-    public async Task StartAsync()
-    {
-        var bus = Services.GetRequiredService<IBusControl>();
-        await bus.StartAsync();
     }
 
     // Dispose: stop bus and containers — DO NOT attempt to resolve services after disposal.
     public async Task DisposeAsync()
     {
-        try
-        {
-            // stop the bus if available
-            var provider = Services;
-            if (provider != null && provider.IsServiceRegistered<IBusControl>())
-            {
-                var bus = provider.GetRequiredService<IBusControl>();
-                await bus.StopAsync();
-            }
-        }
-        catch
-        {
-            // swallow — test teardown should be best-effort
-        }
-
         // Dispose containers
         await _postgresContainer.DisposeAsync();
 
