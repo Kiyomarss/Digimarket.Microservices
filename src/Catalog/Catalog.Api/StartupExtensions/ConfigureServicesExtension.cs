@@ -24,7 +24,7 @@ public static class ConfigureServicesExtension
 
             x.UseNpgsql(connectionString, options =>
             {
-                options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+                options.MigrationsAssembly("Catalog.Infrastructure");
                 options.MigrationsHistoryTable($"__{nameof(CatalogDbContext)}");
 
                 options.EnableRetryOnFailure(5);
