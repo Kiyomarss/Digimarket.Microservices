@@ -26,6 +26,10 @@ namespace Catalog_Infrastructure.Data.Configurations
                    .IsRequired(false)
                    .HasColumnType("text");
 
+            builder.Property(x => x.Stock)
+                   .IsRequired()
+                   .HasColumnType("integer");
+
             builder.Property(x => x.Price)
                    .IsRequired()
                    .HasColumnType("bigint");
