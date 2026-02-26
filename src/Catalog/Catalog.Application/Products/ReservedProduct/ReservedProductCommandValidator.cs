@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Catalog.Application.Products.CreateOrder;
+namespace Catalog.Application.Products.ReservedProduct;
 
 public class ReservedProductCommandValidator : AbstractValidator<ReserveProductsCommand>
 {

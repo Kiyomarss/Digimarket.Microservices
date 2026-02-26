@@ -2,7 +2,7 @@
 using BuildingBlocks.UnitOfWork;
 using Catalog.Application.RepositoryContracts;
 
-namespace Catalog.Application.Products.CreateOrder;
+namespace Catalog.Application.Products.ReservedProduct;
 
 public class ReservedProductCommandHandler : ICommandHandler<ReserveProductsCommand, ReserveProductsResponse>
 {

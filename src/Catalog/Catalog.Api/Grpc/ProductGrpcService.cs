@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Common.Extensions;
-using Catalog.Application.Products.CreateOrder;
 using Catalog.Application.Products.Queries;
+using Catalog.Application.Products.ReservedProduct;
 using Grpc.Core;
 using MediatR;
 using ProductGrpc;

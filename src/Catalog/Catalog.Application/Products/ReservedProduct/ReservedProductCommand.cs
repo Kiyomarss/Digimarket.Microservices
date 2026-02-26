@@ -1,7 +1,7 @@
 ﻿
 using BuildingBlocks.CQRS;
 
-namespace Catalog.Application.Products.CreateOrder;
+namespace Catalog.Application.Products.ReservedProduct;
 
 public record ReserveProductsCommand(
     List<OrderItemDto> Items
