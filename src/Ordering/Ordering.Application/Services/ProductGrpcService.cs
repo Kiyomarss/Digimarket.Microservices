@@ -13,11 +13,8 @@ public class ProductGrpcService : IProductService
         _client = client;
     }
 
-    public async Task<GetProductsResponse> GetProductsByIdsAsync(IEnumerable<string> productIds, CancellationToken ct = default)
+    public async Task<ReserveProductsResponse> ReserveProductsAsync(ReserveProductsRequest request, CancellationToken ct = default)
     {
-        var request = new GetProductsRequest();
-        request.ProductIds.AddRange(productIds);
-
-        return await _client.GetProductsByIdsAsync(request, cancellationToken: ct);
+        return await _client.ReserveProductsAsync(request, cancellationToken: ct);
     }
 }

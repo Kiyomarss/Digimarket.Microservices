@@ -1,8 +1,10 @@
 ﻿using BuildingBlocks.Common.Extensions;
+using Catalog.Application.Products.CreateOrder;
 using Catalog.Application.Products.Queries;
 using Grpc.Core;
 using MediatR;
 using ProductGrpc;
+using ReserveProductsResponse = ProductGrpc.ReserveProductsResponse;
 
 namespace Catalog.Api.Grpc;
 
@@ -16,20 +18,19 @@ public class ProductGrpcService : ProductProtoService.ProductProtoServiceBase
         _sender = sender;
     }
 
-    public override async Task<GetProductsResponse> GetProductsByIds(
-        GetProductsRequest request,
+    public override async Task<ReserveProductsResponse> ReserveProducts(
+        ReserveProductsRequest request,
         ServerCallContext context)
     {
-        var productIds = request.ProductIds.ToValidGuids();
+        var items = request.Items.Select(x => new OrderItemDto(Guid.Parse(x.ProductId), x.Quantity)).ToList();
+        var command = new ReserveProductsCommand(items);
+        var result = await _sender.Send(command);
 
-        var query = new GetProductsByIdsQuery(productIds);
-        var result = await _sender.Send(query);
-
-        var response = new GetProductsResponse();
+        var response = new ReserveProductsResponse();
         response.Products.AddRange(
-                                   result.Products.Select(p => new ProductInfo
+                                   result.Products.Select(p => new ReservedProduct
                                    {
-                                       ProductId = p.Id.ToString(), Price = p.Price
+                                       ProductId = p.ProductId.ToString(), Price = p.Price
                                    })
                                   );
 

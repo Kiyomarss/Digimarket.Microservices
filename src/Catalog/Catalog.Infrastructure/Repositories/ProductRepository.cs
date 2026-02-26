@@ -15,7 +15,15 @@ public class ProductRepository : IProductRepository
         _db = dbContext;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetProductByIds(IEnumerable<Guid> productIds,
+    public async Task<List<Product>> GetProductByIds(IEnumerable<Guid> productIds, CancellationToken ct)
+    {
+        return await _db.Set<Product>()
+                        .AsNoTracking()
+                        .Where(x => productIds.Contains(x.Id))
+                        .ToListAsync(ct);
+    }
+
+    public async Task<IEnumerable<ProductDto>> GetProductByIds2(IEnumerable<Guid> productIds,
                                                                CancellationToken ct)
     {
         return await _db.Set<Product>()

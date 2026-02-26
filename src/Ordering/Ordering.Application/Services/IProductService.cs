@@ -6,5 +6,5 @@ namespace Ordering.Application.Services;
 
 public interface IProductService
 {
-    Task<GetProductsResponse> GetProductsByIdsAsync(IEnumerable<string> productIds, CancellationToken ct = default);
+    Task<ReserveProductsResponse> ReserveProductsAsync(ReserveProductsRequest request, CancellationToken ct = default);
 }

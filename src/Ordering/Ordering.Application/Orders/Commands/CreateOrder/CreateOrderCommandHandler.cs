@@ -6,6 +6,7 @@ using Ordering_Domain.Domain.Entities;
 using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
+using OrderItem = ProductGrpc.OrderItem;
 
 namespace Ordering.Application.Orders.Commands.CreateOrder;
 
@@ -30,10 +31,8 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var productIds = request.Items.Select(i => i.ProductId).ToList();
-
         // 1. گرفتن محصولات از gRPC
-        var productResponse = await FetchProductsAsync(productIds, cancellationToken);
+        var productResponse = await FetchProductsAsync(request.Items, cancellationToken);
 
         // 2. ایجاد آبجکت Order
         var order = await CreateOrderFromProducts(request, productResponse);
@@ -49,9 +48,16 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
     // ⬇ بخش های کوچک و تست‌پذیر
     // -------------------------------
 
-    private async Task<GetProductsResponse> FetchProductsAsync(List<string> productIds, CancellationToken ct)
+    private async Task<ReserveProductsResponse> FetchProductsAsync(List<CreateOrderCommand.OrderItemDto> orderItemDtos, CancellationToken ct)
     {
-        var response = await _productService.GetProductsByIdsAsync(productIds, ct);
+        var items = orderItemDtos.Select(x => new OrderItem()
+        {
+            ProductId = x.ProductId, Quantity = x.Quantity,
+        });
+        var request = new ReserveProductsRequest();
+        request.Items.AddRange(items);
+
+        var response = await _productService.ReserveProductsAsync(request, ct);
 
         if (response == null || response.Products.Count == 0)
             throw new ExternalServiceException("Products not found in gRPC service.");
@@ -61,13 +67,13 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
 
     private async Task<Order> CreateOrderFromProducts(
         CreateOrderCommand request,
-        GetProductsResponse products)
+        ReserveProductsResponse response)
     {
         var userId = await _currentUser.GetRequiredUserId();
 
         var order = Order.Create(userId);
 
-        foreach (var product in products.Products)
+        foreach (var product in response.Products)
         {
             var reqItem = request.Items.Single(i => i.ProductId == product.ProductId);
 
