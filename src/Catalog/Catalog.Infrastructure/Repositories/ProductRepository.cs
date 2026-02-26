@@ -18,7 +18,6 @@ public class ProductRepository : IProductRepository
     public async Task<List<Product>> GetProductByIds(IEnumerable<Guid> productIds, CancellationToken ct)
     {
         return await _db.Set<Product>()
-                        .AsNoTracking()
                         .Where(x => productIds.Contains(x.Id))
                         .ToListAsync(ct);
     }
@@ -27,7 +26,6 @@ public class ProductRepository : IProductRepository
                                                                CancellationToken ct)
     {
         return await _db.Set<Product>()
-                        .AsNoTracking()
                         .Where(x => productIds.Contains(x.Id))
                         .Select(x => new ProductDto(x.Id, x.Price))
                         .ToListAsync(ct);
