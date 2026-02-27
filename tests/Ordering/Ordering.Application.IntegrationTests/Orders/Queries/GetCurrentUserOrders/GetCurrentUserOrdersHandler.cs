@@ -30,7 +30,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
         await ResetDatabase();
 
         DbContext.Orders.Add(
-                             new OrderBuilder().WithState(OrderState.Cancelled).WithItems((1, 100)).Build()
+                             new OrderBuilder().WithState(OrderState.Canceled).WithItems((1, 100)).Build()
                             );
 
         await DbContext.SaveChangesAsync();

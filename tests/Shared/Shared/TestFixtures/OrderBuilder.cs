@@ -32,7 +32,7 @@ public sealed class OrderBuilder
 
     public OrderBuilder Paid()
     {
-        _order.Pay();
+        _order.Canceled();
 
         return this;
     }

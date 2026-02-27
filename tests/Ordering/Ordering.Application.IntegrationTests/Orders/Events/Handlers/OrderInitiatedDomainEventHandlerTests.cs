@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using BuildingBlocks.IntegrationEvents;
+using FluentAssertions;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Application.IntegrationTests.Orders.Events.Handlers;
 

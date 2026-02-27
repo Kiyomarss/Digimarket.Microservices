@@ -14,7 +14,7 @@ public class OrderStateValidatorTests
     [InlineData("shipped")]
     [InlineData("Processing")]
     [InlineData("Delivered")]
-    [InlineData("Cancelled")]
+    [InlineData("Canceled")]
     [InlineData("Returned")]
     public void Should_Not_Have_Error_When_State_Is_Valid(string validState)
     {

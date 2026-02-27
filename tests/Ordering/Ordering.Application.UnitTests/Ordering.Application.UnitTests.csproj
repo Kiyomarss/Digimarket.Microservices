@@ -26,7 +26,6 @@
       <ProjectReference Include="..\..\..\src\BuildingBlocks\Protos\ProductGrpcContracts\ProductGrpcContracts.csproj" />
       <ProjectReference Include="..\..\..\src\Ordering\Ordering.Application\Ordering.Application.csproj" />
       <ProjectReference Include="..\..\..\src\Ordering\Ordering.Domain\Ordering.Domain.csproj" />
-      <ProjectReference Include="..\..\..\src\Shared\IntegrationEvents\IntegrationEvents.csproj" />
       <ProjectReference Include="..\..\Shared\Shared\Shared.csproj" />
     </ItemGroup>
 

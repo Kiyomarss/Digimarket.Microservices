@@ -1,23 +1,23 @@
+using BuildingBlocks.IntegrationEvents;
 using MassTransit;
 using MediatR;
-using Ordering.Application.Orders.Commands.PayOrder;
-using Shared.IntegrationEvents.Ordering;
+using Ordering.Application.Orders.Commands.OrderCancelled;
 
 namespace Ordering.Api.Consumers
 {
-    public class OrderPaidConsumer : IConsumer<OrderPaid>
+    public class OrderCanceledConsumer : IConsumer<OrderCanceled>
     {
         private readonly ISender _sender;
 
-        public OrderPaidConsumer(ISender sender)
+        public OrderCanceledConsumer(ISender sender)
         {
             _sender = sender;
         }
 
-        public async Task Consume(ConsumeContext<OrderPaid> context)
+        public async Task Consume(ConsumeContext<OrderCanceled> context)
         {
             var message = context.Message;
-            var command = new PayOrderCommand
+            var command = new OrderCanceledCommand
             {
                 Id = message.Id
             };

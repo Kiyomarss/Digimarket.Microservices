@@ -1,8 +1,8 @@
+using BuildingBlocks.IntegrationEvents;
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Common;
 using Ordering.Worker.StateMachines.Events;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Worker.StateMachines.Activities.Processing;
 

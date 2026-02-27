@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using BuildingBlocks.IntegrationEvents;
+using FluentAssertions;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.PersistenceTests.TestBase;
 using Ordering.Worker.StateMachines.Activities.Initialize;
-using Shared.IntegrationEvents.Ordering;
 using Ordering.Worker.StateMachines.Events;
 using Xunit;
 

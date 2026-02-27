@@ -2,15 +2,15 @@
 using BuildingBlocks.Exceptions.Application;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
-using Ordering.Application.Orders.Commands.PayOrder;
+using Ordering.Application.Orders.Commands.OrderCancelled;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 
 namespace Ordering.Application.IntegrationTests.Orders.Queries.PayOrder;
 
-public class PayOrderHandlerTests : OrderingAppTestBase
+public class OrderCanceledHandlerTests : OrderingAppTestBase
 {
-    public PayOrderHandlerTests(OrderingAppFactory fixture)
+    public OrderCanceledHandlerTests(OrderingAppFactory fixture)
         : base(fixture) { }
 
     [Fact]
@@ -27,7 +27,7 @@ public class PayOrderHandlerTests : OrderingAppTestBase
         await DbContext.SaveChangesAsync();
 
         // Act
-        await Sender.Send(new PayOrderCommand { Id = order.Id });
+        await Sender.Send(new OrderCanceledCommand { Id = order.Id });
 
         // Assert
         var updatedOrder = await DbContext.Orders.FindAsync(order.Id);
@@ -40,7 +40,7 @@ public class PayOrderHandlerTests : OrderingAppTestBase
     {
         await ResetDatabase();
 
-        var act = () => Sender.Send(new PayOrderCommand { Id = Guid.NewGuid() });
+        var act = () => Sender.Send(new OrderCanceledCommand { Id = Guid.NewGuid() });
 
         await act.Should().ThrowAsync<NotFoundException>();
     }

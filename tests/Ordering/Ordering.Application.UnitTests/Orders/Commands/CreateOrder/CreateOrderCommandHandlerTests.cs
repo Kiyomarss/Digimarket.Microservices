@@ -6,7 +6,6 @@ using FluentAssertions;
 using Moq;
 using Ordering_Domain.Domain.Entities;
 using ProductGrpc;
-using Shared.IntegrationEvents.Ordering;
 using BuildingBlocks.UnitOfWork;
 using MassTransit;
 using Ordering.Application.Orders.Commands.CreateOrder;

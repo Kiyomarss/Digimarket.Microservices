@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using BuildingBlocks.IntegrationEvents;
+using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Api.IntegrationTests.Consumer;
 
-public class OrderPaidConsumerTests : OrderingAppTestBase
+public class OrderCanceledConsumerTests : OrderingAppTestBase
 {
-    public OrderPaidConsumerTests(OrderingAppFactory fixture)
+    public OrderCanceledConsumerTests(OrderingAppFactory fixture)
         : base(fixture) { }
 
     [Fact]

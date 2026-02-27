@@ -56,7 +56,7 @@ public class OrderTests
         var order = new OrderBuilder().Build();
 
         // Act
-        order.Pay();
+        order.Canceled();
 
         // Assert
         order.State.Should().Be(OrderState.Paid);

@@ -1,7 +1,7 @@
-﻿using MassTransit;
+﻿using BuildingBlocks.IntegrationEvents;
+using MassTransit;
 using MediatR;
 using Ordering_Domain.DomainEvents;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Application.Orders.Events.Handlers;
 

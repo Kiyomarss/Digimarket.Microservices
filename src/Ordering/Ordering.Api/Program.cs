@@ -42,7 +42,7 @@ builder.Services.AddConfiguredOpenTelemetry(
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<OrderPaidConsumer>();
+    x.AddConsumer<OrderCanceledConsumer>();
     x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);

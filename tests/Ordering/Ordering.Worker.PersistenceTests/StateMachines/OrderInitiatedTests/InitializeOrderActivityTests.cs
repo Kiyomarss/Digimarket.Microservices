@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using BuildingBlocks.IntegrationEvents;
+using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;
 using Ordering.Worker.Configurations.Saga;
@@ -6,7 +7,6 @@ using Ordering.Worker.PersistenceTests.Fixtures;
 using Ordering.Worker.PersistenceTests.TestBase;
 using Ordering.Worker.StateMachines.Activities.Initialize;
 using Ordering.Worker.StateMachines.Events;
-using Shared.IntegrationEvents.Ordering;
 using Xunit;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;

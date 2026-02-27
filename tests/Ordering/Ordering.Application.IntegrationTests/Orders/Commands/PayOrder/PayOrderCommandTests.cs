@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Domain.Domain.Enum;
-using Ordering.Application.Orders.Commands.PayOrder;
+using Ordering.Application.Orders.Commands.OrderCancelled;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
@@ -27,7 +27,7 @@ public class PayOrderCommandHandlerTests : OrderingAppTestBase
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();
 
-        var command = new PayOrderCommand { Id = order.Id };
+        var command = new OrderCanceledCommand { Id = order.Id };
 
         // Act
         await Sender.Send(command);
@@ -44,7 +44,7 @@ public class PayOrderCommandHandlerTests : OrderingAppTestBase
     {
         await ResetDatabase();
 
-        var command = new PayOrderCommand { Id = TestGuids.Guid3 };
+        var command = new OrderCanceledCommand { Id = TestGuids.Guid3 };
 
         // Act
         var act = () => Sender.Send(command);

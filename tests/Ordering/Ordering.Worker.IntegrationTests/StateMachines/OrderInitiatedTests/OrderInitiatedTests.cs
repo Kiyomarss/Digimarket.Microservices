@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
+﻿using BuildingBlocks.IntegrationEvents;
+using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
 using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
 using Ordering.Worker.StateMachines.Events;
-using Shared.IntegrationEvents.Ordering;
 
 namespace Ordering.Worker.IntegrationTests.StateMachines.OrderInitiatedTests;
 

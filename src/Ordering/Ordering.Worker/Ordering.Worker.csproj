@@ -26,6 +26,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj" />
-    <ProjectReference Include="..\..\Shared\IntegrationEvents\IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>

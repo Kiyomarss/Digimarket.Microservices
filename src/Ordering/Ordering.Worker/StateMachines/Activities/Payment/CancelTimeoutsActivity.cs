@@ -30,6 +30,7 @@ namespace Ordering.Worker.StateMachines.Activities.Payment
                                                     context.Saga.CancelScheduleTokenId.Value);
 
                 context.Saga.CancelScheduleTokenId = null;
+                
             }
 
             await context.Publish(new ProcessingStarted(context.Saga.CorrelationId));

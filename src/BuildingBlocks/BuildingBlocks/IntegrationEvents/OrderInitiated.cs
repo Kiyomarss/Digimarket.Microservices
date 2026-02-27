@@ -1,4 +1,4 @@
-namespace Shared.IntegrationEvents.Ordering;
+namespace BuildingBlocks.IntegrationEvents;
 
 
 public sealed record OrderInitiated(
