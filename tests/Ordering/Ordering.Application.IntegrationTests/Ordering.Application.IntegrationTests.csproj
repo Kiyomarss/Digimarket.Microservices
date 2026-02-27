@@ -51,4 +51,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="ProductGrpcContracts">
+        <HintPath>..\Ordering.Worker.PersistenceTests\bin\Debug\net9.0\ProductGrpcContracts.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

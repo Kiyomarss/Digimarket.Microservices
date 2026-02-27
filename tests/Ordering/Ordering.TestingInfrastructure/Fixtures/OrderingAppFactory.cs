@@ -57,9 +57,9 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.RemoveAll<IProductService>();
 
             ProductServiceMock
-                .Setup(x => x.GetProductsByIdsAsync(
-                                                    It.IsAny<IEnumerable<string>>(),
-                                                    It.IsAny<CancellationToken>()))
+                .Setup(x => x.ReserveProductsAsync(
+                                                   It.IsAny<ReserveProductsRequest>(),
+                                                   It.IsAny<CancellationToken>()))
                 .ReturnsAsync(DefaultProducts());
 
             services.AddSingleton(ProductServiceMock.Object);
@@ -87,17 +87,17 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         });
     }
     
-    private static GetProductsResponse DefaultProducts()
+    private static ReserveProductsResponse DefaultProducts()
     {
-        var response = new GetProductsResponse();
+        var response = new ReserveProductsResponse();
 
-        response.Products.Add(new ProductInfo
+        response.Products.Add(new ReservedProduct
         {
             ProductId = TestGuids.Guid1,
             Price = 1500
         });
 
-        response.Products.Add(new ProductInfo
+        response.Products.Add(new ReservedProduct
         {
             ProductId = TestGuids.Guid2,
             Price = 2500

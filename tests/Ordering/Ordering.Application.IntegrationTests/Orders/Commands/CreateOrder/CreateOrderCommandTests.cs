@@ -48,10 +48,10 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
         await ResetDatabase();
         
         Fixture.ProductServiceMock
-               .Setup(x => x.GetProductsByIdsAsync(
-                                                   It.IsAny<IEnumerable<string>>(),
+               .Setup(x => x.ReserveProductsAsync(
+                                                   It.IsAny<ReserveProductsRequest>(),
                                                    It.IsAny<CancellationToken>()))
-               .ReturnsAsync(new GetProductsResponse());
+               .ReturnsAsync(new ReserveProductsResponse());
 
 
         var command = new CreateOrderCommand
@@ -74,9 +74,9 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
         await ResetDatabase();
         
         Fixture.ProductServiceMock
-               .Setup(x => x.GetProductsByIdsAsync(
-                                                   It.IsAny<IEnumerable<string>>(),
-                                                   It.IsAny<CancellationToken>()))
+               .Setup(x => x.ReserveProductsAsync(
+                                                  It.IsAny<ReserveProductsRequest>(),
+                                                  It.IsAny<CancellationToken>()))
                .ReturnsAsync(DefaultProducts);
 
 
@@ -101,11 +101,11 @@ public class CreateOrderCommandHandlerTests : OrderingAppTestBase
 
         return;
 
-        GetProductsResponse DefaultProducts()
+        ReserveProductsResponse DefaultProducts()
         {
-            var response = new GetProductsResponse();
+            var response = new ReserveProductsResponse();
 
-            response.Products.Add(new ProductInfo
+            response.Products.Add(new ReservedProduct
             {
                 ProductId = TestGuids.Guid1,
                 Price = 1500

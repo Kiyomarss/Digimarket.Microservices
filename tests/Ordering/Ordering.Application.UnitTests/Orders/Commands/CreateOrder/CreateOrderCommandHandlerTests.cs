@@ -55,14 +55,14 @@ public class CreateOrderCommandHandlerTests
     public async Task Handle_ValidRequest_Should_CreateOrder_PublishEvent_And_Save()
     {
         // Arrange
-        var grpcResponse = new GetProductsResponse();
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, Price = 1500 });
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid2, Price = 2500 });
+        var grpcResponse = new ReserveProductsResponse();
+        grpcResponse.Products.Add(new ReservedProduct { ProductId = TestGuids.Guid1, Price = 1500 });
+        grpcResponse.Products.Add(new ReservedProduct { ProductId = TestGuids.Guid2, Price = 2500 });
 
         _productServiceMock
-            .Setup(x => x.GetProductsByIdsAsync(
-                It.IsAny<IEnumerable<string>>(),
-                It.IsAny<CancellationToken>()))
+            .Setup(x => x.ReserveProductsAsync(
+                                               It.IsAny<ReserveProductsRequest>(),
+                                               It.IsAny<CancellationToken>()))
             .ReturnsAsync(grpcResponse);
 
         var command = CreateValidCommand();
@@ -89,8 +89,8 @@ public class CreateOrderCommandHandlerTests
     public async Task Handle_EmptyProductResponse_Should_Throw_InvalidOperationException()
     {
         _productServiceMock
-            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new GetProductsResponse());
+            .Setup(x => x.ReserveProductsAsync(It.IsAny<ReserveProductsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ReserveProductsResponse());
 
         var command = CreateValidCommand();
 
@@ -104,8 +104,8 @@ public class CreateOrderCommandHandlerTests
     public async Task Handle_NullProductResponse_Should_Throw_InvalidOperationException()
     {
         _productServiceMock
-            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetProductsResponse)null!);
+            .Setup(x => x.ReserveProductsAsync(It.IsAny<ReserveProductsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ReserveProductsResponse)null!);
 
         var command = CreateValidCommand();
 
@@ -118,11 +118,11 @@ public class CreateOrderCommandHandlerTests
     [Fact]
     public async Task Handle_Should_Map_ProductName_Price_And_Quantity_Correctly()
     {
-        var grpcResponse = new GetProductsResponse();
-        grpcResponse.Products.Add(new ProductInfo { ProductId = TestGuids.Guid1, Price = 999 });
+        var grpcResponse = new ReserveProductsResponse();
+        grpcResponse.Products.Add(new ReservedProduct { ProductId = TestGuids.Guid1, Price = 999 });
 
         _productServiceMock
-            .Setup(x => x.GetProductsByIdsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ReserveProductsAsync(It.IsAny<ReserveProductsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(grpcResponse);
 
         var command = new CreateOrderCommand
