@@ -2,6 +2,7 @@ using BuildingBlocks.Domain;
 using BuildingBlocks.Exceptions.Domain;
 using Ordering_Domain.Domain.Enum;
 using Ordering_Domain.DomainEvents;
+using Ordering_Domain.ValueObjects;
 
 namespace Ordering_Domain.Domain.Entities;
 
@@ -41,7 +42,9 @@ public class Order : AggregateRoot
                                     quantity));
     }
     
-    public static Order Create(Guid userId)
+    public static Order Create(
+        Guid userId,
+        IEnumerable<OrderItemData> items)
     {
         var order = new Order
         {
@@ -51,7 +54,16 @@ public class Order : AggregateRoot
             State = OrderState.Pending
         };
 
-        order.AddDomainEvent(new OrderInitiatedDomainEvent(order.Id));
+        foreach (var item in items)
+            order.AddItem(item.ProductId, item.Price, item.Quantity);
+
+        order.AddDomainEvent(
+                             new OrderInitiatedDomainEvent(
+                                                           order.Id,
+                                                           order.UserId,
+                                                           order._items.Select(i => new OrderInitiatedDomainEvent.OrderItemSnapshot(
+                                                                                                                                    i.ProductId,
+                                                                                                                                    i.Quantity)).ToList()));
 
         return order;
     }

@@ -1,7 +1,14 @@
 namespace Shared.IntegrationEvents.Ordering;
 
-public record OrderInitiated
+
+public sealed record OrderInitiated(
+    Guid Id,
+    Guid UserId,
+    IReadOnlyCollection<OrderInitiated.OrderItemDto> Items,
+    DateTime Date)
 {
-    public Guid Id { get; init; }
-    public DateTime Date { get; init; }
+    public sealed record OrderItemDto(
+        Guid ProductId,
+        int Quantity);
 }
+    

@@ -19,10 +19,16 @@ public class OrderInitiatedDomainEventHandler
         OrderInitiatedDomainEvent notification,
         CancellationToken ct)
     {
-        await _publish.Publish(new OrderInitiated
-        {
-            Id = notification.OrderId,
-            Date = DateTime.UtcNow
-        }, ct);
+        var message = new OrderInitiated(
+                                         notification.OrderId,
+                                         notification.UserId,
+                                         notification.Items
+                                                     .Select(x => new OrderInitiated.OrderItemDto(
+                                                                                                  x.ProductId,
+                                                                                                  x.Quantity))
+                                                     .ToList(),
+                                         DateTime.UtcNow);
+
+        await _publish.Publish(message, ct);
     }
 }

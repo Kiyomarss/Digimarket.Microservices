@@ -3,6 +3,7 @@ using BuildingBlocks.Exceptions.Application;
 using BuildingBlocks.Services;
 using BuildingBlocks.UnitOfWork;
 using Ordering_Domain.Domain.Entities;
+using Ordering_Domain.ValueObjects;
 using Ordering.Application.RepositoryContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
@@ -44,10 +45,6 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
         return order.Id;
     }
 
-    // -------------------------------
-    // ⬇ بخش های کوچک و تست‌پذیر
-    // -------------------------------
-
     private async Task<ReserveProductsResponse> FetchProductsAsync(List<CreateOrderCommand.OrderItemDto> orderItemDtos, CancellationToken ct)
     {
         var items = orderItemDtos.Select(x => new OrderItem()
@@ -71,18 +68,21 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Gui
     {
         var userId = await _currentUser.GetRequiredUserId();
 
-        var order = Order.Create(userId);
+        var items = response.Products
+                            .Select(product =>
+                            {
+                                var reqItem = request.Items
+                                                     .Single(i => i.ProductId == product.ProductId);
 
-        foreach (var product in response.Products)
-        {
-            var reqItem = request.Items.Single(i => i.ProductId == product.ProductId);
+                                return new OrderItemData(
+                                                                 Guid.Parse(product.ProductId),
+                                                                 product.Price,
+                                                                 reqItem.Quantity);
+                            })
+                            .ToList();
 
-            order.AddItem(
-                          Guid.Parse(product.ProductId),
-                          product.Price,
-                          reqItem.Quantity);
-        }
-
+        var order = Order.Create(userId, items);
+        
         return order;
     }
 }
