@@ -5,9 +5,9 @@ using MassTransit;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Data.DbContext;
-using Ordering.Api.Consumers;
 using Ordering.Api.Grpc;
 using Ordering.Api.StartupExtensions;
+using Ordering.Application.Orders.Consumers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

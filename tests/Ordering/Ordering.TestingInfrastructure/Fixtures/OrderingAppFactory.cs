@@ -12,7 +12,7 @@ using Moq;
 using Npgsql;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api;
-using Ordering.Api.Consumers;
+using Ordering.Application.Orders.Consumers;
 using Ordering.Application.Services;
 using ProductGrpc;
 using Respawn;

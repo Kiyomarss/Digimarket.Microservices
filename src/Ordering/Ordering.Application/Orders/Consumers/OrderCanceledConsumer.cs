@@ -3,7 +3,7 @@ using MassTransit;
 using MediatR;
 using Ordering.Application.Orders.Commands.OrderCancelled;
 
-namespace Ordering.Api.Consumers
+namespace Ordering.Application.Orders.Consumers
 {
     public class OrderCanceledConsumer : IConsumer<OrderCanceled>
     {
@@ -16,13 +16,10 @@ namespace Ordering.Api.Consumers
 
         public async Task Consume(ConsumeContext<OrderCanceled> context)
         {
-            var message = context.Message;
-            var command = new OrderCanceledCommand
+            await _sender.Send(new OrderCanceledCommand()
             {
-                Id = message.Id
-            };
-
-            await _sender.Send(command);
+                Id = context.Message.Id
+            });
         }
     }
 }
