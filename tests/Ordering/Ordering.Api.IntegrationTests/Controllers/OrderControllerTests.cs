@@ -6,6 +6,7 @@ using Ordering.Api.Contracts;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
+using Shared.TestFixtures;
 
 namespace Ordering.Api.IntegrationTests.Controllers;
 

@@ -6,6 +6,7 @@ using Ordering.Application.Orders.Commands.OrderCancelled;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
+using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Commands.PayOrder;
 

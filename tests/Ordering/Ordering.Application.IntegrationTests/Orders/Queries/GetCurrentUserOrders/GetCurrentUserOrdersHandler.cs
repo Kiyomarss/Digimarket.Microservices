@@ -6,6 +6,7 @@ using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
+using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Queries.GetCurrentUserOrders;
 

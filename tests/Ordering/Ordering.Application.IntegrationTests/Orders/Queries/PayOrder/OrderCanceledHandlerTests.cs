@@ -5,6 +5,7 @@ using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Commands.OrderCancelled;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
+using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Queries.PayOrder;
 
@@ -30,9 +31,9 @@ public class OrderCanceledHandlerTests : OrderingAppTestBase
         await Sender.Send(new OrderCanceledCommand { Id = order.Id });
 
         // Assert
-        var updatedOrder = await DbContext.Orders.FindAsync(order.Id);
+        await ReloadEntityAsync(order);
 
-        updatedOrder!.State.Should().Be(OrderState.Paid);
+        order.State.Should().Be(OrderState.Paid);
     }
     
     [Fact]

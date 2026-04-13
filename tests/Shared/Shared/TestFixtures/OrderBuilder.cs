@@ -1,6 +1,7 @@
 ﻿using Ordering_Domain.Domain.Entities;
-using Ordering_Domain.Domain.Enum;
-using Shared;
+using Ordering_Domain.ValueObjects;
+
+namespace Shared.TestFixtures;
 
 public sealed class OrderBuilder
 {
@@ -8,34 +9,27 @@ public sealed class OrderBuilder
 
     public OrderBuilder()
     {
-        _order = Order.Create(TestGuids.Guid3);
+        var items = new List<OrderItemData>()
+        {
+            new(TestGuids.Guid4, 10, 5),
+            new(TestGuids.Guid5, 40, 5)
+        };
+
+        _order = Order.Create(TestGuids.Guid3, items);
     }
     
-    public OrderBuilder WithState(OrderState state)
-    {
-        _order.State = state;
-        return this;
-    }
-
-    public OrderBuilder WithItems(params (int quantity, long price)[] items)
-    {
-        foreach (var item in items)
-        {
-            _order.AddItem(
-                           Guid.NewGuid(),
-                           item.price,
-                           item.quantity);
-        }
-
-        return this;
-    }
-
-    public OrderBuilder Paid()
+    public OrderBuilder Canceled()
     {
         _order.Canceled();
-
         return this;
     }
+    
+    public OrderBuilder Paid()
+    {
+        _order.MarkAsPaid();
+        return this;
+    }
+
 
     public Order Build() => _order;
 }

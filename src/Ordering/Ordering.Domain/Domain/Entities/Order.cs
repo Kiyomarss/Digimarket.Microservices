@@ -10,7 +10,7 @@ public class Order : AggregateRoot
 {
     public Guid Id { get; set; }
     public DateTime Date { get; set; }
-    public OrderState State { get; set; } = OrderState.Pending;
+    public OrderState State { get; set; }
     
     private readonly List<OrderItem> _items = new();
 
@@ -26,6 +26,8 @@ public class Order : AggregateRoot
     }
     
     public void Canceled() => ChangeStateInternal(OrderState.Canceled);
+
+    public void MarkAsPaid() => ChangeStateInternal(OrderState.Paid);
 
     public void AddItem(
         Guid productId,

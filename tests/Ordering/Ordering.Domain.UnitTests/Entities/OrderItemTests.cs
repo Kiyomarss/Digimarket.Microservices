@@ -21,6 +21,9 @@ public class OrderItemTests
         item.ProductId.Should().Be(productId);
         item.Quantity.Should().Be(quantity);
         item.Price.Should().Be(price);
+
+        item.OrderId.Should().Be(Guid.Empty);  // because constructor doesn't set it
+        item.Order.Should().BeNull();          // default! is null
     }
 
     [Fact]

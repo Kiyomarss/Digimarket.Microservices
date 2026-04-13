@@ -1,9 +1,8 @@
-﻿using BuildingBlocks.Domain;
-using BuildingBlocks.Exceptions.Domain;
+﻿using BuildingBlocks.Exceptions.Domain;
 using FluentAssertions;
-using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
 using Ordering_Domain.DomainEvents;
+using Shared.TestFixtures;
 
 namespace Ordering.Domain.UnitTests.Entities;
 
@@ -18,15 +17,16 @@ public class OrderTests
         // Assert
         order.Id.Should().NotBe(Guid.Empty);
         order.State.Should().Be(OrderState.Pending);
-        order.Items.Should().BeEmpty();
-        order.TotalPrice.Should().Be(0);
+        order.Items.Should().NotBeEmpty();
+        order.Date.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        order.TotalPrice.Should().BeGreaterThan(0);
     }
 
     [Fact]
     public void TotalPrice_Should_Be_Sum_Of_Item_Price_x_Quantity()
     {
         // Arrange
-        var order =  new OrderBuilder().Build();
+        var order =  new OrderEmptyBuilder().Build();
 
         order.AddItem(Guid.NewGuid(), 1000, 2);
         order.AddItem(Guid.NewGuid(), 500, 3);
@@ -42,7 +42,7 @@ public class OrderTests
     public void Adding_OrderItem_Should_Update_TotalPrice()
     {
         // Arrange
-        var order =  new OrderBuilder().Build();
+        var order =  new OrderEmptyBuilder().Build();
         order.AddItem(Guid.NewGuid(), 1000, 3);
 
         // Assert
@@ -59,13 +59,13 @@ public class OrderTests
         order.Canceled();
 
         // Assert
-        order.State.Should().Be(OrderState.Paid);
+        order.State.Should().Be(OrderState.Canceled);
     }
 
     [Fact]
     public void Create_Should_Raise_OrderInitiatedDomainEvent()
     {
-        var order = Order.Create(Guid.NewGuid());
+        var order = new OrderBuilder().Build();
 
         order.DomainEvents.Should().ContainSingle(e => e is OrderInitiatedDomainEvent);
     }
@@ -74,7 +74,7 @@ public class OrderTests
     public void AddItem_Should_Add_Item_To_Order()
     {
         // Arrange
-        var order = new OrderBuilder().Build();
+        var order = new OrderEmptyBuilder().Build();
 
         // Act
         order.AddItem(Guid.NewGuid(), 1000, 2);
