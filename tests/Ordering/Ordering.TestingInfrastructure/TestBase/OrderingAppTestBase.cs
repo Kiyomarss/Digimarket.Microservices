@@ -44,9 +44,32 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
         await DbContext.Entry(entity).ReloadAsync();
     }
     
-    protected Task PublishEventAsync<TEvent>(TEvent @event) where TEvent : class
+    protected async Task PublishAndAssertPublishedAsync<TEvent>(TEvent @event, int timeoutSeconds = 5)
+        where TEvent : class
     {
-        return Harness.Bus.Publish(@event);
+        await Harness.Bus.Publish(@event);
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+        var published = await Harness.Published.Any<TEvent>(cts.Token);
+
+        published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
+    }
+    
+    protected async Task PublishAndAssertConsumedAsync<TEvent>(TEvent @event, int timeoutSeconds = 5)
+        where TEvent : class
+    {
+        // Publish
+        await Harness.Bus.Publish(@event);
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+
+        // Assert Published
+        var published = await Harness.Published.Any<TEvent>(cts.Token);
+        published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
+
+        // Assert Consumed
+        var consumed = await Harness.Consumed.Any<TEvent>(cts.Token);
+        consumed.Should().BeTrue($"{typeof(TEvent).Name} was not consumed");
     }
 
     protected async Task AssertPublishedAsync<TEvent>(int timeoutSeconds = 5)

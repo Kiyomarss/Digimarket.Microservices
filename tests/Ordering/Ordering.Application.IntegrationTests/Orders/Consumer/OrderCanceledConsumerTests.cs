@@ -22,10 +22,7 @@ public class OrderCanceledConsumerTests : OrderingAppTestBase
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();
         
-        await PublishEventAsync(new OrderCanceled(order.Id));
-        
-        await AssertPublishedAsync<OrderCanceled>();
-        await AssertConsumedAsync<OrderCanceled>();
+        await PublishAndAssertConsumedAsync(new OrderCanceled(order.Id));
         
         await ReloadEntityAsync(order);
 
