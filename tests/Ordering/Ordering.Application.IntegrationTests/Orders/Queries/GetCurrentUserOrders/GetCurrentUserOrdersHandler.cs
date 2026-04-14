@@ -1,13 +1,9 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Ordering_Domain.Domain.Entities;
+﻿using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared;
-using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Queries.GetCurrentUserOrders;
 

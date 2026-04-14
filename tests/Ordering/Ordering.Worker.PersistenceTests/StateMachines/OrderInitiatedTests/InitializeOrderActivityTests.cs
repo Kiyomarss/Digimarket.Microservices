@@ -1,15 +1,7 @@
-﻿using BuildingBlocks.IntegrationEvents;
-using FluentAssertions;
-using MassTransit;
+﻿using FluentAssertions;
 using MassTransit.Testing;
 using Ordering.TestingInfrastructure.Builders;
-using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.PersistenceTests.Fixtures;
-using Ordering.Worker.PersistenceTests.TestBase;
-using Ordering.Worker.StateMachines.Activities.Initialize;
-using Ordering.Worker.StateMachines.Events;
-using Shared.TestFixtures;
-using Xunit;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
 

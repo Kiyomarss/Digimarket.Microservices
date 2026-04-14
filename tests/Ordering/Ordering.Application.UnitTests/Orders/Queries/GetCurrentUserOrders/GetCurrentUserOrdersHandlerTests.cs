@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using Ordering.Application.Orders.Queries;
-using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.RepositoryContracts;
 using Shared;

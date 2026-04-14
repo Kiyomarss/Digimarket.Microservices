@@ -3,10 +3,6 @@ using FluentAssertions;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.PersistenceTests.TestBase;
-using Ordering.Worker.StateMachines.Activities.Initialize;
-using Ordering.Worker.StateMachines.Events;
-using Shared.TestFixtures;
-using Xunit;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
 

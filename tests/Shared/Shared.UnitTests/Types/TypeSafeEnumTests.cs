@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Shared.Tests.Types;
-using Xunit;
 
 namespace Shared.Tests.Types;
 

@@ -1,12 +1,10 @@
-﻿using BuildingBlocks.Exceptions;
-using BuildingBlocks.Exceptions.Application;
+﻿using BuildingBlocks.Exceptions.Application;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Commands.OrderCancelled;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Queries.PayOrder;
 

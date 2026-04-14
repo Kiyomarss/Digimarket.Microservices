@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Domain;
-using BuildingBlocks.Exceptions.Application;
+﻿using BuildingBlocks.Exceptions.Application;
 using BuildingBlocks.Exceptions.Domain;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;

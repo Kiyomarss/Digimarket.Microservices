@@ -4,7 +4,6 @@ using Ordering_Domain.Domain.Enum;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared.TestFixtures;
 
 namespace Ordering.Application.IntegrationTests.Orders.Consumer;
 

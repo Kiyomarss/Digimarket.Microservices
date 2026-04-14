@@ -1,9 +1,6 @@
-using System.Reflection;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering.Api.Grpc;
 using Ordering.Api.StartupExtensions;

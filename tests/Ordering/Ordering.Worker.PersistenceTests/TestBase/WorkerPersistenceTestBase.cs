@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
-using Ordering.Worker.PersistenceTests.Fixtures;
 using Ordering.Worker.StateMachines;
 using Respawn;
 using Respawn.Graph;

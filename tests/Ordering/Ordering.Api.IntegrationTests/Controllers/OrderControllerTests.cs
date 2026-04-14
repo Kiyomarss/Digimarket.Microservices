@@ -7,7 +7,6 @@ using Ordering.Application.Orders.Queries;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
-using Shared.TestFixtures;
 
 namespace Ordering.Api.IntegrationTests.Controllers;
 

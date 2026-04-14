@@ -1,8 +1,5 @@
 ﻿using FluentAssertions;
-using FluentValidation;
-using FluentValidation.Results;
 using Ordering.Application.Orders.Commands.CreateOrder;
-using Xunit;
 
 namespace Ordering.Application.UnitTests.Orders.Commands.CreateOrder;
 

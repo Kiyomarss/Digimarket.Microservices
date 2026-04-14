@@ -1,5 +1,4 @@
 ﻿using BuildingBlocks.IntegrationEvents;
-using FluentAssertions;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;

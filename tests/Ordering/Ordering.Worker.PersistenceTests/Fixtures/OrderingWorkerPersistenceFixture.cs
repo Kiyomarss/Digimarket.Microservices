@@ -5,7 +5,6 @@ using Npgsql;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines;
 using DotNet.Testcontainers.Containers;
-using MassTransit.EntityFrameworkCoreIntegration;
 using Ordering.Worker.DbContext;
 using Respawn;
 using Respawn.Graph;

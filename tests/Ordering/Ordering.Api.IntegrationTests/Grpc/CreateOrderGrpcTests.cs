@@ -1,6 +1,5 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Grpc/CreateOrderGrpcTests.cs
 using FluentAssertions;
-using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using OrderGrpc;
 using Ordering.TestingInfrastructure.Fixtures;

@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using Identity_Infrastructure.DbContext;
 using Identity_UI.Filters;
 using Identity_UI.Middleware;

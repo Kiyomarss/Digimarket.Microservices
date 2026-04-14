@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Ordering.Application.Orders.Queries;
 using Ordering.Application.Orders.Validation;
 
 namespace Ordering.Application.UnitTests.Orders.Validation;
