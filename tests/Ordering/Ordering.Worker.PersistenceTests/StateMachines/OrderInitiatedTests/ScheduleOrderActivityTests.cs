@@ -16,7 +16,7 @@ public class ScheduleOrderActivityTests : WorkerPersistenceTestBase
         // Arrange
         var orderId = Guid.NewGuid();
 
-        await PublishEventAsync(new OrderInitiatedBuilder().Build());
+        await PublishEventAsync(new OrderInitiatedBuilder().WithId(orderId).Build());
 
         // منتظر پردازش Saga و Activity
         await Task.Delay(500);

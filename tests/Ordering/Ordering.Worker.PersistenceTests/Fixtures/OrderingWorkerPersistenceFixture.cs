@@ -5,6 +5,7 @@ using Npgsql;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines;
 using DotNet.Testcontainers.Containers;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Ordering.Worker.DbContext;
 using Respawn;
 using Respawn.Graph;
@@ -63,9 +64,15 @@ public class OrderingWorkerPersistenceFixture : IAsyncDisposable, IAsyncLifetime
         harness.OnConfigureInMemoryBus += cfg => cfg.UseDelayedMessageScheduler();
 
         var machine = new OrderStateMachine();
-        var repository = new InMemorySagaRepository<OrderState>();
-        SagaHarness = harness.StateMachineSaga(machine, repository);
 
+        var repository =
+            EntityFrameworkSagaRepository<OrderState>
+                .CreateOptimistic(() => DbContext);
+
+        SagaHarness = harness.StateMachineSaga(
+                                               new OrderStateMachine(),
+                                               repository
+                                              );
         await harness.Start();
 
         Bus = harness.BusControl; // Bus بعد از Start مقداردهی شود
