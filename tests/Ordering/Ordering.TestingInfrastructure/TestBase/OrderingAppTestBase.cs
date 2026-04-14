@@ -58,4 +58,15 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
 
         published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
     }
+    
+    protected async Task AssertConsumedAsync<TEvent>(int timeoutSeconds = 5)
+        where TEvent : class
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+
+        var result = await Harness.Consumed
+                                  .Any<TEvent>(cts.Token);
+
+        result.Should().BeTrue($"{typeof(TEvent).Name} was not consumed");
+    }
 }

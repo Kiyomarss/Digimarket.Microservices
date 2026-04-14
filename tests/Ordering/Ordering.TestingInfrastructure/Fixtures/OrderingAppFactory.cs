@@ -1,5 +1,6 @@
 ﻿// tests/Ordering.Api.IntegrationTests/Fixtures/OrderingApiFactory.cs
 
+using BuildingBlocks.IntegrationEvents;
 using DotNet.Testcontainers.Containers;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;

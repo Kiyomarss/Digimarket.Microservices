@@ -13,7 +13,7 @@ public class OrderCanceledConsumerTests : OrderingAppTestBase
         : base(fixture) { }
 
     [Fact]
-    public async Task Publish_OrderPaid_Event()
+    public async Task Publish_OrderCanceled_Event()
     {
         await ResetDatabase();
         
@@ -22,16 +22,13 @@ public class OrderCanceledConsumerTests : OrderingAppTestBase
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();
         
-        await PublishEventAsync(new OrderPaid
-        {
-            Id = order.Id
-        });
+        await PublishEventAsync(new OrderCanceled(order.Id));
         
-        // صبر کن تا مصرف پیام تمام شود
-        (await Harness.Consumed.Any<OrderPaid>()).Should().BeTrue();
+        await AssertPublishedAsync<OrderCanceled>();
+        await AssertConsumedAsync<OrderCanceled>();
         
         await ReloadEntityAsync(order);
 
-        order.State.Should().Be(OrderState.Paid);
+        order.State.Should().Be(OrderState.Canceled);
     }
 }
