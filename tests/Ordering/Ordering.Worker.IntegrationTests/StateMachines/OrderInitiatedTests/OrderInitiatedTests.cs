@@ -2,9 +2,11 @@
 using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
 using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
 using Ordering.Worker.StateMachines.Events;
+using Shared.TestFixtures;
 
 namespace Ordering.Worker.IntegrationTests.StateMachines.OrderInitiatedTests;
 
@@ -21,11 +23,7 @@ public class OrderInitiatedTests : OrderSagaTestBase
         var orderId = Guid.NewGuid();
         var date = DateTime.UtcNow;
 
-        await Harness.Bus.Publish(new OrderInitiated
-        {
-            Id = orderId,
-            Date = date
-        });
+        await Harness.Bus.Publish(new OrderInitiatedBuilder().Build());
 
         (await SagaHarness.Consumed.Any<OrderInitiated>())
             .Should().BeTrue();
@@ -44,11 +42,7 @@ public class OrderInitiatedTests : OrderSagaTestBase
     {
         var orderId = Guid.NewGuid();
 
-        await Harness.Bus.Publish(new OrderInitiated
-        {
-            Id = orderId,
-            Date = DateTime.UtcNow
-        });
+        await Harness.Bus.Publish(new OrderInitiatedBuilder().Build());
 
         (await Harness.Published.Any<ReduceInventory>())
             .Should().BeTrue();
@@ -62,11 +56,7 @@ public class OrderInitiatedTests : OrderSagaTestBase
     {
         var orderId = Guid.NewGuid();
 
-        await Harness.Bus.Publish(new OrderInitiated
-        {
-            Id = orderId,
-            Date = DateTime.UtcNow
-        });
+        await Harness.Bus.Publish(new OrderInitiatedBuilder().Build());
 
         // مطمئن شو پیام مصرف شده
         (await SagaHarness.Consumed.Any<OrderInitiated>()).Should().BeTrue();

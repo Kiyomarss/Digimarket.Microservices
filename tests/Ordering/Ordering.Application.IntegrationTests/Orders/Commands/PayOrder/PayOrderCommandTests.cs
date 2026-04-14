@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Commands.OrderCancelled;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
@@ -21,9 +22,7 @@ public class PayOrderCommandHandlerTests : OrderingAppTestBase
         // Arrange
         await ResetDatabase();
 
-        var order = new OrderBuilder()
-                    .WithItems((1, 100))
-                    .Build();
+        var order = new OrderBuilder().Build();
 
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();

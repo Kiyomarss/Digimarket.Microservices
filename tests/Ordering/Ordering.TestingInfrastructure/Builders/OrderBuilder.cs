@@ -1,7 +1,8 @@
 ﻿using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.ValueObjects;
+using Shared;
 
-namespace Shared.TestFixtures;
+namespace Ordering.TestingInfrastructure.Builders;
 
 public sealed class OrderBuilder
 {

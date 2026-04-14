@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.IntegrationEvents;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared.TestFixtures;
@@ -17,9 +18,7 @@ public class OrderCanceledConsumerTests : OrderingAppTestBase
     {
         await ResetDatabase();
         
-        var order = new OrderBuilder()
-                    .WithItems((1, 100))
-                    .Build();
+        var order = new OrderBuilder().Build();
 
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();

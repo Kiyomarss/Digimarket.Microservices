@@ -2,11 +2,13 @@
 using FluentAssertions;
 using MassTransit;
 using MassTransit.Testing;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.PersistenceTests.Fixtures;
 using Ordering.Worker.PersistenceTests.TestBase;
 using Ordering.Worker.StateMachines.Activities.Initialize;
 using Ordering.Worker.StateMachines.Events;
+using Shared.TestFixtures;
 using Xunit;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
@@ -23,11 +25,7 @@ public class InitializeOrderActivityTests : OrderingWorkerPersistenceFixture
         var date = DateTime.UtcNow;
 
         // Act: منتشر کردن رویداد OrderInitiated
-        await PublishEventAsync(new OrderInitiated
-        {
-            Id = orderId,
-            Date = date
-        });
+        await PublishEventAsync(new OrderInitiatedBuilder().Build());
         
 
         var instance = SagaHarness.Created.ContainsInState(orderId, SagaHarness.StateMachine, SagaHarness.StateMachine.WaitingForPayment);

@@ -3,6 +3,7 @@ using FluentAssertions;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Queries;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
@@ -30,9 +31,7 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     {
         await ResetDatabase();
 
-        DbContext.Orders.Add(
-                             new OrderBuilder().WithState(OrderState.Canceled).WithItems((1, 100)).Build()
-                            );
+        DbContext.Orders.Add(new OrderBuilder().Canceled().Build());
 
         await DbContext.SaveChangesAsync();
 
@@ -47,13 +46,13 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
         await ResetDatabase();
 
         DbContext.Orders.AddRange(
-                                  new OrderBuilder().WithState(OrderState.Pending).WithItems((1, 100)).Build(),
-                                  new OrderBuilder().WithState(OrderState.Pending).WithItems((2, 100)).Build()
+                                  new OrderBuilder().Build(),
+                                  new OrderBuilder().Build()
                                  );
 
         await DbContext.SaveChangesAsync();
 
-        var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery(OrderState.Pending.Code));
 
         result.Orders.Should().HaveCount(2);
     }

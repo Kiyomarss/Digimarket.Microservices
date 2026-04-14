@@ -1,9 +1,11 @@
 ﻿using BuildingBlocks.IntegrationEvents;
 using FluentAssertions;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.PersistenceTests.TestBase;
 using Ordering.Worker.StateMachines.Activities.Initialize;
 using Ordering.Worker.StateMachines.Events;
+using Shared.TestFixtures;
 using Xunit;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
@@ -18,11 +20,7 @@ public class ScheduleOrderActivityTests : WorkerPersistenceTestBase
         // Arrange
         var orderId = Guid.NewGuid();
 
-        await PublishEventAsync(new OrderInitiated
-        {
-            Id = orderId,
-            Date = DateTime.UtcNow
-        });
+        await PublishEventAsync(new OrderInitiatedBuilder().Build());
 
         // منتظر پردازش Saga و Activity
         await Task.Delay(500);

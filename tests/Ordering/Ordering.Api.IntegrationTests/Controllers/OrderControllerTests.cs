@@ -4,6 +4,7 @@ using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Api.Contracts;
 using Ordering.Application.Orders.Queries;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared.TestFixtures;
@@ -26,11 +27,7 @@ public class OrderControllerTests : OrderingAppTestBase
         await ResetDatabase();
 
         // Arrange
-        DbContext.Orders.AddRange(
-                                  new OrderBuilder()
-                                      .WithState(OrderState.Pending)
-                                      .WithItems((1, 200000))
-                                      .Build());
+        DbContext.Orders.AddRange(new OrderBuilder().Build());
 
         await DbContext.SaveChangesAsync();
 

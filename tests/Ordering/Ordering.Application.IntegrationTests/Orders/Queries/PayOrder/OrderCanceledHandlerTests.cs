@@ -3,6 +3,7 @@ using BuildingBlocks.Exceptions.Application;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.Application.Orders.Commands.OrderCancelled;
+using Ordering.TestingInfrastructure.Builders;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared.TestFixtures;
@@ -19,10 +20,7 @@ public class OrderCanceledHandlerTests : OrderingAppTestBase
     {
         await ResetDatabase();
 
-        var order = new OrderBuilder()
-                    .WithState(OrderState.Pending)
-                    .WithItems((1, 100_000))
-                    .Build();
+        var order = new OrderBuilder().Build();
 
         DbContext.Orders.Add(order);
         await DbContext.SaveChangesAsync();

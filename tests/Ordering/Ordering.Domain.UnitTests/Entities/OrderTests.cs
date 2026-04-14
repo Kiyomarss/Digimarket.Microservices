@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering_Domain.DomainEvents;
+using Ordering.TestingInfrastructure.Builders;
 using Shared.TestFixtures;
 
 namespace Ordering.Domain.UnitTests.Entities;
