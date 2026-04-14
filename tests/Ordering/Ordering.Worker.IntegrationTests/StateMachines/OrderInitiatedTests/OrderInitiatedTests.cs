@@ -56,7 +56,7 @@ public class OrderInitiatedTests : OrderSagaTestBase
     {
         var orderId = Guid.NewGuid();
 
-        await Harness.Bus.Publish(new OrderInitiatedBuilder().Build());
+        await Harness.Bus.Publish(new OrderInitiatedBuilder().WithId(orderId).Build());
 
         // مطمئن شو پیام مصرف شده
         (await SagaHarness.Consumed.Any<OrderInitiated>()).Should().BeTrue();
