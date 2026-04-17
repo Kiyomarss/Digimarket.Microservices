@@ -28,11 +28,6 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
 
             context.Saga.CancelScheduleTokenId = cancel.TokenId;
 
-            await context.Publish(new OrderPaid
-            {
-                Id = orderId
-            });
-
             await next.Execute(context);
         }
     }

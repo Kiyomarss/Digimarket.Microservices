@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Ordering.Application.Orders.Consumers;
+using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.Extensions;
+using Ordering.Worker.StateMachines;
 using Respawn;
 using Shared.TestFixtures;
 
@@ -46,19 +48,16 @@ public class WorkerAppFactory : IAsyncLifetime
             await admin.OpenAsync();
             await new NpgsqlCommand($"CREATE DATABASE \"{_dbName}\";", admin).ExecuteNonQueryAsync();
         }
-
+        
+        // ---- THIS replaces WebApplicationFactory<Program> ----
+        var builder = Host.CreateApplicationBuilder();
+        
         // ---- Build connection string ----
         _connectionString =
             $"Host=localhost;Port={_postgresContainer.GetMappedPublicPort(5432)};" +
             $"Database={_dbName};Username=postgres;Password=123;";
-        
+
         Environment.SetEnvironmentVariable("DATABASE_CONNECTION_STRING", _connectionString);
-
-        // ---- THIS replaces WebApplicationFactory<Program> ----
-        var builder = Host.CreateApplicationBuilder();
-
-        // load same config as worker
-        builder.Configuration.AddJsonFile("appsettings.IntegrationTest.json", optional: false);
 
         // register all worker services exactly like Program.cs:
         builder.Services.AddOrderingServices(builder.Configuration);
@@ -98,11 +97,13 @@ public class WorkerAppFactory : IAsyncLifetime
             });
         });
 
-        services.AddMassTransitTestHarness(x =>
+        services.AddMassTransitTestHarness(cfg =>
         {
-            x.AddConsumer<OrderCanceledConsumer>();
-
-            // You can register sagas or other consumers here
+            cfg.AddSagaStateMachine<OrderStateMachine, OrderState>()
+               .EntityFrameworkRepository(r =>
+               {
+                   r.ExistingDbContext<OrdersSagaDbContext>();
+               });
         });
     }
 
