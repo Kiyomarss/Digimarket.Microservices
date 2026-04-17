@@ -23,8 +23,6 @@ namespace Ordering.Worker.Extensions
             {
                 options.UseNpgsql(connectionString);
             });
-
-            services.AddScoped<IUnitOfWork, UnitOfWork<OrdersSagaDbContext>>();
             
             services.AddMassTransit(x =>
             {
