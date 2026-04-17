@@ -1,34 +1,40 @@
 ﻿using BuildingBlocks.IntegrationEvents;
 using FluentAssertions;
+using MassTransit.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.Configurations.Saga;
+using Ordering.Worker.DbContext;
 using Ordering.Worker.PersistenceTests.Fixtures;
+using Ordering.Worker.PersistenceTests.TestBase.TestBase;
+using Ordering.Worker.StateMachines;
 
 namespace Ordering.Worker.PersistenceTests.StateMachines.OrderInitiatedTests;
 
-// public class ScheduleOrderActivityTests : OrderingWorkerPersistenceFixture
-// {
-//     [Fact]
-//     public async Task Should_schedule_reminder_and_cancel_and_publish_order_paid()
-//     {
-//         await ResetDatabaseAsync();
-//
-//         // Arrange
-//         var orderId = Guid.NewGuid();
-//
-//         await PublishEventAsync(new OrderInitiatedBuilder().WithId(orderId).Build());
-//
-//         // منتظر پردازش Saga و Activity
-//         await Task.Delay(500);
-//
-//         // Assert: Saga ایجاد شده باشد
-//         var saga = await DbContext.Set<OrderState>().FindAsync(orderId);
-//         saga.Should().NotBeNull();
-//         saga!.ReminderScheduleTokenId.Should().NotBeNull();
-//         saga.CancelScheduleTokenId.Should().NotBeNull();
-//
-//         // Assert: پیام OrderPaid منتشر شده باشد
-//         var orderPaidPublished = await SagaHarness.Consumed.Any<OrderPaid>();
-//         orderPaidPublished.Should().BeTrue();
-//     }
-// }
+public class ScheduleOrderActivityTests : WorkerAppTestBase
+{
+    public ScheduleOrderActivityTests(WorkerAppFactory fixture)
+        : base(fixture) { }
+    [Fact]
+    public async Task ScheduleTokens_InDatabase()
+    {
+        await ResetDatabase();
+
+        var orderId = Guid.NewGuid();
+
+        await PublishAndAssertPublishedAsync(new OrderInitiatedBuilder().WithId(orderId).Build());
+
+        var exists = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
+        exists.Should().NotBeNull("Saga was not persisted");
+
+        using var scope = Fixture.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
+
+        var saga = await db.Set<OrderState>().FindAsync(orderId);
+        saga.Should().NotBeNull();
+        
+        saga.ReminderScheduleTokenId.Should().NotBeEmpty("ScheduleOrderActivity stores reminder schedule token");
+        saga.CancelScheduleTokenId.Should().NotBeEmpty("ScheduleOrderActivity stores cancel schedule token");
+    }
+}

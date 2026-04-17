@@ -14,54 +14,19 @@ public class OrderInitiatedTests : OrderSagaTestBase
         : base(fixture)
     {
     }
-
+    
     [Fact]
-    public async Task Should_create_saga_and_transition_to_waiting_for_payment()
+    public async Task InitializeOrderActivity_ShouldPublishRequiredEvents_AndTransitionToWaitingForPayment()
     {
         var orderId = Guid.NewGuid();
 
         await Harness.Bus.Publish(new OrderInitiatedBuilder().WithId(orderId).Build());
 
-        (await SagaHarness.Consumed.Any<OrderInitiated>())
-            .Should().BeTrue();
+        var exists = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
+        exists.Should().NotBeNull("saga must be created and transitioned to WaitingForPayment");
 
-        var instance = SagaHarness.Created.ContainsInState(
-                                                           orderId,
-                                                           Machine,
-                                                           Machine.WaitingForPayment);
-
-        instance.Should().NotBeNull();
-    }
-    
-    [Fact]
-    public async Task Should_publish_reduce_inventory_and_remove_basket()
-    {
-        await Harness.Bus.Publish(new OrderInitiatedBuilder().Build());
-
-        (await Harness.Published.Any<ReduceInventory>())
-            .Should().BeTrue();
-
-        (await Harness.Published.Any<RemoveBasket>())
-            .Should().BeTrue();
-    }
-    
-    [Fact]
-    public async Task Should_schedule_reminder_and_cancel_messages()
-    {
-        var orderId = Guid.NewGuid();
-
-        await Harness.Bus.Publish(new OrderInitiatedBuilder().WithId(orderId).Build());
-
-        // مطمئن شو پیام مصرف شده
-        (await SagaHarness.Consumed.Any<OrderInitiated>()).Should().BeTrue();
-
-        var instance = SagaHarness.Created.ContainsInState(
-                                                           orderId,
-                                                           Machine,
-                                                           Machine.WaitingForPayment);
-
-        instance.Should().NotBeNull();
-        instance.ReminderScheduleTokenId.Should().NotBeNull();
-        instance.CancelScheduleTokenId.Should().NotBeNull();
+        // Assert: Two events must be published by InitializeOrderActivity
+        (await Harness.Published.Any<ReduceInventory>()).Should().BeTrue("ReduceInventory must be published");
+        (await Harness.Published.Any<RemoveBasket>()).Should().BeTrue("RemoveBasket must be published");
     }
 }
