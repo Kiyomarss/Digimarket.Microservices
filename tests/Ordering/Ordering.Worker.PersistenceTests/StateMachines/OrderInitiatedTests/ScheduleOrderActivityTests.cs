@@ -28,9 +28,9 @@ public class ScheduleOrderActivityTests : WorkerAppTestBase
         var exists = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
         exists.Should().NotBeNull("Saga was not persisted");
 
-        using var scope = Fixture.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
-
+        await using var dbScope = CreateDbContextScope();
+        var db = dbScope.DbContext;
+        
         var saga = await db.Set<OrderState>().FindAsync(orderId);
         saga.Should().NotBeNull();
         

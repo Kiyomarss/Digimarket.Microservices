@@ -6,6 +6,7 @@ using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.DbContext;
 using Ordering.Worker.PersistenceTests.Fixtures;
 using Ordering.Worker.StateMachines;
+using Shared.Common;
 
 namespace Ordering.Worker.PersistenceTests.TestBase.TestBase;
 
@@ -16,8 +17,7 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
     protected readonly ITestHarness Harness;
     protected readonly OrdersSagaDbContext SagaDbContext;
     protected ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness { get; private set; } = default!;
-
-
+    
     protected IServiceScope Scope { get; private set; } = default!;
 
     protected WorkerAppTestBase(WorkerAppFactory fixture)
@@ -34,7 +34,13 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
         SagaDbContext =
             Scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
     }
-
+    
+    public DbContextScope<OrdersSagaDbContext> CreateDbContextScope()
+    {
+        var scope = Fixture.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<OrdersSagaDbContext>();
+        return new DbContextScope<OrdersSagaDbContext>(scope, db);
+    }
 
     public async Task InitializeAsync()
     {
