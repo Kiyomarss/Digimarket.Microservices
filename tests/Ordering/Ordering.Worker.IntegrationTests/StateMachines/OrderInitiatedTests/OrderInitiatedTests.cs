@@ -20,7 +20,7 @@ public class OrderInitiatedTests : OrderSagaTestBase
     {
         var orderId = Guid.NewGuid();
 
-        await Harness.Bus.Publish(new OrderInitiatedBuilder().WithId(orderId).Build());
+        await PublishAndAssertPublishedAsync(new OrderInitiatedBuilder().WithId(orderId).Build());
 
         var exists = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
         exists.Should().NotBeNull("saga must be created and transitioned to WaitingForPayment");

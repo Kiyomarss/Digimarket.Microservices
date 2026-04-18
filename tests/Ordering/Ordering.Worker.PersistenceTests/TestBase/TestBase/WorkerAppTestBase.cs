@@ -58,11 +58,6 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
         await Fixture.ResetDatabaseAsync();
     }
     
-    protected async Task ReloadEntityAsync<TEntity>(TEntity entity) where TEntity : class
-    {
-        await SagaDbContext.Entry(entity).ReloadAsync();
-    }
-    
     protected async Task PublishAndAssertPublishedAsync<TEvent>(TEvent @event, int timeoutSeconds = 5)
         where TEvent : class
     {
@@ -82,16 +77,5 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
         var published = await Harness.Published.Any<TEvent>(cts.Token);
 
         published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
-    }
-    
-    protected async Task AssertConsumedAsync<TEvent>(int timeoutSeconds = 5)
-        where TEvent : class
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
-
-        var result = await Harness.Consumed
-                                  .Any<TEvent>(cts.Token);
-
-        result.Should().BeTrue($"{typeof(TEvent).Name} was not consumed");
     }
 }

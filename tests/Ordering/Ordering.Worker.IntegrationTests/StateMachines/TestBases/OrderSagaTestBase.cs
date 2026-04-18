@@ -1,4 +1,5 @@
-﻿using MassTransit.Testing;
+﻿using FluentAssertions;
+using MassTransit.Testing;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
@@ -23,5 +24,16 @@ namespace Ordering.Worker.IntegrationTests.StateMachines.TestBases
         public Task InitializeAsync() => Fixture.StartAsync();
 
         public Task DisposeAsync() => Task.CompletedTask;
+        
+        protected async Task PublishAndAssertPublishedAsync<TEvent>(TEvent @event, int timeoutSeconds = 5)
+            where TEvent : class
+        {
+            await Harness.Bus.Publish(@event);
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+            var published = await Harness.Published.Any<TEvent>(cts.Token);
+
+            published.Should().BeTrue($"{typeof(TEvent).Name} was not published");
+        }
     }
 }
