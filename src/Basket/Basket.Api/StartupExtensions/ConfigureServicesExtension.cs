@@ -3,6 +3,7 @@ using Basket_Application.Orders.Commands.CreateOrder;
 using Basket_Application.RepositoryContracts;
 using Basket.Infrastructure.Data.DbContext;
 using Basket.Infrastructure.Repositories;
+using BuildingBlocks.Caching;
 using BuildingBlocks.Configurations;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
@@ -50,12 +51,8 @@ public static class ConfigureServicesExtension
             });
         });
 
-        // Redis Cache
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = configuration.GetConnectionString("Redis");
-        });
-        services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
+        // Cache
+        services.AddCaching(configuration);
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly));
         
