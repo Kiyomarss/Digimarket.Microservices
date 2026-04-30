@@ -18,13 +18,13 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
     protected readonly OrdersSagaDbContext SagaDbContext;
     protected ISagaStateMachineTestHarness<OrderStateMachine, OrderState> SagaHarness { get; private set; } = default!;
     
-    protected IServiceScope Scope { get; private set; } = default!;
+    protected AsyncServiceScope Scope { get; private set; }
 
     protected WorkerAppTestBase(WorkerAppFactory fixture)
     {
         Fixture = fixture;
 
-        Scope = Fixture.Services.CreateScope();
+        Scope = Fixture.Services.CreateAsyncScope();
 
         Harness = Scope.ServiceProvider.GetRequiredService<ITestHarness>();
 
@@ -50,7 +50,7 @@ public abstract class WorkerAppTestBase : IClassFixture<WorkerAppFactory>, IAsyn
     public async Task DisposeAsync()
     {
         await Harness.Stop();
-        Scope.Dispose();
+        await Scope.DisposeAsync();
     }
 
     protected async Task ResetDatabase()

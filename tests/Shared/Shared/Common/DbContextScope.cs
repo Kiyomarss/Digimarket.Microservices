@@ -15,10 +15,9 @@ public sealed class DbContextScope<T> : IAsyncDisposable
         DbContext = db;
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
-        DbContext.Dispose();
+        await DbContext.DisposeAsync();
         Scope.Dispose();
-        return ValueTask.CompletedTask;
     }
 }

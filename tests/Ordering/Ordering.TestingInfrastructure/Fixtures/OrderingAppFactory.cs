@@ -158,12 +158,15 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     }
 
     // Dispose: stop bus and containers — DO NOT attempt to resolve services after disposal.
-    public async Task DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
-        // Dispose containers
-        await _postgresContainer.DisposeAsync();
+        await base.DisposeAsync();              // stop host & bus
+        await _postgresContainer.DisposeAsync(); // then dispose container
+    }
 
-        // Dispose the factory host (base) so it cleans up server and services properly
-        await base.DisposeAsync();
+    // explicit interface implementation
+    async Task IAsyncLifetime.DisposeAsync()
+    {
+        await DisposeAsync();
     }
 }

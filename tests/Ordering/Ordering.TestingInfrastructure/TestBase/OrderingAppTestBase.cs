@@ -16,12 +16,17 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     protected readonly OrderingDbContext DbContext;
     protected readonly ITestHarness Harness;
 
+    protected AsyncServiceScope Scope { get; private set; }
+
     protected OrderingAppTestBase(OrderingAppFactory fixture)
     {
         Fixture = fixture;
-        Sender = Fixture.Services.GetRequiredService<ISender>();
-        DbContext = Fixture.Services.GetRequiredService<OrderingDbContext>();
-        Harness = Fixture.Services.GetRequiredService<ITestHarness>();
+
+        Scope = Fixture.Services.CreateAsyncScope();
+
+        Sender = Scope.ServiceProvider.GetRequiredService<ISender>();
+        DbContext = Scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
+        Harness = Scope.ServiceProvider.GetRequiredService<ITestHarness>();
     }
 
     public async Task InitializeAsync()
@@ -32,6 +37,7 @@ public abstract class OrderingAppTestBase : IClassFixture<OrderingAppFactory>, I
     public async Task DisposeAsync()
     {
         await Harness.Stop();
+        await Scope.DisposeAsync();
     }
 
     protected async Task ResetDatabase()
