@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
+      <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.9" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
     <PackageReference Include="Carter" Version="9.0.0" />
     <PackageReference Include="Marten" Version="7.40.1" />
     <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.4" />

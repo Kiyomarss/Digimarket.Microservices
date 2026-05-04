@@ -18,6 +18,7 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
             var orderId = context.Saga.CorrelationId;
 
             await Task.WhenAll(
+                               context.Publish(new OrderStatusChangedIntegrationEvent(Guid.Parse("11111111-1111-1111-1111-111111111111"), "WaitingForPayment")),
                                context.Publish(new ReduceInventory(orderId)),
                                context.Publish(new RemoveBasket(orderId))
                               );

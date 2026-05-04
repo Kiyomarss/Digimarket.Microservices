@@ -2,9 +2,12 @@ using BuildingBlocks.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
+using Ordering_Infrastructure.Realtime.Hubs;
+using Ordering_Infrastructure.Realtime.Services;
 using Ordering.Api.Grpc;
 using Ordering.Api.StartupExtensions;
 using Ordering.Application.Orders.Consumers;
+using Ordering.Application.RepositoryContracts.Realtime;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +43,7 @@ builder.Services.AddConfiguredOpenTelemetry(
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OrderCanceledConsumer>();
+    x.AddConsumer<OrderStatusChangedConsumer>();
     x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);
@@ -67,6 +71,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddGatewayCors();
 
+builder.Services.AddSignalR();
+
+builder.Services.AddScoped<IOrderStatusNotifier, OrderStatusNotifier>();
+
 var app = builder.Build();
 
 app.UseCors(CorsExtensions.GatewayCorsPolicyName);
@@ -82,6 +90,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<OrderHub>("/hubs/orders");
 
 app.Run();
 
