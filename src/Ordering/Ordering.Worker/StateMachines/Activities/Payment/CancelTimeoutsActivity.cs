@@ -1,7 +1,7 @@
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Common;
-using Ordering.Worker.StateMachines.Events;
+using Ordering.Worker.StateMachines.Contracts.Events;
 
 namespace Ordering.Worker.StateMachines.Activities.Payment
 {

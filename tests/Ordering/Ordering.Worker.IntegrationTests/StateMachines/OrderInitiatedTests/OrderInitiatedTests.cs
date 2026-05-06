@@ -4,7 +4,7 @@ using MassTransit.Testing;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
 using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
-using Ordering.Worker.StateMachines.Events;
+using Ordering.Worker.StateMachines.Contracts.Events;
 
 namespace Ordering.Worker.IntegrationTests.StateMachines.OrderInitiatedTests;
 

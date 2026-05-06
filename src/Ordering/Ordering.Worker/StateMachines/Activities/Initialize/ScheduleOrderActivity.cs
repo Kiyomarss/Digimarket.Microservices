@@ -2,7 +2,8 @@ using BuildingBlocks.IntegrationEvents;
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Common;
-using Ordering.Worker.StateMachines.Events;
+using Ordering.Worker.StateMachines.Contracts.Dtos;
+using Ordering.Worker.StateMachines.Contracts.Events;
 
 namespace Ordering.Worker.StateMachines.Activities.Initialize
 {
@@ -21,7 +22,7 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
 
             context.Saga.ReminderScheduleTokenId = reminder.TokenId;
 
-            var items = context.Message.Items.Select(x => new CancelOrder.OrderItemDto(x.ProductId, x.Quantity));
+            var items = context.Message.Items.Select(x => new OrderItemDto(x.ProductId, x.Quantity));
             var cancel = await context.ScheduleSend(
                                                     DateTime.UtcNow.AddSeconds(5),
                                                     new CancelOrder(orderId, items));

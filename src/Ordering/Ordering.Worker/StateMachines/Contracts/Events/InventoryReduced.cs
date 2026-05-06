@@ -1,4 +1,4 @@
-namespace Ordering.Worker.StateMachines.Events;
+namespace Ordering.Worker.StateMachines.Contracts.Events;
 
 public record InventoryReduced
 {

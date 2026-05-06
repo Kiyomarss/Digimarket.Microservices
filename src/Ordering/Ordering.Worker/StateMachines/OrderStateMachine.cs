@@ -5,7 +5,7 @@
     using Ordering.Worker.StateMachines.Activities.Initialize;
     using Ordering.Worker.StateMachines.Activities.Payment;
     using Ordering.Worker.StateMachines.Activities.Processing;
-    using Ordering.Worker.StateMachines.Events;
+    using Ordering.Worker.StateMachines.Contracts.Events;
 
     namespace Ordering.Worker.StateMachines
     {
@@ -23,7 +23,6 @@
                 Event(() => CancelOrder, x => x.CorrelateById(m => m.Message.Id));
                 Event(() => ProcessingStarted, x => x.CorrelateById(m => m.Message.Id));
 
-                //TODO: در زیر کد های مربوط به هر وضعیت شاید بهتر باشد به صورت جدا و متد وار نوشته شود در این صورت تست نویسی نیز می‌تواند ساده تر باشد
                 Initially(
                           When(OrderInitiated)
                               .Activity(x => x.OfType<InitializeOrderActivity>())

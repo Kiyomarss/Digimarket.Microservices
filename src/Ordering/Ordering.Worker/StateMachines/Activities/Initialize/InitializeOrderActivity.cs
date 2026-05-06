@@ -2,7 +2,8 @@ using BuildingBlocks.IntegrationEvents;
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Common;
-using Ordering.Worker.StateMachines.Events;
+using Ordering.Worker.StateMachines.Contracts.Dtos;
+using Ordering.Worker.StateMachines.Contracts.Events;
 
 namespace Ordering.Worker.StateMachines.Activities.Initialize
 {
@@ -16,10 +17,10 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
             context.Saga.Date = context.Message.Date;
 
             var orderId = context.Saga.CorrelationId;
+            var items = context.Message.Items.Select(x => new OrderItemDto(x.ProductId, x.Quantity));
 
             await Task.WhenAll(
-                               context.Publish(new OrderStatusChangedIntegrationEvent(Guid.Parse("11111111-1111-1111-1111-111111111111"), "WaitingForPayment")),
-                               context.Publish(new ReduceInventory(orderId)),
+                               context.Publish(new ReduceInventory(items)),
                                context.Publish(new RemoveBasket(orderId))
                               );
 
