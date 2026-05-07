@@ -1,4 +1,5 @@
 using BuildingBlocks.Extensions;
+using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
 using Ordering_Infrastructure.Data.DbContext;
@@ -40,32 +41,7 @@ builder.Services.AddConfiguredOpenTelemetry(
                                             serviceName: serviceName,
                                             configuration: builder.Configuration);
 
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<OrderCanceledConsumer>();
-    x.AddConsumer<OrderStatusChangedConsumer>();
-    x.AddEntityFrameworkOutbox<OrderingDbContext>(o =>
-    {
-        o.QueryDelay = TimeSpan.FromSeconds(1);
-        o.UsePostgres();
-        o.UseBusOutbox();
-    });
-
-    // تنها Transport: RabbitMQ
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        // حتماً آدرس و احراز هویت را متناسب با محیط شودد:
-        cfg.Host("rabbitmq://localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
-        
-        cfg.UseMessageRetry(r => r.Interval(2, TimeSpan.FromSeconds(1)));
-        // ساخت خودکار Queue/Exchange بر اساس Convention
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddConfiguredMassTransit<OrderingDbContext>(builder.Configuration, typeof(OrderCanceledConsumer).Assembly);
 
 builder.Services.AddSwaggerGen();
 

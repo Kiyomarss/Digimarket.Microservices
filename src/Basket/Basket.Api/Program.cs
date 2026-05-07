@@ -1,5 +1,8 @@
+using Basket_Application.Basket.Consumers;
 using Basket.Api.StartupExtensions;
+using Basket.Infrastructure.Data.DbContext;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
 using Serilog;
 
@@ -23,6 +26,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddConfiguredMassTransit<BasketDbContext>(builder.Configuration, typeof(RemoveBasketConsumer).Assembly);
 
 builder.Services.AddGatewayCors();
 

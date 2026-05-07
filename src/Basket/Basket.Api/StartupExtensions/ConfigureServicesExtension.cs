@@ -36,33 +36,6 @@ public static class ConfigureServicesExtension
             });
         });
 
-        // MassTransit + Outbox
-        services.AddMassTransit(x =>
-        {
-            x.AddConsumer<RemoveBasketConsumer>();
-            x.AddEntityFrameworkOutbox<BasketDbContext>(o =>
-            {
-                o.QueryDelay = TimeSpan.FromSeconds(1);
-                o.UsePostgres();
-                o.UseBusOutbox();
-            });
-
-            // تنها Transport: RabbitMQ
-            x.UsingRabbitMq((context, cfg) =>
-            {
-                // حتماً آدرس و احراز هویت را متناسب با محیط شودد:
-                cfg.Host("rabbitmq://localhost", h =>
-                {
-                    h.Username("guest");
-                    h.Password("guest");
-                });
-
-                cfg.UseMessageRetry(r => r.Interval(2, TimeSpan.FromSeconds(1)));
-                // ساخت خودکار Queue/Exchange بر اساس Convention
-                cfg.ConfigureEndpoints(context);
-            });
-        });
-
         // Cache
         services.AddCaching(configuration);
 
