@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Order;
 
 namespace Ordering.TestingInfrastructure.Builders;
 

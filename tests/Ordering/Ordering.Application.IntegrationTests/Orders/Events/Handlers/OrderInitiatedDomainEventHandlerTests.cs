@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Order;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;

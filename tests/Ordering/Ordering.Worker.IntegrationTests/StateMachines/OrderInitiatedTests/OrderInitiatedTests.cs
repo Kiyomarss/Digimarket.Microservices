@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Basket;
 using FluentAssertions;
 using MassTransit.Testing;
 using Ordering.TestingInfrastructure.Builders;

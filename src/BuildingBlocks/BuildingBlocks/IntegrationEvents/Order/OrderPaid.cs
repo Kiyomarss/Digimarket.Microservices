@@ -1,4 +1,4 @@
-namespace BuildingBlocks.IntegrationEvents;
+namespace BuildingBlocks.IntegrationEvents.Order;
 
 public record OrderPaid 
 {

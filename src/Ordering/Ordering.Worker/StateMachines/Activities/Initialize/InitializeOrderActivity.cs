@@ -1,4 +1,6 @@
 using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Basket;
+using BuildingBlocks.IntegrationEvents.Order;
 using MassTransit;
 using Ordering.Worker.Configurations.Saga;
 using Ordering.Worker.StateMachines.Activities.Common;
@@ -16,12 +18,11 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
         {
             context.Saga.Date = context.Message.Date;
 
-            var orderId = context.Saga.CorrelationId;
             var items = context.Message.Items.Select(x => new OrderItemDto(x.ProductId, x.Quantity));
 
             await Task.WhenAll(
                                context.Publish(new ReduceInventory(items)),
-                               context.Publish(new RemoveBasket(orderId))
+                               context.Publish(new RemoveBasket(context.Message.UserId))
                               );
 
             await next.Execute(context);

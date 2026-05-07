@@ -1,4 +1,5 @@
     using BuildingBlocks.IntegrationEvents;
+    using BuildingBlocks.IntegrationEvents.Order;
     using MassTransit;
     using Ordering.Worker.Configurations.Saga;
     using Ordering.Worker.StateMachines.Activities.Cancel;

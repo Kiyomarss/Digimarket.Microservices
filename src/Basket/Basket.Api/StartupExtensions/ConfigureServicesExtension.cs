@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Basket_Application.Basket.Consumers;
 using Basket_Application.Orders.Commands.CreateOrder;
 using Basket_Application.RepositoryContracts;
 using Basket.Infrastructure.Data.DbContext;
@@ -38,6 +39,7 @@ public static class ConfigureServicesExtension
         // MassTransit + Outbox
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<RemoveBasketConsumer>();
             x.AddEntityFrameworkOutbox<BasketDbContext>(o =>
             {
                 o.QueryDelay = TimeSpan.FromSeconds(1);
@@ -45,9 +47,19 @@ public static class ConfigureServicesExtension
                 o.UseBusOutbox();
             });
 
-            x.UsingRabbitMq((_, cfg) =>
+            // تنها Transport: RabbitMQ
+            x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.AutoStart = true;
+                // حتماً آدرس و احراز هویت را متناسب با محیط شودد:
+                cfg.Host("rabbitmq://localhost", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+
+                cfg.UseMessageRetry(r => r.Interval(2, TimeSpan.FromSeconds(1)));
+                // ساخت خودکار Queue/Exchange بر اساس Convention
+                cfg.ConfigureEndpoints(context);
             });
         });
 

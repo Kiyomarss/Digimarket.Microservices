@@ -5,10 +5,10 @@ namespace Basket_Application.RepositoryContracts;
 public interface IBasketRepository
 {
     Task<BasketEntity> FindBasketByUserId(Guid userId);
-
-    Task AddItemToBasket(BasketItem item);
+    
+    Task<BasketEntity> AddItemToBasket(BasketItem item);
     
     Task<BasketItem?> FindBasketItemById(Guid id);
 
-    Task<bool> DeleteBasketItem(Guid id);
+    Task<bool> DeleteBasketItemByUserId(Guid userId);
 }

@@ -37,22 +37,30 @@ public class CachedBasketRepository : IBasketRepository
                                    );
     }
 
-    public async Task<bool> DeleteBasketItem(Guid id)
+    public async Task<bool> DeleteBasketItemByUserId(Guid userId)
     {
-        var result = await _basketRepository.DeleteBasketItem(id);
+        var result = await _basketRepository.DeleteBasketItemByUserId(userId);
 
         if (result)
         {
-            await _cache.RemoveAsync(CacheKey.BasketItem(id));
+            await _cache.RemoveAsync(CacheKey.Basket(userId));
         }
 
         return result;
     }
 
-    public async Task AddItemToBasket(BasketItem item)
+    public async Task<BasketEntity> AddItemToBasket(BasketItem item)
     {
         await _basketRepository.AddItemToBasket(item);
 
-        await _cache.RemoveAsync(CacheKey.Basket(item.BasketId));
+        // حذف کش قبلی
+        await _cache.RemoveAsync(CacheKey.Basket(item.Basket.UserId));
+
+        // بازیابی نسخه جدید برای بازگرداندن به کلاینت و قرار دادن در کش
+        var updatedBasket = await _basketRepository.FindBasketByUserId(item.Basket.UserId);
+
+        await _cache.SetAsync(CacheKey.Basket(item.Basket.UserId), updatedBasket, TimeSpan.FromMinutes(15));
+
+        return updatedBasket;
     }
 }

@@ -29,14 +29,26 @@ public class BasketRepository : IBasketRepository
     public async Task<bool> DeleteBasketItem(Guid id)
     {
         var rowsDeleted = await _db.Set<BasketItem>()
-                                   .Where(b => b.Id == id)
+                                   .Where(i => i.Id == id)
                                    .ExecuteDeleteAsync();
 
         return rowsDeleted > 0;
     }
     
-    public async Task AddItemToBasket(BasketItem item)
+    public async Task<bool> DeleteBasketItemByUserId(Guid userId)
+    {
+        var rowsDeleted = await _db.Set<BasketItem>()
+                                   .Where(i => i.Basket.UserId == userId)
+                                   .ExecuteDeleteAsync();
+
+        return rowsDeleted > 0;
+    }
+
+    
+    public async Task<BasketEntity> AddItemToBasket(BasketItem item)
     {
         await _db.Set<BasketItem>().AddAsync(item);
+
+        return item.Basket;
     }
 }

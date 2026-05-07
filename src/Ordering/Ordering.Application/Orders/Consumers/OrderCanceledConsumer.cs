@@ -1,4 +1,5 @@
 using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Order;
 using MassTransit;
 using MediatR;
 using Ordering.Application.Orders.Commands.OrderCancelled;

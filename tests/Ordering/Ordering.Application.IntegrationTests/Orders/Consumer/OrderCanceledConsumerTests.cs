@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.IntegrationEvents.Order;
 using FluentAssertions;
 using Ordering_Domain.Domain.Enum;
 using Ordering.TestingInfrastructure.Builders;
