@@ -29,7 +29,8 @@ public static class MassTransitExtensions
                 o.DuplicateDetectionWindow = TimeSpan.FromMinutes(30);
             });
 
-            x.SetKebabCaseEndpointNameFormatter();
+            // فعال کردن گزینه زیر باعث ایجاد نشدن خودکار صف می‌شود، زیرا برای ایجاد صف از Assembly استفاده شده
+            //x.SetKebabCaseEndpointNameFormatter();
 
             x.UsingRabbitMq((context, cfg) =>
             {
