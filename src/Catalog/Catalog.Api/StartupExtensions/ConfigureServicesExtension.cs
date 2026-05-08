@@ -29,22 +29,6 @@ public static class ConfigureServicesExtension
                 options.MinBatchSize(1);
             });
         });
-
-        // MassTransit + Outbox
-        services.AddMassTransit(x =>
-        {
-            x.AddEntityFrameworkOutbox<CatalogDbContext>(o =>
-            {
-                o.QueryDelay = TimeSpan.FromSeconds(1);
-                o.UsePostgres();
-                o.UseBusOutbox();
-            });
-
-            x.UsingRabbitMq((_, cfg) =>
-            {
-                cfg.AutoStart = true;
-            });
-        });
         
         services.AddConfiguredMediatR();
 

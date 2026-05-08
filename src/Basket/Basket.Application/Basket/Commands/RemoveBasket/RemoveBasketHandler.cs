@@ -18,7 +18,7 @@ public class RemoveBasketHandler : ICommandHandler<RemoveBasketCommand>
 
     public async Task<Unit> Handle(RemoveBasketCommand request, CancellationToken cancellationToken)
     {
-        await _basketRepository.DeleteBasketItemByUserId(request.UserId);
+        //await _basketRepository.DeleteBasketItemByUserId(request.UserId);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Unit.Value;

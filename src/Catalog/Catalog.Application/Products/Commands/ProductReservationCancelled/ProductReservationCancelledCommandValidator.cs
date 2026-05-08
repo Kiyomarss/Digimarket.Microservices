@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 
-namespace Catalog.Application.Products.ReservedProduct;
+namespace Catalog.Application.Products.Commands.ProductReservationCancelled;
 
-public class ReservedProductCommandValidator : AbstractValidator<ReserveProductsCommand>
+public class ProductReservationCancelledCommandValidator : AbstractValidator<ProductReservationCancelledCommand>
 {
-    public ReservedProductCommandValidator()
+    public ProductReservationCancelledCommandValidator()
     {
         // 2. Items list
         RuleFor(x => x.Items)
-            .NotEmpty().WithMessage("Order must contain at least one item.")
-            .Must(items => items.Count <= 50).WithMessage("Order cannot contain more than 50 items."); // محدودیت منطقی
+            .NotEmpty().WithMessage("Order must contain at least one item.");
 
         // 3. هر Item در لیست
         RuleForEach(x => x.Items).ChildRules(item =>

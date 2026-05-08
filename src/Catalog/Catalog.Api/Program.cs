@@ -1,8 +1,13 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Extensions;
+using BuildingBlocks.IntegrationEvents;
+using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
+using Catalog_Infrastructure.Data.DbContext;
 using Catalog.Api.Grpc;
 using Catalog.Api.StartupExtensions;
+using Catalog.Application.Products.Consumers;
+using MassTransit;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +46,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddConfiguredMassTransit<CatalogDbContext>(builder.Configuration, typeof(ProductReservationCancelledConsumer).Assembly);
 
 builder.Services.AddGatewayCors();
 

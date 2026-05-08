@@ -1,21 +1,22 @@
 ﻿using BuildingBlocks.CQRS;
 using BuildingBlocks.UnitOfWork;
 using Catalog.Application.RepositoryContracts;
+using MediatR;
 
-namespace Catalog.Application.Products.ReservedProduct;
+namespace Catalog.Application.Products.Commands.ProductReservationCancelled;
 
-public class ReservedProductCommandHandler : ICommandHandler<ReserveProductsCommand, ReserveProductsResponse>
+public class ProductReservationCancelledCommandHandler : ICommandHandler<ProductReservationCancelledCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IProductRepository _productRepository;
 
-    public ReservedProductCommandHandler(IProductRepository productRepository, IUnitOfWork unitOfWork)
+    public ProductReservationCancelledCommandHandler(IProductRepository productRepository, IUnitOfWork unitOfWork)
     {
         _productRepository = productRepository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ReserveProductsResponse> Handle(ReserveProductsCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ProductReservationCancelledCommand request, CancellationToken cancellationToken)
     {
         var products = await _productRepository.GetProductByIds(request.Items.Select(x => x.ProductId).ToList(), cancellationToken);
 
@@ -23,11 +24,11 @@ public class ReservedProductCommandHandler : ICommandHandler<ReserveProductsComm
         {
             var quantity = request.Items.Single(p => p.ProductId == item.Id).Quantity;
 
-            item.DecreaseStock(quantity);
+            item.IncreaseStock(quantity);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new ReserveProductsResponse(products.Select(p => new ReservedProductCommand(p.Id, p.Price)));
+        return Unit.Value;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Catalog.Application.Products.ReservedProduct;
+﻿using Catalog.Application.Products.Commands.ReservedProduct;
 using Grpc.Core;
 using MediatR;
 using ProductGrpc;

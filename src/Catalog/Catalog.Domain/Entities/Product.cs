@@ -27,7 +27,7 @@ public class Product
     public void IncreaseStock(int quantity)
     {
         if (quantity <= 0)
-            throw new Exception("Quantity must be positive");
+            throw new DomainException("Quantity must be positive");
 
         Stock += quantity;
     }
