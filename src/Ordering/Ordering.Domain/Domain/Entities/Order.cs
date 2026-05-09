@@ -27,7 +27,7 @@ public class Order : AggregateRoot
     
     public void Canceled() => ChangeStateInternal(OrderState.Canceled);
 
-    public void MarkAsPaid() => ChangeStateInternal(OrderState.Paid);
+    public void Paid() => ChangeStateInternal(OrderState.Paid);
 
     public void AddItem(
         Guid productId,

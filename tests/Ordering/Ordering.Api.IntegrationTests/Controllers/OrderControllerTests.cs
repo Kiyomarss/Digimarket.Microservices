@@ -26,12 +26,12 @@ public class OrderControllerTests : OrderingAppTestBase
         await ResetDatabase();
 
         // Arrange
-        DbContext.Orders.AddRange(new OrderBuilder().Build());
+        DbContext.Orders.AddRange(new OrderBuilder().Paid().Build());
 
         await DbContext.SaveChangesAsync();
 
         // Act
-        var response = await _client.GetAsync($"{ApiEndpoints.Orders.GetCurrentUserOrders}?state={OrderState.Pending.Code}");
+        var response = await _client.GetAsync($"{ApiEndpoints.Orders.GetCurrentUserOrders}?state={OrderState.Paid.Code}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

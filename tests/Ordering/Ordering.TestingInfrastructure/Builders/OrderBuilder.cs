@@ -27,7 +27,7 @@ public sealed class OrderBuilder
     
     public OrderBuilder Paid()
     {
-        _order.MarkAsPaid();
+        _order.Paid();
         return this;
     }
 
