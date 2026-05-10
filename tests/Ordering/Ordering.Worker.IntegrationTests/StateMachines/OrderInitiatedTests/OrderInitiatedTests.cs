@@ -1,7 +1,5 @@
-﻿using BuildingBlocks.IntegrationEvents;
-using BuildingBlocks.IntegrationEvents.Basket;
+﻿using BuildingBlocks.IntegrationEvents.Basket;
 using FluentAssertions;
-using MassTransit.Testing;
 using Ordering.TestingInfrastructure.Builders;
 using Ordering.Worker.IntegrationTests.StateMachines.Fixtures;
 using Ordering.Worker.IntegrationTests.StateMachines.TestBases;
@@ -15,19 +13,44 @@ public class OrderInitiatedTests : OrderSagaTestBase
         : base(fixture)
     {
     }
-    
+
     [Fact]
-    public async Task InitializeOrderActivity_ShouldPublishRequiredEvents_AndTransitionToWaitingForPayment()
+    public async Task OrderInitiated_Should_Initialize_Order_And_Schedule_Jobs()
     {
+        // Arrange
         var orderId = Guid.NewGuid();
 
-        await PublishAndAssertPublishedAsync(new OrderInitiatedBuilder().WithId(orderId).Build());
+        var message = new OrderInitiatedBuilder()
+                      .WithId(orderId)
+                      .Build();
 
-        var exists = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
-        exists.Should().NotBeNull("saga must be created and transitioned to WaitingForPayment");
+        // Act
+        await PublishAndAssertPublishedAsync(message);
 
-        // Assert: Two events must be published by InitializeOrderActivity
-        (await Harness.Published.Any<ReduceInventory>()).Should().BeTrue("ReduceInventory must be published");
-        (await Harness.Published.Any<RemoveBasket>()).Should().BeTrue("RemoveBasket must be published");
+        // Assert state transition
+        var saga = await SagaHarness.Exists(orderId, x => x.WaitingForPayment);
+        saga.Should().NotBeNull();
+
+        // Assert InitializeOrderActivity
+        (await Harness.Published.Any<ReduceInventory>())
+            .Should().BeTrue();
+
+        (await Harness.Published.Any<RemoveBasket>())
+            .Should().BeTrue();
+
+        // Assert ScheduleOrderActivity
+
+        (await Harness.Sent.Any<SendReminder>())
+            .Should().BeTrue("SendReminder must be scheduled");
+
+        (await Harness.Sent.Any<CancelOrder>())
+            .Should().BeTrue("CancelOrder must be scheduled");
+
+        // Assert saga tokens saved
+        var instance = SagaHarness.Sagas.Contains(orderId);
+        instance.Should().NotBeNull();
+
+        instance.ReminderScheduleTokenId.Should().NotBeNull();
+        instance.CancelScheduleTokenId.Should().NotBeNull();
     }
 }

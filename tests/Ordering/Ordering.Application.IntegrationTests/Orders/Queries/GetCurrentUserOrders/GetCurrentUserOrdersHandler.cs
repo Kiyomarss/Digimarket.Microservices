@@ -27,11 +27,11 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
     {
         await ResetDatabase();
 
-        DbContext.Orders.Add(new OrderBuilder().Canceled().Build());
+        DbContext.Orders.Add(new OrderBuilder().Build());
 
         await DbContext.SaveChangesAsync();
 
-        var result = await Sender.Send(new GetCurrentUserOrdersQuery("Pending"));
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery(OrderState.Canceled.Code));
 
         result.Orders.Should().BeEmpty();
     }
@@ -42,13 +42,13 @@ public class GetCurrentUserOrdersHandler : OrderingAppTestBase
         await ResetDatabase();
 
         DbContext.Orders.AddRange(
-                                  new OrderBuilder().Build(),
-                                  new OrderBuilder().Build()
+                                  new OrderBuilder().Canceled().Build(),
+                                  new OrderBuilder().Canceled().Build()
                                  );
 
         await DbContext.SaveChangesAsync();
 
-        var result = await Sender.Send(new GetCurrentUserOrdersQuery(OrderState.Pending.Code));
+        var result = await Sender.Send(new GetCurrentUserOrdersQuery(OrderState.Canceled.Code));
 
         result.Orders.Should().HaveCount(2);
     }

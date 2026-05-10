@@ -7,15 +7,15 @@ using Ordering.TestingInfrastructure.Fixtures;
 using Ordering.TestingInfrastructure.TestBase;
 using Shared;
 
-namespace Ordering.Application.IntegrationTests.Orders.Commands.PayOrder;
+namespace Ordering.Application.IntegrationTests.Orders.Commands.OrderCanceled;
 
-public class PayOrderCommandHandlerTests : OrderingAppTestBase
+public class OrderCanceledCommandHandlerTests : OrderingAppTestBase
 {
-    public PayOrderCommandHandlerTests(OrderingAppFactory fixture)
+    public OrderCanceledCommandHandlerTests(OrderingAppFactory fixture)
         : base(fixture) { }
 
     [Fact]
-    public async Task Handle_Should_Change_OrderState_To_Paid()
+    public async Task Handle_Should_Change_OrderState_To_Canceled()
     {
         // Arrange
         await ResetDatabase();
@@ -34,7 +34,7 @@ public class PayOrderCommandHandlerTests : OrderingAppTestBase
         await ReloadEntityAsync(order);
 
         // Assert
-        order.State.Should().Be(OrderState.Paid);
+        order.State.Should().Be(OrderState.Canceled);
     }
     
     [Fact]
