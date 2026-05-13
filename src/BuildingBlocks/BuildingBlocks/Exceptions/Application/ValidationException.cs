@@ -6,7 +6,7 @@ public sealed class ValidationException : ApplicationException
 
     public ValidationException(
         string message,
-        IDictionary<string, string[]> errors)
+        IDictionary<string, string[]>? errors)
         : base(message)
     {
         Errors = errors;

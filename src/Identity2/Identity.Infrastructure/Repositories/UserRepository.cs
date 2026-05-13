@@ -14,24 +14,27 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task AddAsync(User user)
+    public void Add(User user)
     {
-        await _context.Users.AddAsync(user);
+        _context.Users.Add(user);
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+
+    public Task<User?> GetByEmailAsync(
+        string email,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.Users
-                             .Include(x => x.Roles)
-                             .Include(x => x.Claims)
-                             .FirstOrDefaultAsync(x => x.Email == email);
+        return _context.Users
+                       .FirstOrDefaultAsync(
+                                            x => x.Email == email,
+                                            cancellationToken);
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public Task<User?> GetByIdAsync(Guid id)
     {
-        return await _context.Users
-                             .Include(x => x.Roles)
-                             .FirstOrDefaultAsync(x => x.Id == id);
+        return _context.Users
+                       .Include(x => x.Roles)
+                       .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public void Update(User user)

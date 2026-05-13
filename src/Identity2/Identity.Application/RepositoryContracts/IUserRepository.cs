@@ -4,9 +4,9 @@ namespace Identity.Application.RepositoryContracts;
 
 public interface IUserRepository
 {
-    Task AddAsync(User user);
+    void Add(User user);
 
-    Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
 
     Task<User?> GetByIdAsync(Guid id);
 
