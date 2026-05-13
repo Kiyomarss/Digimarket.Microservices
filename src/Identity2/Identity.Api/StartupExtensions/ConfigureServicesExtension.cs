@@ -1,8 +1,10 @@
 ﻿using BuildingBlocks.Extensions;
 using BuildingBlocks.UnitOfWork;
 using Identity.Application.RepositoryContracts;
+using Identity.Application.Security;
 using Identity.Infrastructure.Data.DbContext;
 using Identity.Infrastructure.Repositories;
+using Identity.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.StartupExtensions;
@@ -39,6 +41,8 @@ public static class ConfigureServicesExtension
         services.AddConfiguredMediatR();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 
         services.AddScoped<IUnitOfWork,
             UnitOfWork<IdentityDbContext>>();
