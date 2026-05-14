@@ -3,6 +3,7 @@ using BuildingBlocks.Messaging.Extensions;
 using Identity.Api.StartupExtensions;
 using Identity.Application.Consumers;
 using Identity.Infrastructure.Data.DbContext;
+using Microsoft.OpenApi.Models;
 using OpenIddict.Validation.AspNetCore;
 using Serilog;
 
@@ -116,7 +117,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
 
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity API");
+
+        options.OAuthClientId("swagger");
+    });
 }
 
 app.MapControllers();

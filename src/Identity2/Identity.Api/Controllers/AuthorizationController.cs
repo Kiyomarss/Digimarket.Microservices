@@ -78,7 +78,11 @@ public class AuthorizationController : Controller
                 OpenIddictConstants.Scopes.OpenId,
                 OpenIddictConstants.Scopes.Email,
                 OpenIddictConstants.Scopes.Profile,
-                OpenIddictConstants.Scopes.OfflineAccess
+                OpenIddictConstants.Scopes.OfflineAccess, 
+                "identity", 
+                "basket",
+                "catalog",
+                "ordering"
             });
 
             return SignIn(

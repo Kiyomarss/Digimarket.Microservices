@@ -7,31 +7,47 @@ public static class SwaggerExtensions
 {
     public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services, string title)
     {
-        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = title, Version = "v1" });
-            options.MapType<Stream>(() => new OpenApiSchema { Type = "string", Format = "binary" });
-
-            var securityScheme = new OpenApiSecurityScheme
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Name = "Authorization",
-                Description = "Enter the JWT token: Bearer {your_token}",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "bearer",
-                BearerFormat = "JWT"
-            };
+                Type = SecuritySchemeType.OAuth2,
 
-            options.AddSecurityDefinition("Bearer", securityScheme);
+                Flows = new OpenApiOAuthFlows
+                {
+                    Password = new OpenApiOAuthFlow
+                    {
+                        TokenUrl = new Uri("/connect/token", UriKind.Relative),
+
+                        Scopes = new Dictionary<string, string>
+                        {
+                            ["openid"] = "OpenId scope",
+                            ["profile"] = "Profile scope",
+                            ["email"] = "Email scope",
+                            ["offline_access"] = "Refresh token scope"
+                        }
+                    }
+                }
+            });
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
                     },
-                    new List<string>()
+                    new[]
+                    {
+                        "openid",
+                        "profile",
+                        "email",
+                        "offline_access"
+                    }
                 }
             });
         });
