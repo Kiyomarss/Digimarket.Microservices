@@ -1,34 +1,149 @@
 using ApiGateway;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// YARP
+//
+// Reverse Proxy (YARP)
+//
 builder.Services
-       .AddReverseProxy()
-       .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    .AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-// Required for Swagger (this registers the API explorer services)
+builder.Services
+    .AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.Authority = "http://localhost:2000";
+        options.RequireHttpsMetadata = false;
+    });
+
+builder.Services.AddAuthorization();
+
+
+//
+// Swagger
+//
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-var swaggerServices = builder.Configuration.GetSection("SwaggerServices").Get<List<SwaggerService>>() 
-                      ?? new List<SwaggerService>();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Digimarket Gateway",
+        Version = "v1"
+    });
+
+    //
+    // OAuth2 Password Flow
+    //
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.OAuth2,
+
+        Flows = new OpenApiOAuthFlows
+        {
+            Password = new OpenApiOAuthFlow
+            {
+                //
+                // IMPORTANT:
+                // Token endpoint MUST go through Gateway
+                //
+                TokenUrl = new Uri("http://localhost:1000/identity/connect/token"),
+
+                Scopes = new Dictionary<string, string>
+                {
+                    { "openid", "OpenId scope" },
+                    { "profile", "Profile scope" },
+                    { "email", "Email scope" },
+                    { "offline_access", "Refresh token scope" },
+
+                    { "identity", "Identity API" },
+                    { "catalog", "Catalog API" },
+                    { "basket", "Basket API" },
+                    { "ordering", "Ordering API" }
+                }
+            }
+        }
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "oauth2"
+                }
+            },
+            new[]
+            {
+                "openid",
+                "profile",
+                "email",
+                "offline_access",
+                "identity",
+                "catalog",
+                "basket",
+                "ordering"
+            }
+        }
+    });
+});
+
+var swaggerServices =
+    builder.Configuration
+        .GetSection("SwaggerServices")
+        .Get<List<SwaggerService>>()
+    ?? new List<SwaggerService>();
 
 var app = builder.Build();
 
-// Swagger UI (Gateway will aggregate external swagger.json entries if configured)
+//
+// Swagger
+//
 app.UseSwagger();
-app.UseSwaggerUI(c =>
+
+app.UseSwaggerUI(options =>
 {
-    // اگر در appsettings بخشی برای SwaggerServices نداری، این حلقه امن است (هیچ endpoint نخواهد ساخت)
+    //
+    // Aggregate Microservices Swagger
+    //
     foreach (var svc in swaggerServices)
     {
-        // svc.SwaggerEndpoint باید آدرس کامل swagger.json سرویس مقصد باشد
-        c.SwaggerEndpoint(svc.SwaggerEndpoint, svc.Name);
+        options.SwaggerEndpoint(
+            svc.SwaggerEndpoint,
+            svc.Name);
     }
+
+    //
+    // OAuth Configuration
+    //
+    options.OAuthClientId("swagger");
+
+    //
+    // DO NOT USE PKCE WITH PASSWORD FLOW
+    //
+    // options.OAuthUsePkce();
+
+    //
+    // Optional
+    //
+    options.OAuthAppName("Digimarket Swagger Gateway");
 });
 
-// Map YARP proxy routes (appsettings "ReverseProxy")
+//
+// Authentication / Authorization
+// (later when JWT validation added)
+//
+app.UseAuthentication();
+app.UseAuthorization();
+
+//
+// Reverse Proxy
+//
 app.MapReverseProxy();
 
 app.Run();
@@ -38,6 +153,7 @@ namespace ApiGateway
     public class SwaggerService
     {
         public string Name { get; set; } = default!;
+
         public string SwaggerEndpoint { get; set; } = default!;
     }
 }

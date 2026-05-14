@@ -46,7 +46,11 @@ public static class SwaggerExtensions
                         "openid",
                         "profile",
                         "email",
-                        "offline_access"
+                        "offline_access",
+                        "identity",
+                        "catalog",
+                        "basket",
+                        "ordering"
                     }
                 }
             });
