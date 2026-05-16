@@ -8,6 +8,7 @@ using Catalog.Api.Grpc;
 using Catalog.Api.StartupExtensions;
 using Catalog.Application.Products.Consumers;
 using MassTransit;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,8 +58,10 @@ app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseGatewaySwagger(
+                          "catalog",
+                          "http://localhost:1000",
+                          "https://localhost:1001");
 }
 
 app.MapGrpcService<ProductGrpcService>();

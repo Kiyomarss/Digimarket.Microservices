@@ -4,6 +4,7 @@ using Basket.Infrastructure.Data.DbContext;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,8 +38,10 @@ app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseGatewaySwagger(
+                          "basket",
+                          "http://localhost:1000",
+                          "https://localhost:1001");
 }
 
 app.UseAuthentication();

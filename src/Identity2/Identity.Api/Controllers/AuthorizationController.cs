@@ -9,6 +9,7 @@ using OpenIddict.Server.AspNetCore;
 namespace Identity.Api.Controllers;
 
 [ApiController]
+[Route("connect")]
 public class AuthorizationController : Controller
 {
     private readonly IUserRepository _userRepository;
@@ -22,7 +23,7 @@ public class AuthorizationController : Controller
         _passwordHasher = passwordHasher;
     }
 
-    [HttpPost("~/connect/token")]
+    [HttpPost("token")]
     public async Task<IActionResult> Exchange()
     {
         var request =

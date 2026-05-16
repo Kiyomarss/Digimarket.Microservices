@@ -101,6 +101,8 @@ var swaggerServices =
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 //
 // Swagger
 //

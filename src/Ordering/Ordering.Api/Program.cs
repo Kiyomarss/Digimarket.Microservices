@@ -2,6 +2,7 @@ using BuildingBlocks.Extensions;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
 using MassTransit;
+using Microsoft.OpenApi.Models;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Realtime.Hubs;
 using Ordering_Infrastructure.Realtime.Services;
@@ -57,9 +58,12 @@ app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseGatewaySwagger(
+                          serviceName: "ordering",
+                          httpUrl: "http://localhost:1000",
+                          httpsUrl: "https://localhost:1001");
 }
+
 app.MapGrpcService<OrderGrpcService>();
 
 app.UseAuthentication();

@@ -39,6 +39,8 @@ builder.Services.AddOpenIddict()
        })
        .AddServer(options =>
        {
+           options.SetIssuer(new Uri("https://localhost:1001"));
+
            // Endpoints
            options.SetTokenEndpointUris("/connect/token");
            options.SetAuthorizationEndpointUris("/connect/authorize");
@@ -102,12 +104,17 @@ builder.Services.AddGatewayCors();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 
 // ----------------------------
 // PIPELINE
 // ----------------------------
 
+app.UseRouting();
+
 app.UseCors(CorsExtensions.GatewayCorsPolicyName);
+
+app.UseForwardedHeaders();
 
 app.UseAuthentication();
 
@@ -115,7 +122,24 @@ app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger(options =>
+    {
+        options.PreSerializeFilters.Add((swagger, httpReq) =>
+        {
+            swagger.Servers = new List<OpenApiServer>
+            {
+                new OpenApiServer
+                {
+                    Url = "http://localhost:1000/identity"
+                },
+
+                new OpenApiServer
+                {
+                    Url = "https://localhost:1001/identity"
+                }
+            };
+        });
+    });
 
     app.UseSwaggerUI(options =>
     {
