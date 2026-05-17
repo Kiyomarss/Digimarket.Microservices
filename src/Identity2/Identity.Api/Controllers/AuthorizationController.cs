@@ -27,68 +27,62 @@ public class AuthorizationController : Controller
     [Consumes("application/x-www-form-urlencoded")]
     public async Task<IActionResult> Exchange()
     {
-        var request =
-            HttpContext.GetOpenIddictServerRequest();
+        var request = HttpContext.GetOpenIddictServerRequest();
 
         if (request is null)
-            throw new InvalidOperationException(
-                "OpenIddict request cannot be retrieved.");
+            throw new InvalidOperationException("OpenIddict request cannot be retrieved.");
 
         if (request.IsPasswordGrantType())
         {
-            var user = await _userRepository
-                .GetByEmailAsync(
-                    request.Username!,
-                    HttpContext.RequestAborted);
+            var user = await _userRepository.GetByEmailAsync(
+                                                             request.Username!,
+                                                             HttpContext.RequestAborted);
 
             if (user is null)
-            {
-                return Forbid(
-                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            }
+                return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
-            var isValidPassword =
-                _passwordHasher.VerifyPassword(
-                    request.Password!,
-                    user.PasswordHash);
+            var isValidPassword = _passwordHasher.VerifyPassword(
+                                                                 request.Password!,
+                                                                 user.PasswordHash);
 
             if (!isValidPassword)
-            {
-                return Forbid(
-                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-            }
+                return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
             var identity = new ClaimsIdentity(
-                OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                                              OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
-            identity.AddClaim(
-                OpenIddictConstants.Claims.Subject,
-                user.Id.ToString());
-
-            identity.AddClaim(
-                OpenIddictConstants.Claims.Email,
-                user.Email);
-
-            identity.AddClaim(
-                OpenIddictConstants.Claims.Name,
-                user.Email);
+            identity.AddClaim(OpenIddictConstants.Claims.Subject, user.Id.ToString());
+            identity.AddClaim(OpenIddictConstants.Claims.Email, user.Email);
+            identity.AddClaim(OpenIddictConstants.Claims.Name, user.Email);
 
             var principal = new ClaimsPrincipal(identity);
 
-            principal.SetScopes(new[]
-            {
-                "identity", 
-                "basket",
-                "catalog",
-                "ordering"
-            });
+            var scopes = request.GetScopes();
+
+            principal.SetScopes(scopes);
+
+            var audiences = scopes
+                            .Where(s => ScopeAudienceMap.ContainsKey(s))
+                            .Select(s => ScopeAudienceMap[s])
+                            .Distinct()
+                            .ToList();
+
+            principal.SetAudiences(audiences);
 
             return SignIn(
-                principal,
-                OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                          principal,
+                          OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
-        throw new NotImplementedException(
-            "Grant type is not supported.");
+        throw new NotImplementedException("Grant type is not supported.");
     }
+    
+    private static readonly Dictionary<string, string> ScopeAudienceMap =
+        new()
+        {
+            ["catalog"] = "catalog-api",
+            ["basket"] = "basket-api",
+            ["ordering"] = "ordering-api",
+            ["identity"] = "identity-api"
+        };
 }
