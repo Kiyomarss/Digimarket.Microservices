@@ -5,7 +5,7 @@ namespace BuildingBlocks.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services, string title)
+    public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {

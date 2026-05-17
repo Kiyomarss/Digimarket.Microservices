@@ -41,7 +41,7 @@ builder.Services.AddConfiguredOpenTelemetry(
                                             configuration: builder.Configuration);
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerDocumentation("Catalog API");
+builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

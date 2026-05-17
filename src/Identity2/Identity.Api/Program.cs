@@ -18,7 +18,7 @@ builder.Services.AddGlobalExceptionHandler();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerDocumentation("Identity API");
+builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddHttpContextAccessor();
 

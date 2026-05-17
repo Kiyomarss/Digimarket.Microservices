@@ -29,7 +29,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 builder.Services.AddGlobalExceptionHandler();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerDocumentation("Ordering API");
+builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
