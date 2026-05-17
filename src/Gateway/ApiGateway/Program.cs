@@ -14,7 +14,7 @@ builder.Services
     .AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "http://localhost:2000";
+        options.Authority = "https://localhost:1001";
         options.RequireHttpsMetadata = false;
     });
 
@@ -49,15 +49,10 @@ builder.Services.AddSwaggerGen(options =>
                 // IMPORTANT:
                 // Token endpoint MUST go through Gateway
                 //
-                TokenUrl = new Uri("http://localhost:1000/identity/connect/token"),
-
+                TokenUrl = new Uri("https://localhost:1001/identity/connect/token"),
+                
                 Scopes = new Dictionary<string, string>
                 {
-                    { "openid", "OpenId scope" },
-                    { "profile", "Profile scope" },
-                    { "email", "Email scope" },
-                    { "offline_access", "Refresh token scope" },
-
                     { "identity", "Identity API" },
                     { "catalog", "Catalog API" },
                     { "basket", "Basket API" },
@@ -80,15 +75,12 @@ builder.Services.AddSwaggerGen(options =>
             },
             new[]
             {
-                "openid",
-                "profile",
-                "email",
-                "offline_access",
                 "identity",
                 "catalog",
                 "basket",
                 "ordering"
             }
+
         }
     });
 });

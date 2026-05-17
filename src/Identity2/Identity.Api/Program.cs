@@ -69,7 +69,10 @@ builder.Services.AddOpenIddict()
            // ASP.NET Core
            options.UseAspNetCore()
                   .EnableTokenEndpointPassthrough()
-                  .EnableAuthorizationEndpointPassthrough();
+                  .EnableAuthorizationEndpointPassthrough()
+                  .EnableTokenEndpointPassthrough()
+                  .EnableStatusCodePagesIntegration();
+
        })
        .AddValidation(options =>
        {

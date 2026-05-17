@@ -17,14 +17,14 @@ public static class SwaggerExtensions
                 {
                     Password = new OpenApiOAuthFlow
                     {
-                        TokenUrl = new Uri("/connect/token", UriKind.Relative),
+                        TokenUrl = new Uri("/identity/connect/token", UriKind.Relative),
 
                         Scopes = new Dictionary<string, string>
                         {
-                            ["openid"] = "OpenId scope",
-                            ["profile"] = "Profile scope",
-                            ["email"] = "Email scope",
-                            ["offline_access"] = "Refresh token scope"
+                            { "identity", "Identity API" },
+                            { "catalog", "Catalog API" },
+                            { "basket", "Basket API" },
+                            { "ordering", "Ordering API" }
                         }
                     }
                 }
@@ -43,10 +43,6 @@ public static class SwaggerExtensions
                     },
                     new[]
                     {
-                        "openid",
-                        "profile",
-                        "email",
-                        "offline_access",
                         "identity",
                         "catalog",
                         "basket",

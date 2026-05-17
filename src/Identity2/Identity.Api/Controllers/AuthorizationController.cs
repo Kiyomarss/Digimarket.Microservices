@@ -24,6 +24,7 @@ public class AuthorizationController : Controller
     }
 
     [HttpPost("token")]
+    [Consumes("application/x-www-form-urlencoded")]
     public async Task<IActionResult> Exchange()
     {
         var request =
@@ -76,10 +77,6 @@ public class AuthorizationController : Controller
 
             principal.SetScopes(new[]
             {
-                OpenIddictConstants.Scopes.OpenId,
-                OpenIddictConstants.Scopes.Email,
-                OpenIddictConstants.Scopes.Profile,
-                OpenIddictConstants.Scopes.OfflineAccess, 
                 "identity", 
                 "basket",
                 "catalog",
