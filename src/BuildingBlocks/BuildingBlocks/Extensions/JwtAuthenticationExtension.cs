@@ -11,27 +11,31 @@ public static class JwtAuthenticationExtension
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var authority = configuration["Jwt:Authority"];
+        var audience = configuration["Jwt:Audience"];
+        var issuer = configuration["Jwt:ValidIssuer"];
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = configuration["Jwt:Authority"];
-
-                options.Audience = configuration["Jwt:Audience"];
-
+                options.Authority = authority;
                 options.RequireHttpsMetadata = false;
 
-                options.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
 
-                        NameClaimType = "username",
-                        RoleClaimType = "role"
-                    };
+                    ValidateAudience = false,
+                    ValidAudience = audience,
+
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                };
             });
 
         services.AddAuthorization();

@@ -67,7 +67,7 @@ public class AuthorizationController : Controller
                             .Distinct()
                             .ToList();
 
-            principal.SetAudiences(audiences);
+            principal.SetResources(audiences);
 
             return SignIn(
                           principal,
