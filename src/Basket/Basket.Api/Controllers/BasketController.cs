@@ -35,10 +35,44 @@ namespace Basket.Api.Controllers
             return Ok();
         }
 
-        /*[HttpDelete("{id:guid}")]
-        public async Task<IActionResult> RemoveItem(Guid id)
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Test()
         {
-            return Ok();
-        }*/
+            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var rawToken = authHeader.StartsWith("Bearer ")
+                               ? authHeader.Substring("Bearer ".Length).Trim()
+                               : authHeader;
+
+            var handler = new JwtSecurityTokenHandler();
+
+            if (!handler.CanReadToken(rawToken))
+            {
+                return BadRequest(new
+                {
+                    message = "Token is not a valid JWT.",
+                    authorizationHeader = authHeader
+                });
+            }
+
+            var jwtToken = handler.ReadJwtToken(rawToken);
+
+            var claims = jwtToken.Claims.Select(c => new
+            {
+                c.Type,
+                c.Value
+            });
+
+            return Ok(new
+            {
+                authorizationHeader = authHeader,
+                rawToken = rawToken,
+                issuer = jwtToken.Issuer,
+                audiences = jwtToken.Audiences,
+                validFrom = jwtToken.ValidFrom,
+                validTo = jwtToken.ValidTo,
+                claims = claims
+            });
+        }
     }
 }
