@@ -27,14 +27,10 @@ public static class JwtAuthenticationExtension
                     ValidateIssuer = true,
                     ValidIssuer = issuer,
 
-                    ValidateAudience = false,
-                    ValidAudience = audience,
-
-                    ValidateLifetime = true,
+                    ValidateAudience = true,
+                    ValidAudiences = [audience],
                     ValidateIssuerSigningKey = true,
-
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
+                    ValidateLifetime = true
                 };
             });
 

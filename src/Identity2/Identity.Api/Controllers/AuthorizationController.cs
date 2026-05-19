@@ -68,7 +68,8 @@ public class AuthorizationController : Controller
                             .ToList();
 
             principal.SetResources(audiences);
-
+            principal.SetAudiences(audiences);
+            
             return SignIn(
                           principal,
                           OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);

@@ -14,12 +14,11 @@ builder.Services
     .AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "https://localhost:1001";
+        options.Authority = "https://localhost:2001";
         options.RequireHttpsMetadata = false;
     });
 
 builder.Services.AddAuthorization();
-
 
 //
 // Swagger

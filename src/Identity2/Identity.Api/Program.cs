@@ -39,7 +39,7 @@ builder.Services.AddOpenIddict()
        })
        .AddServer(options =>
        {
-           options.SetIssuer(new Uri("https://localhost:1001"));
+           options.SetIssuer(new Uri("https://localhost:2001"));
 
            // Endpoints
            options.SetTokenEndpointUris("/connect/token");
@@ -92,9 +92,6 @@ builder.Services.AddAuthentication(options =>
         OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
 
     options.DefaultChallengeScheme =
-        OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-
-    options.DefaultScheme =
         OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
 });
 
