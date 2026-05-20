@@ -25,9 +25,11 @@ public class UserRepository : IUserRepository
         CancellationToken cancellationToken = default)
     {
         return _context.Users
-                       .FirstOrDefaultAsync(
-                                            x => x.Email == email,
-                                            cancellationToken);
+                             .Include(u => u.Roles)
+                             .ThenInclude(ur => ur.Role)
+                             .Include(u => u.Claims)
+                             .AsSplitQuery()
+                             .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
     }
 
     public Task<User?> GetByIdAsync(Guid id)

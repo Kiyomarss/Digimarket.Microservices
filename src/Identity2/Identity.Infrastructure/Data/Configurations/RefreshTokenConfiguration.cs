@@ -12,9 +12,20 @@ namespace Identity.Infrastructure.Data.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Token).IsRequired().HasMaxLength(500);
+            builder.HasOne(x => x.User)
+                   .WithMany(u => u.RefreshTokens)
+                   .HasForeignKey(x => x.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(x => x.Token)
+                   .IsRequired()
+                   .HasMaxLength(500);
+
+            builder.Property(x => x.CreatedAt).IsRequired();
+            builder.Property(x => x.ExpiresAt).IsRequired();
 
             builder.HasIndex(x => x.Token).IsUnique();
+            builder.HasIndex(x => x.UserId);
         }
     }
 }

@@ -27,21 +27,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.CreatedAt)
                .IsRequired()
                .HasColumnType("timestamptz");
-
-// Relationships
-
+        
         builder.HasMany(x => x.Roles)
-               .WithOne()
+               .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(x => x.Claims)
-               .WithOne()
+               .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(x => x.RefreshTokens)
-               .WithOne()
+               .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
     }

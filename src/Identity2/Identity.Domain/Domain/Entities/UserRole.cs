@@ -1,16 +1,20 @@
-﻿namespace Identity.Domain.Domain.Entities;
-
-public class UserRole
+﻿namespace Identity.Domain.Domain.Entities
 {
-    private UserRole() { }
-
-    public UserRole(Guid userId, Guid roleId)
+    public class UserRole
     {
-        UserId = userId;
-        RoleId = roleId;
+        private UserRole() { }
+
+        public UserRole(Guid userId, Guid roleId)
+        {
+            UserId = userId;
+            RoleId = roleId;
+        }
+
+        public Guid UserId { get; private set; }
+        public Guid RoleId { get; private set; }
+
+        // Navigation properties
+        public User User { get; private set; }
+        public Role Role { get; private set; }
     }
-
-    public Guid UserId { get; private set; }
-
-    public Guid RoleId { get; private set; }
 }

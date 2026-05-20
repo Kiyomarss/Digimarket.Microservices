@@ -9,11 +9,18 @@ namespace Identity.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
             builder.ToTable("user_roles");
+            builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
-            builder.HasKey(x => new
-            {
-                x.UserId, x.RoleId
-            }); // Composite Key
+            // تعریف رابطه در این سمت کافی است
+            builder.HasOne(ur => ur.User)
+                   .WithMany(u => u.Roles)
+                   .HasForeignKey(ur => ur.UserId);
+
+            builder.HasOne(ur => ur.Role)
+                   .WithMany(r => r.UserRoles)
+                   .HasForeignKey(ur => ur.RoleId);
+            
+            builder.HasIndex(ur => ur.RoleId);
         }
     }
 }

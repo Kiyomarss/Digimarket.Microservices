@@ -17,6 +17,13 @@ namespace Identity.Infrastructure.Data.Configurations
                 x.Value
             });
             
+            builder.HasOne(uc => uc.User)
+                   .WithMany(u => u.Claims)
+                   .HasForeignKey(uc => uc.UserId)
+                   .Metadata.PrincipalToDependent?.SetField("_claims");
+            
+            builder.HasIndex(x => x.UserId);
+
             builder.Property(x => x.Type).IsRequired().HasMaxLength(255);
 
             builder.Property(x => x.Value).IsRequired().HasMaxLength(255);

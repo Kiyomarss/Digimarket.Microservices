@@ -29,8 +29,11 @@ public static class JwtAuthenticationExtension
 
                     ValidateAudience = true,
                     ValidAudiences = [audience],
+                    
                     ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
+
+                    RoleClaimType = "role"
                 };
             });
 

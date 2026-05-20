@@ -12,6 +12,8 @@ public class UserClaim
     }
 
     public Guid UserId { get; private set; }
+    
+    public User User { get; private set; }
 
     public string Type { get; private set; }
 
