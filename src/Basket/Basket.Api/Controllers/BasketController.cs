@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Basket.Api.Controllers
 {
@@ -36,7 +37,8 @@ namespace Basket.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [HttpGet("/Basket/Test")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Test()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -74,5 +76,25 @@ namespace Basket.Api.Controllers
                 claims = claims
             });
         }
+        
+        [HttpGet("/Basket/Test2")]
+        //[Authorize(Roles = "Admin, User")] 
+        public async Task<IActionResult> Test2()
+        {
+            // روش استاندارد دات‌نت (بدون نیاز به کتابخانه‌های جانبی)
+            var roleClaims = User.FindAll(ClaimTypes.Role); // یا User.FindAll(OpenIddictConstants.Claims.Role)
+    
+            return Ok(new
+            {
+                Name = User.Identity?.Name,
+                IsAdmin = User.IsInRole("Admin"),
+                Roles = User.Claims
+                            .Where(c => c.Type == "role")
+                            .Select(c => c.Value)
+                            .ToList(),
+                AllClaims = User.Claims.Select(c => new { c.Type, c.Value })
+            });
+        }
+
     }
 }

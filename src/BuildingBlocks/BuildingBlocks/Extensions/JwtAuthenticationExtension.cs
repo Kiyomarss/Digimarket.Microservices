@@ -33,8 +33,10 @@ public static class JwtAuthenticationExtension
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
 
+                    NameClaimType = "name",
                     RoleClaimType = "role"
                 };
+                options.MapInboundClaims = false; // هیچ کلیم ورودی را تغییر نده و به همان شکلی که در توکن آمده (مثلاً "role") به من تحویل بده
             });
 
         services.AddAuthorization();
