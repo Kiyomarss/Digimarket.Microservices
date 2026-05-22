@@ -56,7 +56,7 @@ public class AuthorizationController : Controller
         identity.AddClaim(OpenIddictConstants.Claims.Email, user.Email);
         identity.AddClaim(OpenIddictConstants.Claims.Name, user.Email);
 
-        foreach (var role in user.Roles)
+        foreach (var role in user.UserRoles)
         {
             identity.AddClaim(OpenIddictConstants.Claims.Role, role.Role.Name);
             
@@ -65,12 +65,12 @@ public class AuthorizationController : Controller
                 identity.AddClaim("permission", rolePermission.Permission.Name);
             }}
 
-        foreach (var claim in user.Claims)
+        foreach (var claim in user.UserClaims)
         {
             identity.AddClaim(claim.Type, claim.Value);
         }
         
-        foreach (var userRole in user.Roles)
+        foreach (var userRole in user.UserRoles)
         {
 
         }

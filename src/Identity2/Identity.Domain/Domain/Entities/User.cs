@@ -1,12 +1,13 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 
 namespace Identity.Domain.Domain.Entities;
 
 public class User
 {
-    private readonly List<UserRole> _roles = new();
+    private readonly List<UserRole> _userRoles = new();
 
-    private readonly List<UserClaim> _claims = new();
+    private readonly List<UserClaim> _userClaims = new();
 
     private readonly List<RefreshToken> _refreshTokens = new();
 
@@ -31,24 +32,28 @@ public class User
 
     public DateTime CreatedAt { get; private set; }
 
-    public IReadOnlyCollection<UserRole> Roles => _roles;
+    public IReadOnlyCollection<UserRole> UserRoles => _userRoles;
+    
+    [NotMapped]
+    public IReadOnlyCollection<Role> Roles =>
+        _userRoles.Select(x => x.Role).ToList();
 
-    public IReadOnlyCollection<UserClaim> Claims => _claims;
+    public IReadOnlyCollection<UserClaim> UserClaims => _userClaims;
 
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
 
     public void AddRole(Guid roleId)
     {
-        if (_roles.Any(x => x.RoleId == roleId))
+        if (_userRoles.Any(x => x.RoleId == roleId))
 
             return;
 
-        _roles.Add(new UserRole(Id, roleId));
+        _userRoles.Add(new UserRole(Id, roleId));
     }
 
     public void AddClaim(string type, string value)
     {
-        _claims.Add(new UserClaim(Id, type, value));
+        _userClaims.Add(new UserClaim(Id, type, value));
     }
 
     public RefreshToken CreateRefreshToken()

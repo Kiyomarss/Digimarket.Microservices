@@ -11,9 +11,8 @@ namespace Identity.Infrastructure.Data.Configurations
             builder.ToTable("user_roles");
             builder.HasKey(ur => new { ur.UserId, ur.RoleId });
 
-            // تعریف رابطه در این سمت کافی است
             builder.HasOne(ur => ur.User)
-                   .WithMany(u => u.Roles)
+                   .WithMany(u => u.UserRoles)
                    .HasForeignKey(ur => ur.UserId);
 
             builder.HasOne(ur => ur.Role)

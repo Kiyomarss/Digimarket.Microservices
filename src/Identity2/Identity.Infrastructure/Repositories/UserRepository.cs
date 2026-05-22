@@ -25,11 +25,11 @@ public class UserRepository : IUserRepository
         CancellationToken cancellationToken = default)
     {
         return _context.Users
-                             .Include(u => u.Roles)
+                             .Include(u => u.UserRoles)
                              .ThenInclude(ur => ur.Role)
                              .ThenInclude(x => x.RolePermissions)
                              .ThenInclude(x => x.Permission)
-                             .Include(u => u.Claims)
+                             .Include(u => u.UserClaims)
                              .AsSplitQuery()
                              .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
     }
@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     public Task<User?> GetByIdAsync(Guid id)
     {
         return _context.Users
-                       .Include(x => x.Roles)
+                       .Include(x => x.UserRoles)
                        .FirstOrDefaultAsync(x => x.Id == id);
     }
 

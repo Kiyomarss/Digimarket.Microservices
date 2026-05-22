@@ -18,9 +18,9 @@ namespace Identity.Infrastructure.Data.Configurations
             });
             
             builder.HasOne(uc => uc.User)
-                   .WithMany(u => u.Claims)
+                   .WithMany(u => u.UserClaims)
                    .HasForeignKey(uc => uc.UserId)
-                   .Metadata.PrincipalToDependent?.SetField("_claims");
+                   .OnDelete(DeleteBehavior.Cascade);
             
             builder.HasIndex(x => x.UserId);
 

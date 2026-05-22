@@ -28,12 +28,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .IsRequired()
                .HasColumnType("timestamptz");
         
-        builder.HasMany(x => x.Roles)
+        builder.HasMany(x => x.UserRoles)
                .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(x => x.Claims)
+        builder.HasMany(x => x.UserClaims)
                .WithOne(x => x.User)
                .HasForeignKey(x => x.UserId)
                .OnDelete(DeleteBehavior.Cascade);
