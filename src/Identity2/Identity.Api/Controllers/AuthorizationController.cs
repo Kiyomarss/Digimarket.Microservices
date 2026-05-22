@@ -56,14 +56,19 @@ public class AuthorizationController : Controller
         identity.AddClaim(OpenIddictConstants.Claims.Email, user.Email);
         identity.AddClaim(OpenIddictConstants.Claims.Name, user.Email);
 
+        var permissions = new HashSet<string>();
         foreach (var role in user.Roles)
         {
             identity.AddClaim(OpenIddictConstants.Claims.Role, role.Name);
-
             foreach (var permission in role.Permissions)
             {
-                identity.AddClaim("permission", permission.Name);
+                permissions.Add(permission.Name); // HashSet اجازه اضافه شدن تکراری را نمی‌دهد
             }
+        }
+
+        foreach (var permissionName in permissions)
+        {
+            identity.AddClaim("permission", permissionName);
         }
 
         foreach (var claim in user.UserClaims)
