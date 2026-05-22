@@ -1,4 +1,6 @@
-﻿namespace Identity.Domain.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Identity.Domain.Domain.Entities;
 
 public class Role
 {
@@ -20,6 +22,7 @@ public class Role
     private readonly List<RolePermission> _rolePermissions = new();
     public IReadOnlyCollection<RolePermission> RolePermissions => _rolePermissions;
     
+    [NotMapped]
     public IReadOnlyCollection<Permission> Permissions =>
         _rolePermissions.Select(rp => rp.Permission).ToList();
     
