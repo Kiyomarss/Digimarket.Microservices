@@ -22,10 +22,9 @@ namespace Identity.Infrastructure.Data.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Permission)
-                   .WithMany(p => p.RolePermissions)
+                   .WithMany()
                    .HasForeignKey(x => x.PermissionId)
                    .OnDelete(DeleteBehavior.Cascade);
-
 
             builder.HasIndex(x => x.RoleId);
 

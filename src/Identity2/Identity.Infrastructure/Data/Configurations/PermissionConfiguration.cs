@@ -18,9 +18,6 @@ namespace Identity.Infrastructure.Data.Configurations
 
             builder.HasIndex(x => x.Name)
                    .IsUnique();
-            
-            builder.Navigation(x => x.RolePermissions)
-                   .UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

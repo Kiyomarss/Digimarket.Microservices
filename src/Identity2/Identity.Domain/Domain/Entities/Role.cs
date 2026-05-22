@@ -20,6 +20,9 @@ public class Role
     private readonly List<RolePermission> _rolePermissions = new();
     public IReadOnlyCollection<RolePermission> RolePermissions => _rolePermissions;
     
+    public IReadOnlyCollection<Permission> Permissions =>
+        _rolePermissions.Select(rp => rp.Permission).ToList();
+    
     public void AddUser(Guid userId)
     {
         _userRoles.Add(new UserRole(userId, Id));
