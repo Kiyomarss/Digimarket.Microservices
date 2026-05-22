@@ -27,6 +27,8 @@ public class UserRepository : IUserRepository
         return _context.Users
                              .Include(u => u.Roles)
                              .ThenInclude(ur => ur.Role)
+                             .ThenInclude(x => x.RolePermissions)
+                             .ThenInclude(x => x.Permission)
                              .Include(u => u.Claims)
                              .AsSplitQuery()
                              .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);

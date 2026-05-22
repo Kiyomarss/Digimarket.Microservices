@@ -17,8 +17,17 @@ public class Role
     private readonly List<UserRole> _userRoles = new();
     public IReadOnlyCollection<UserRole> UserRoles => _userRoles;
     
+    private readonly List<RolePermission> _rolePermissions = new();
+    public IReadOnlyCollection<RolePermission> RolePermissions => _rolePermissions;
+    
     public void AddUser(Guid userId)
     {
         _userRoles.Add(new UserRole(userId, Id));
     }
+    
+    public void AddPermission(Guid permissionId)
+    {
+        _rolePermissions.Add(new RolePermission(Id, permissionId));
+    }
+
 }

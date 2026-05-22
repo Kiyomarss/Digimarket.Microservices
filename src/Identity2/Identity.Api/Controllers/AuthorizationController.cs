@@ -59,12 +59,22 @@ public class AuthorizationController : Controller
         foreach (var role in user.Roles)
         {
             identity.AddClaim(OpenIddictConstants.Claims.Role, role.Role.Name);
-        }
+            
+            foreach (var rolePermission in role.Role.RolePermissions)
+            {
+                identity.AddClaim("permission", rolePermission.Permission.Name);
+            }}
 
         foreach (var claim in user.Claims)
         {
             identity.AddClaim(claim.Type, claim.Value);
         }
+        
+        foreach (var userRole in user.Roles)
+        {
+
+        }
+
 
         var principal = new ClaimsPrincipal(identity);
 
