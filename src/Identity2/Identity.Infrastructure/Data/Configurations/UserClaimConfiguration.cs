@@ -22,8 +22,6 @@ namespace Identity.Infrastructure.Data.Configurations
                    .HasForeignKey(uc => uc.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
             
-            builder.HasIndex(x => x.UserId);
-
             builder.Property(x => x.Type).IsRequired().HasMaxLength(255);
 
             builder.Property(x => x.Value).IsRequired().HasMaxLength(255);

@@ -18,8 +18,6 @@ namespace Identity.Infrastructure.Data.Configurations
             builder.HasOne(ur => ur.Role)
                    .WithMany(r => r.UserRoles)
                    .HasForeignKey(ur => ur.RoleId);
-            
-            builder.HasIndex(ur => ur.RoleId);
         }
     }
 }

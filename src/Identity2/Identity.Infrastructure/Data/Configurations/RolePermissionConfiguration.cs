@@ -25,10 +25,6 @@ namespace Identity.Infrastructure.Data.Configurations
                    .WithMany()
                    .HasForeignKey(x => x.PermissionId)
                    .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasIndex(x => x.RoleId);
-
-            builder.HasIndex(x => x.PermissionId);
         }
     }
 }
