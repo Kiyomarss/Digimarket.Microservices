@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using BuildingBlocks.Identity.Authorization;
+using BuildingBlocks.Services;
 
 namespace Basket.Api.Controllers
 {
@@ -78,7 +80,7 @@ namespace Basket.Api.Controllers
         }
         
         [HttpGet("/Basket/Test2")]
-        //[Authorize(Roles = "Admin, User")] 
+        [Permission("basket.read")]
         public async Task<IActionResult> Test2()
         {
             // روش استاندارد دات‌نت (بدون نیاز به کتابخانه‌های جانبی)

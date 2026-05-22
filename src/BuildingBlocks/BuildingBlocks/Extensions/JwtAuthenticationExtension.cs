@@ -40,7 +40,20 @@ public static class JwtAuthenticationExtension
             });
 
         services.AddAuthorization();
-
+        
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Permission:basket.read", policy => 
+                                  policy.RequireClaim("permission", "basket.read"));
+            /*
+             * TODO: [Future Implementation]
+             * In case of moving from static Policy-based authorization to Dynamic Authorization:
+             * 1. Implement 'IAuthorizationPolicyProvider' to dynamically handle 'Permission:{permission}' policies.
+             * 2. This will avoid the need to register every single permission as an explicit policy in DI container.
+             * 3. Refer to 'PermissionPolicyProvider' class for the logic.
+             */
+        });
+                                       
         return services;
     }
 }
