@@ -1,20 +1,21 @@
 using Identity.Domain.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class RoleConfiguration : IEntityTypeConfiguration<Role>
+    public class RoleConfiguration : EntityTypeConfigurationBase<Role>
     {
-        public void Configure(EntityTypeBuilder<Role> builder)
+        public override void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable("roles");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+            ConfigureTable("roles");
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+            ConfigurePrimaryKey(x => x.Id);
 
-            builder.HasIndex(x => x.Name).IsUnique();
+            ConfigureString(x => x.Name, maxLength: 100, isRequired: true);
+
+            ConfigureIndex(x => x.Name, isUnique: true);
         }
     }
 }

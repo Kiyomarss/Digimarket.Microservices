@@ -4,27 +4,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermission>
+    public class RolePermissionConfiguration : EntityTypeConfigurationBase<RolePermission>
     {
-        public void Configure(EntityTypeBuilder<RolePermission> builder)
+        public override void Configure(EntityTypeBuilder<RolePermission> builder)
         {
-            builder.ToTable("role_permissions");
+            base.Configure(builder);
 
-            builder.HasKey(x => new
-            {
-                x.RoleId,
-                x.PermissionId
-            });
+            ConfigureTable("role_permissions");
 
-            builder.HasOne(x => x.Role)
-                   .WithMany(x => x.RolePermissions)
-                   .HasForeignKey(x => x.RoleId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            ConfigurePrimaryKey(x => new { x.RoleId, x.PermissionId });
 
-            builder.HasOne(x => x.Permission)
-                   .WithMany()
-                   .HasForeignKey(x => x.PermissionId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            ConfigureOneToMany(
+                               x => x.Role,
+                               r => r.RolePermissions
+                              );
+
+            ConfigureOneToMany(x => x.Permission);
         }
     }
 }

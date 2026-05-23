@@ -118,11 +118,22 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         foreignKeyPropertyName ??= BuildForeignKeyPropertyName(navigationName);
         constraintName ??= BuildForeignKeyConstraintName(navigationName);
 
-        var relationship = Builder.HasOne(navigationExpression)
-                                  .WithMany(inverseNavigationExpression)
-                                  .HasForeignKey(foreignKeyPropertyName)
-                                  .OnDelete(deleteBehavior)
-                                  .HasConstraintName(constraintName);
+        var builder = Builder.HasOne(navigationExpression);
+        
+        if (inverseNavigationExpression != null)
+        {
+            builder.WithMany(inverseNavigationExpression)
+                   .HasForeignKey(foreignKeyPropertyName)
+                   .OnDelete(deleteBehavior)
+                   .HasConstraintName(constraintName);
+        }
+        else
+        {
+            builder.WithMany()
+                   .HasForeignKey(foreignKeyPropertyName)
+                   .OnDelete(deleteBehavior)
+                   .HasConstraintName(constraintName);
+        }
     }
 
     #endregion
