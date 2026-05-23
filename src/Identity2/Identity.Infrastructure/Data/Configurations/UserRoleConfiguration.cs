@@ -4,20 +4,27 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
+    public class UserRoleConfiguration : EntityTypeConfigurationBase<UserRole>
     {
-        public void Configure(EntityTypeBuilder<UserRole> builder)
+        public override void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            builder.ToTable("user_roles");
-            builder.HasKey(ur => new { ur.UserId, ur.RoleId });
+            base.Configure(builder);
 
-            builder.HasOne(ur => ur.User)
-                   .WithMany(u => u.UserRoles)
-                   .HasForeignKey(ur => ur.UserId);
+            ConfigureTable("user_roles");
 
-            builder.HasOne(ur => ur.Role)
-                   .WithMany(r => r.UserRoles)
-                   .HasForeignKey(ur => ur.RoleId);
+            ConfigurePrimaryKey(ur => new { ur.UserId, ur.RoleId });
+
+            ConfigureOneToMany(
+                               ur => ur.User,
+                               u => u.UserRoles,
+                               deleteBehavior: DeleteBehavior.Cascade
+                              );
+
+            ConfigureOneToMany(
+                               ur => ur.Role,
+                               r => r.UserRoles,
+                               deleteBehavior: DeleteBehavior.Cascade
+                              );
         }
     }
 }

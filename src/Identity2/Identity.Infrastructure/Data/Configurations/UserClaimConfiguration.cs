@@ -4,27 +4,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
+    public class UserClaimConfiguration : EntityTypeConfigurationBase<UserClaim>
     {
-        public void Configure(EntityTypeBuilder<UserClaim> builder)
+        public override void Configure(EntityTypeBuilder<UserClaim> builder)
         {
-            builder.ToTable("user_claims");
+            base.Configure(builder);
 
-            builder.HasKey(x => new
-            {
-                x.UserId,
-                x.Type,
-                x.Value
-            });
-            
-            builder.HasOne(uc => uc.User)
-                   .WithMany(u => u.UserClaims)
-                   .HasForeignKey(uc => uc.UserId)
-                   .OnDelete(DeleteBehavior.Cascade);
-            
-            builder.Property(x => x.Type).IsRequired().HasMaxLength(255);
+            ConfigureTable("user_claims");
 
-            builder.Property(x => x.Value).IsRequired().HasMaxLength(255);
+            ConfigurePrimaryKey(x => new { x.UserId, x.Type, x.Value });
+
+            ConfigureOneToMany(
+                               uc => uc.User, 
+                               u => u.UserClaims, 
+                               deleteBehavior: DeleteBehavior.Cascade
+                              );
+
+            ConfigureString(x => x.Type, maxLength: 255, isRequired: true);
+            ConfigureString(x => x.Value, maxLength: 255, isRequired: true);
         }
     }
 }
