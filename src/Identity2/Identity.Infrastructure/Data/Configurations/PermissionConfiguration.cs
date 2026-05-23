@@ -1,23 +1,21 @@
 using Identity.Domain.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
+    public class PermissionConfiguration : EntityTypeConfigurationBase<Permission>
     {
-        public void Configure(EntityTypeBuilder<Permission> builder)
+        public override void Configure(EntityTypeBuilder<Permission> builder)
         {
-            builder.ToTable("permissions");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+            ConfigureTable("permissions");
 
-            builder.Property(x => x.Name)
-                   .IsRequired()
-                   .HasMaxLength(200);
+            ConfigurePrimaryKey(x => x.Id);
 
-            builder.HasIndex(x => x.Name)
-                   .IsUnique();
+            ConfigureString(x => x.Name, maxLength: 200, isRequired: true);
+
+            ConfigureIndex(x => x.Name, isUnique: true);
         }
     }
 }
