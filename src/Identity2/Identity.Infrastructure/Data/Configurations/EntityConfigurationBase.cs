@@ -54,21 +54,24 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     protected void ConfigureDateTime(
         Expression<Func<TEntity, DateTime?>> propertyExpression,
-        bool includeTime = true,
-        bool isRequired = false, // اضافه کردن جهت کنترل NOT NULL
+        bool isRequired = false,
         bool ignoreOnUpdate = false)
     {
-        var propertyBuilder = Builder.Property(propertyExpression);
+        Builder.Property(propertyExpression)
+               .HasColumnType("timestamptz");
 
-        propertyBuilder.HasColumnType(includeTime ? "timestamptz" : "date");
+        if (isRequired) Builder.Property(propertyExpression).IsRequired();
+        if (ignoreOnUpdate) Builder.Property(propertyExpression).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+    }
 
-        // 2. مدیریت اجباری بودن
-        if (isRequired)
-            propertyBuilder.IsRequired();
+    protected void ConfigureDate(
+        Expression<Func<TEntity, DateTime?>> propertyExpression,
+        bool isRequired = false)
+    {
+        Builder.Property(propertyExpression)
+               .HasColumnType("date");
 
-        // 3. مدیریت رفتار آپدیت
-        if (ignoreOnUpdate)
-            propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+        if (isRequired) Builder.Property(propertyExpression).IsRequired();
     }
 
     protected void ConfigureTimeSpan(Expression<Func<TEntity, TimeSpan?>> propertyExpression)
