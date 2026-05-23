@@ -4,28 +4,31 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations
 {
-    public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
+    public class RefreshTokenConfiguration : EntityTypeConfigurationBase<RefreshToken>
     {
-        public void Configure(EntityTypeBuilder<RefreshToken> builder)
+        public override void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.ToTable("refresh_tokens");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+            ConfigureTable("refresh_tokens");
 
-            builder.HasOne(x => x.User)
-                   .WithMany(u => u.RefreshTokens)
-                   .HasForeignKey(x => x.UserId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            ConfigurePrimaryKey(x => x.Id);
 
-            builder.Property(x => x.Token)
-                   .IsRequired()
-                   .HasMaxLength(500);
+            ConfigureOneToMany(
+                               x => x.User, 
+                               u => u.RefreshTokens, 
+                               deleteBehavior: DeleteBehavior.Cascade,
+                               foreignKeyPropertyName: nameof(RefreshToken.UserId)
+                              );
 
-            builder.Property(x => x.CreatedAt).IsRequired();
-            builder.Property(x => x.ExpiresAt).IsRequired();
+            ConfigureString(x => x.Token, maxLength: 500, isRequired: true);
 
-            builder.HasIndex(x => x.Token).IsUnique();
-            builder.HasIndex(x => x.UserId);
+            ConfigureDateTime(x => x.CreatedAt, isRequired: true);
+            ConfigureDateTime(x => x.ExpiresAt, isRequired: true);
+
+            ConfigureIndex(x => x.Token, isUnique: true);
+            
+            ConfigureIndex(x => x.UserId);
         }
     }
 }
