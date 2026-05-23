@@ -137,6 +137,32 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
     }
 
     #endregion
+    
+    #region Relationships (Add this method)
+    
+    protected void ConfigureOneToManyCollection<TRelatedEntity>(
+        Expression<Func<TEntity, IEnumerable<TRelatedEntity>>> collectionExpression,
+        Expression<Func<TRelatedEntity, TEntity>> inverseNavigationExpression,
+        Expression<Func<TRelatedEntity, object>> foreignKeyExpression,
+        DeleteBehavior deleteBehavior = DeleteBehavior.Restrict,
+        string? constraintName = null)
+        where TRelatedEntity : class
+    {
+        // ۱. تنظیم رابطه
+        var relation = Builder.HasMany(collectionExpression)
+                              .WithOne(inverseNavigationExpression)
+                              .HasForeignKey(foreignKeyExpression)
+                              .OnDelete(deleteBehavior);
+
+        if (!string.IsNullOrWhiteSpace(constraintName))
+            relation.HasConstraintName(constraintName);
+
+        // ۲. شناسایی خودکار نام navigation و تنظیم PropertyAccessMode
+        var navigationName = GetMemberName(collectionExpression);
+        Builder.Metadata.FindNavigation(navigationName)?.SetPropertyAccessMode(PropertyAccessMode.Field);
+    }
+
+    #endregion
 
     #region Indexes
 

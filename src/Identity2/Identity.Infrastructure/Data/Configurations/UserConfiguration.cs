@@ -4,43 +4,27 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Identity.Infrastructure.Data.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : EntityTypeConfigurationBase<User>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("users");
+        base.Configure(builder);
 
-        builder.HasKey(x => x.Id);
-
-        builder.Property(x => x.Id)
-               .ValueGeneratedNever(); // چون در Domain تولید می‌شود
-
-        builder.Property(x => x.Email)
-               .IsRequired()
-               .HasMaxLength(256);
-
-        builder.HasIndex(x => x.Email).IsUnique();
-
-        builder.Property(x => x.PasswordHash)
-               .IsRequired();
-
-        builder.Property(x => x.CreatedAt)
-               .IsRequired()
-               .HasColumnType("timestamptz");
+        ConfigureTable("users");
+        ConfigurePrimaryKey(x => x.Id);
         
-        builder.HasMany(x => x.UserRoles)
-               .WithOne(x => x.User)
-               .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+        Builder.Property(x => x.Id).ValueGeneratedNever();
 
-        builder.HasMany(x => x.UserClaims)
-               .WithOne(x => x.User)
-               .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+        ConfigureString(x => x.Email, isRequired: true, maxLength: 256);
+        ConfigureIndex(x => x.Email, isUnique: true);
+        
+        ConfigureString(x => x.PasswordHash, isRequired: true);
+        ConfigureDateTime(x => x.CreatedAt, isRequired: true);
 
-        builder.HasMany(x => x.RefreshTokens)
-               .WithOne(x => x.User)
-               .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+        Ignore(x => x.Roles);
+
+        ConfigureOneToManyCollection(x => x.UserRoles, ur => ur.User, ur => ur.UserId, DeleteBehavior.Cascade);
+        ConfigureOneToManyCollection(x => x.UserClaims, uc => uc.User, uc => uc.UserId, DeleteBehavior.Cascade);
+        ConfigureOneToManyCollection(x => x.RefreshTokens, rt => rt.User, rt => rt.UserId, DeleteBehavior.Cascade);
     }
 }
