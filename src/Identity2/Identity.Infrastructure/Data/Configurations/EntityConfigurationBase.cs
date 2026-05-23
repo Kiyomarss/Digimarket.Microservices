@@ -136,10 +136,6 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         }
     }
 
-    #endregion
-    
-    #region Relationships (Add this method)
-    
     protected void ConfigureOneToManyCollection<TRelatedEntity>(
         Expression<Func<TEntity, IEnumerable<TRelatedEntity>>> collectionExpression,
         Expression<Func<TRelatedEntity, TEntity>> inverseNavigationExpression,
@@ -161,8 +157,8 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         var navigationName = GetMemberName(collectionExpression);
         Builder.Metadata.FindNavigation(navigationName)?.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
-
     #endregion
+
 
     #region Indexes
 
