@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Grpc.Core;
 using Microsoft.AspNetCore.Http;
+using OpenIddict.Abstractions;
 
 namespace BuildingBlocks.Services;
 
@@ -20,13 +21,13 @@ public class CurrentUserService : ICurrentUserService
         if (user?.Identity is not { IsAuthenticated: true })
             return null;
 
-        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)
-                          ?? user.FindFirst(JwtRegisteredClaimNames.Sub);
+        var userIdClaim = user.FindFirst(OpenIddictConstants.Claims.Subject);
 
         return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId) 
                    ? userId 
                    : null;
     }
+
 
     public Task<Guid> GetRequiredUserId() =>
         Task.FromResult(GetUserId() 
@@ -34,14 +35,8 @@ public class CurrentUserService : ICurrentUserService
 
     public string? GetUserName() =>
         _httpContextAccessor.HttpContext?.User?
-            .FindFirst("username")?.Value;
-
-    public string? GetEmail() =>
-        _httpContextAccessor.HttpContext?.User?
-            .FindFirst(ClaimTypes.Email)?.Value
-        ?? _httpContextAccessor.HttpContext?.User?
-            .FindFirst(JwtRegisteredClaimNames.Email)?.Value;
-
+            .FindFirst(OpenIddictConstants.Claims.Email)?.Value;
+    
     public bool IsAuthenticated() =>
         _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 

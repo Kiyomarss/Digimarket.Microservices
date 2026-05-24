@@ -7,7 +7,6 @@ public interface ICurrentUserService
     Guid? GetUserId();
     Task<Guid> GetRequiredUserId();
     string? GetUserName();
-    string? GetEmail();
     bool IsAuthenticated();
     Metadata GetAuthorizationHeaders();
 }
