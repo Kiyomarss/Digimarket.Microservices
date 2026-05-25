@@ -50,7 +50,7 @@ public class CurrentUserService : ICurrentUserService
             if (!authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                 authHeader = "Bearer " + authHeader.Trim();
 
-            headers.Add("Authorization", authHeader);
+            headers.Add("authorization", authHeader);
         }
 
         return headers;

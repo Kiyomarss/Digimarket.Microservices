@@ -21,7 +21,8 @@ public static class JwtAuthenticationExtension
             {
                 options.Authority = authority;
                 options.RequireHttpsMetadata = false;
-
+                options.Audience = audience;
+                options.TokenValidationParameters.ValidateAudience = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
