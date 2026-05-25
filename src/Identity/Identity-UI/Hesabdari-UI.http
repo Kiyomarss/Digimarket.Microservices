@@ -1,6 +1,0 @@
-@Hesabdari_UI_HostAddress = http://localhost:5125
-
-GET {{Hesabdari_UI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
