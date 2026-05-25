@@ -44,8 +44,7 @@ public static class ConfigureServicesExtension
         
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 
-        services.AddScoped<IUnitOfWork,
-            UnitOfWork<IdentityDbContext>>();
+        services.AddScoped<IUnitOfWork, UnitOfWork<IdentityDbContext>>();
 
         return services;
     }
