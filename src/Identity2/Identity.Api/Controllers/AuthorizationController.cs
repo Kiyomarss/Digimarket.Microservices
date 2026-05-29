@@ -42,9 +42,7 @@ public class AuthorizationController : Controller
         if (user is null)
             return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
-        var validPassword = _passwordHasher.VerifyPassword(
-                                                           request.Password!,
-                                                           user.PasswordHash);
+        var validPassword = _passwordHasher.VerifyPassword(request.Password!, user.PasswordHash);
 
         if (!validPassword)
             return Forbid(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
