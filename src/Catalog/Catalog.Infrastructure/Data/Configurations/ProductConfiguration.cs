@@ -1,56 +1,31 @@
-﻿using System.Text.Json;
+﻿using BuildingBlocks.EFCore.Configurations;
 using Catalog_Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Catalog_Infrastructure.Data.Configurations
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public class ProductConfiguration : EntityTypeConfigurationBase<Product>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public override void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.ToTable("product");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+            ConfigureTable("products");
 
-            builder.Property(x => x.Id)
-                   .IsRequired()
-                   .HasColumnType("uuid")
-                   .HasDefaultValueSql("gen_random_uuid()");
+            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureString(x => x.Name, maxLength: 200, isRequired: true);
 
-            builder.Property(x => x.Name)
-                   .IsRequired()
-                   .HasMaxLength(200)
-                   .HasColumnType("varchar(200)");
+            ConfigureText(x => x.Description, isRequired: true);
+            
+            ConfigureInteger(x => x.Stock);
+            ConfigureBigInt(x => x.Price);
+            
+            ConfigureDateTime(x => x.CreatedAt, isRequired: true);
+            ConfigureDateTime(x => x.UpdatedAt);
 
-            builder.Property(x => x.Description)
-                   .IsRequired(false)
-                   .HasColumnType("text");
-
-            builder.Property(x => x.Stock)
-                   .IsRequired()
-                   .HasColumnType("integer");
-
-            builder.Property(x => x.Price)
-                   .IsRequired()
-                   .HasColumnType("bigint");
-
-            builder.Property(x => x.CreatedAt)
-                   .IsRequired()
-                   .HasColumnType("timestamp without time zone")
-                   .HasDefaultValueSql("NOW()");
-
-            builder.Property(x => x.UpdatedAt)
-                   .IsRequired(false)
-                   .HasColumnType("timestamp without time zone");
-
-            builder.Property(x => x.Attributes)
-                   .HasColumnType("jsonb")
-                   .HasConversion(
-                                  v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
-                                  v => JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(v, (JsonSerializerOptions)null!)
-                                 );
-
+            ConfigureJsonb(x => x.Attributes);
         }
     }
 }

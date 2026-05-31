@@ -97,6 +97,33 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
     };
 
     #endregion
+    
+    protected void ConfigureInteger(Expression<Func<TEntity, int>> propertyExpression, bool isRequired = true)
+    {
+        var p = Builder.Property(propertyExpression).HasColumnType("integer");
+        if (isRequired) p.IsRequired();
+    }
+
+    protected void ConfigureBigInt(Expression<Func<TEntity, long>> propertyExpression, bool isRequired = true)
+    {
+        var p = Builder.Property(propertyExpression).HasColumnType("bigint");
+        if (isRequired) p.IsRequired();
+    }
+    
+    protected void ConfigureText(
+        Expression<Func<TEntity, string>> propertyExpression,
+        bool isRequired = false,
+        bool ignoreOnUpdate = false)
+    {
+        var propertyBuilder = Builder.Property(propertyExpression)
+                                     .HasColumnType("text");
+
+        if (isRequired)
+            propertyBuilder.IsRequired();
+
+        if (ignoreOnUpdate)
+            propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+    }
 
     protected void ConfigureTimeSpan(Expression<Func<TEntity, TimeSpan?>> propertyExpression)
     {
