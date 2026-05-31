@@ -1,3 +1,4 @@
+using BuildingBlocks.EFCore.Configurations;
 using Identity.Domain.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

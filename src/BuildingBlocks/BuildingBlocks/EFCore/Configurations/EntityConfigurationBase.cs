@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Identity.Infrastructure.Data.Configurations;
+namespace BuildingBlocks.EFCore.Configurations;
 
 public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfiguration<TEntity>
     where TEntity : class
@@ -73,6 +74,29 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
         if (isRequired) Builder.Property(propertyExpression).IsRequired();
     }
+
+    #region ConfigureJsonb
+
+    protected void ConfigureJsonb<TJson>(
+        Expression<Func<TEntity, TJson>> propertyExpression,
+        bool isRequired = false)
+    {
+        var propertyBuilder = Builder.Property(propertyExpression)
+                                     .HasColumnType("jsonb")
+                                     .HasConversion(
+                                                    v => JsonSerializer.Serialize(v, JsonOptions),
+                                                    v => JsonSerializer.Deserialize<TJson>(v, JsonOptions)!);
+
+        if (isRequired)
+            propertyBuilder.IsRequired();
+    }
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    #endregion
 
     protected void ConfigureTimeSpan(Expression<Func<TEntity, TimeSpan?>> propertyExpression)
     {
@@ -158,8 +182,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         Builder.Metadata.FindNavigation(navigationName)?.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
     #endregion
-
-
+    
     #region Indexes
 
     protected IndexBuilder<TEntity> ConfigureIndex(
