@@ -19,11 +19,8 @@ public class Order : AggregateRoot
     public long TotalPrice => Items.Sum(x => x.Price * x.Quantity);
     
     public Guid UserId { get; set; }
-    
-    private void ChangeStateInternal(OrderState newState)
-    {
-        State = newState;
-    }
+
+    private void ChangeStateInternal(OrderState newState) => State = newState;
     
     public void Canceled() => ChangeStateInternal(OrderState.Canceled);
 

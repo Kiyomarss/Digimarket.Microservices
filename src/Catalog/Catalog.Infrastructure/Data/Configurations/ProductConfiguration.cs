@@ -1,4 +1,5 @@
-﻿using Catalog_Domain.Entities;
+﻿using System.Text.Json;
+using Catalog_Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -43,9 +44,13 @@ namespace Catalog_Infrastructure.Data.Configurations
                    .IsRequired(false)
                    .HasColumnType("timestamp without time zone");
 
-            builder.Property(x => x.AttributesJson)
-                   .IsRequired(false)
-                   .HasColumnType("jsonb");
+            builder.Property(x => x.Attributes)
+                   .HasColumnType("jsonb")
+                   .HasConversion(
+                                  v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+                                  v => JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(v, (JsonSerializerOptions)null!)
+                                 );
+
         }
     }
 }

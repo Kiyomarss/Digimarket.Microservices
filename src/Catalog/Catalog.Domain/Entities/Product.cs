@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Exceptions.Domain;
+﻿using System.Text.Json;
+using BuildingBlocks.Exceptions.Domain;
 
 namespace Catalog_Domain.Entities;
 
@@ -11,7 +12,8 @@ public class Product
     public long Price { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public string? AttributesJson { get; set; }
+    
+    public Dictionary<string, JsonElement>? Attributes { get; set; }
     
     public void DecreaseStock(int quantity)
     {
