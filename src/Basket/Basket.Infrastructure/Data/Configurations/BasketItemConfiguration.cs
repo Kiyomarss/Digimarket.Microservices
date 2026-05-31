@@ -1,38 +1,27 @@
 ﻿using Basket.Domain.Entities;
+using BuildingBlocks.EFCore.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Basket.Infrastructure.Data.Configurations
 {
-    public class BasketItemConfiguration : IEntityTypeConfiguration<BasketItem>
+    public class BasketItemConfiguration : EntityTypeConfigurationBase<BasketItem>
     {
-        public void Configure(EntityTypeBuilder<BasketItem> builder)
+        public override void Configure(EntityTypeBuilder<BasketItem> builder)
         {
-            builder.ToTable("basket_items");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+            ConfigureTable("basket_items");
+            ConfigurePrimaryKey(x => x.Id);
 
-            builder.Property(x => x.Id)
-                   .IsRequired()
-                   .HasColumnType("uuid")
-                   .HasDefaultValueSql("gen_random_uuid()");
-
-            builder.Property(x => x.ProductId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
-
-            builder.Property(x => x.Quantity)
-                   .IsRequired()
-                   .HasColumnType("integer");
-
-            builder.Property(x => x.BasketId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
-
-            builder.HasOne(x => x.Basket)
-                   .WithMany(b => b.Items)
-                   .HasForeignKey(x => x.BasketId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            ConfigureGuid(x => x.ProductId);
+            
+            ConfigureInteger(x => x.Quantity, isRequired: true);
+            
+            ConfigureOneToMany(
+                               navigationExpression: x => x.Basket,
+                               deleteBehavior: DeleteBehavior.Cascade
+                              );
         }
     }
 }

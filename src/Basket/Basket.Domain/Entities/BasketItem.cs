@@ -16,7 +16,7 @@ public class BasketItem
     public int Quantity { get; set; }
 
     [Key(3)]
-    public Guid BasketId { get; set; }
+    public Guid BasketEntityId { get; set; }
     
     [IgnoreMember]
     [JsonIgnore]

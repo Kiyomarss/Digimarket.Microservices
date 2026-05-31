@@ -1,29 +1,27 @@
 ﻿using Basket.Domain.Entities;
+using BuildingBlocks.EFCore.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Basket.Infrastructure.Data.Configurations
 {
-    public class BasketEntityConfiguration : IEntityTypeConfiguration<BasketEntity>
+    public class BasketEntityConfiguration : EntityTypeConfigurationBase<BasketEntity>
     {
-        public void Configure(EntityTypeBuilder<BasketEntity> builder)
+        public override void Configure(EntityTypeBuilder<BasketEntity> builder)
         {
-            builder.ToTable("baskets");
+            base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
-
-            builder.Property(x => x.Id)
-                   .IsRequired()
-                   .HasColumnType("uuid");
-
-            builder.Property(x => x.UserId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
-
-            builder.HasMany(x => x.Items)
-                   .WithOne(i => i.Basket)
-                   .HasForeignKey(i => i.BasketId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            ConfigureTable("baskets");
+            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureGuid(x => x.UserId);
+            
+            ConfigureOneToManyCollection(
+                                         collectionExpression: x => x.Items,
+                                         inverseNavigationExpression: i => i.Basket,
+                                         foreignKeyExpression: i => i.BasketEntityId,
+                                         deleteBehavior: DeleteBehavior.Cascade
+                                        );
         }
     }
 }

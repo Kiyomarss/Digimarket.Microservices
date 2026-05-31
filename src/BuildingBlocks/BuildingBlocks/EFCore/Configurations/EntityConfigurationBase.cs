@@ -98,6 +98,12 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     #endregion
     
+    protected void ConfigureGuid(Expression<Func<TEntity, Guid>> propertyExpression, bool isRequired = true)
+    {
+        var p = Builder.Property(propertyExpression).HasColumnType("uuid");
+        if (isRequired) p.IsRequired();
+    }
+    
     protected void ConfigureInteger(Expression<Func<TEntity, int>> propertyExpression, bool isRequired = true)
     {
         var p = Builder.Property(propertyExpression).HasColumnType("integer");
