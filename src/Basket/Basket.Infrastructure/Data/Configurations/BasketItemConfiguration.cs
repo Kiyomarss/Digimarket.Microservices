@@ -19,7 +19,8 @@ namespace Basket.Infrastructure.Data.Configurations
             ConfigureInteger(x => x.Quantity, isRequired: true);
             
             ConfigureOneToMany(
-                               navigationExpression: x => x.Basket,
+                               uc => uc.Basket, 
+                               u => u.Items, 
                                deleteBehavior: DeleteBehavior.Cascade
                               );
         }

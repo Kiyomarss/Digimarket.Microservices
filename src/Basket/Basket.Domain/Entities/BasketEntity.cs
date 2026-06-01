@@ -13,5 +13,7 @@ public class BasketEntity
     public Guid UserId { get; set; }
 
     [Key(2)]
-    public List<BasketItem> Items { get; set; } = new();
+    public IReadOnlyCollection<BasketItem> Items => _items;
+    
+    private readonly List<BasketItem> _items = new();
 }

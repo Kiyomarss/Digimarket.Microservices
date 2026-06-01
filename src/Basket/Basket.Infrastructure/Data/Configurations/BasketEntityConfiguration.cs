@@ -16,12 +16,7 @@ namespace Basket.Infrastructure.Data.Configurations
             
             ConfigureGuid(x => x.UserId);
             
-            ConfigureOneToManyCollection(
-                                         collectionExpression: x => x.Items,
-                                         inverseNavigationExpression: i => i.Basket,
-                                         foreignKeyExpression: i => i.BasketEntityId,
-                                         deleteBehavior: DeleteBehavior.Cascade
-                                        );
+            ConfigureOneToManyCollection(x => x.Items, ur => ur.Basket, ur => ur.BasketEntityId, DeleteBehavior.Cascade);
         }
     }
 }
