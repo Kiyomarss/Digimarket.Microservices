@@ -9,7 +9,7 @@ public class BasketDbContext : Microsoft.EntityFrameworkCore.DbContext
     public BasketDbContext(DbContextOptions<BasketDbContext> options)
         : base(options) { }
     
-    public DbSet<BasketEntity> Basket { get; set; }
+    public DbSet<Basket> Basket { get; set; }
     public DbSet<BasketItem> BasketItem { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

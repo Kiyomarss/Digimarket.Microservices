@@ -22,7 +22,7 @@ namespace Basketing.Infrastructure.Data.DbContext // مسیر دقیق DbContext
             if (solutionDirectory == null)
                 throw new Exception("Solution directory not found!");
 
-            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Basket", "Basketing.Api");
+            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Basketing", "Basketing.Api");
 
             if (!Directory.Exists(apiProjectPath))
                 throw new Exception($"Basketing.Api project not found at: {apiProjectPath}");

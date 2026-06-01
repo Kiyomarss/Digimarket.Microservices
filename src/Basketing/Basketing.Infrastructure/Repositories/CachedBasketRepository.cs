@@ -17,7 +17,7 @@ public class CachedBasketRepository : IBasketRepository
         _cache = cache;
     }
 
-    public Task<BasketEntity?> FindBasketByUserId(Guid userId)
+    public Task<Basket?> FindBasketByUserId(Guid userId)
     {
         return _cache.GetOrSetAsync(
                                     key: CacheKey.Basket(userId),
@@ -49,7 +49,7 @@ public class CachedBasketRepository : IBasketRepository
         return result;
     }
 
-    public async Task<BasketEntity> AddItemToBasket(BasketItem item)
+    public async Task<Basket> AddItemToBasket(BasketItem item)
     {
         await _basketRepository.AddItemToBasket(item);
 

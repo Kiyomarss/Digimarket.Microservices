@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Basketing.Infrastructure.Data.Configurations
 {
-    public class BasketEntityConfiguration : EntityTypeConfigurationBase<BasketEntity>
+    public class BasketConfiguration : EntityTypeConfigurationBase<Basket>
     {
-        public override void Configure(EntityTypeBuilder<BasketEntity> builder)
+        public override void Configure(EntityTypeBuilder<Basket> builder)
         {
             base.Configure(builder);
 
@@ -16,7 +16,7 @@ namespace Basketing.Infrastructure.Data.Configurations
             
             ConfigureGuid(x => x.UserId);
             
-            ConfigureOneToManyCollection(x => x.Items, ur => ur.Basket, ur => ur.BasketEntityId, DeleteBehavior.Cascade);
+            ConfigureOneToManyCollection(x => x.Items, ur => ur.Basket, ur => ur.BasketId, DeleteBehavior.Cascade);
         }
     }
 }

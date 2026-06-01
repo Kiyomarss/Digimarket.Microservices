@@ -4,9 +4,9 @@ namespace Basket_Application.RepositoryContracts;
 
 public interface IBasketRepository
 {
-    Task<BasketEntity> FindBasketByUserId(Guid userId);
+    Task<Basketing.Domain.Entities.Basket> FindBasketByUserId(Guid userId);
     
-    Task<BasketEntity> AddItemToBasket(BasketItem item);
+    Task<Basketing.Domain.Entities.Basket> AddItemToBasket(BasketItem item);
     
     Task<BasketItem?> FindBasketItemById(Guid id);
 

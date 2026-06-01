@@ -2,9 +2,9 @@ using MessagePack;
 
 namespace Basketing.Domain.Entities;
 
-// عنوان BasketEntity به دلیل یکسان بودن namespace و عنوان این انتیتی قرار داد شده
+// عنوان Basket به دلیل یکسان بودن namespace و عنوان این انتیتی قرار داد شده
 [MessagePackObject]
-public class BasketEntity
+public class Basket
 {
     [Key(0)]
     public Guid Id { get; set; } = Guid.NewGuid();

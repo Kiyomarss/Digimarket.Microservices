@@ -14,9 +14,9 @@ public class BasketRepository : IBasketRepository
         _db = dbContext;
     }
     
-    public async Task<BasketEntity> FindBasketByUserId(Guid userId)
+    public async Task<Basket> FindBasketByUserId(Guid userId)
     {
-        return await _db.Set<BasketEntity>()
+        return await _db.Set<Basket>()
                         .Include(b => b.Items)
                         .SingleAsync(x => x.UserId == userId);
     }
@@ -45,7 +45,7 @@ public class BasketRepository : IBasketRepository
     }
 
     
-    public async Task<BasketEntity> AddItemToBasket(BasketItem item)
+    public async Task<Basket> AddItemToBasket(BasketItem item)
     {
         await _db.Set<BasketItem>().AddAsync(item);
 
