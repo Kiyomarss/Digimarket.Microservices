@@ -15,5 +15,6 @@ public class Basket
     [Key(2)]
     public IReadOnlyCollection<BasketItem> Items => _items;
     
+    [IgnoreMember]
     private readonly List<BasketItem> _items = new();
 }
