@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Basket.Api": {
+    "Basketing.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
