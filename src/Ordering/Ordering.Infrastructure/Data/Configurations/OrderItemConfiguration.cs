@@ -1,37 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ordering_Domain.Domain.Entities;
+using BuildingBlocks.EFCore.Configurations;
 
-namespace Ordering_Infrastructure.Data.Configurations
+namespace Ordering_Infrastructure.Data.Configurations;
+
+public class OrderItemConfiguration : EntityTypeConfigurationBase<OrderItem>
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public override void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
-        {
-            builder.ToTable("order_items");
+        base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+        ConfigureTable("order_items");
 
-            builder.Property(x => x.Id)
-                   .IsRequired()
-                   .HasColumnType("uuid")
-                   .HasDefaultValueSql("gen_random_uuid()");
+        ConfigurePrimaryKey(x => x.Id);
 
-            builder.Property(x => x.OrderId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
+        ConfigureGuid(x => x.Id, generateInDatabase: true);
 
-            builder.Property(x => x.ProductId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
+        ConfigureGuid(x => x.OrderId);
+        ConfigureGuid(x => x.ProductId);
 
-            builder.Property(x => x.Quantity)
-                   .IsRequired()
-                   .HasColumnType("integer");
-
-            builder.Property(x => x.Price)
-                   .IsRequired()
-                   .HasColumnType("bigint");
-        }
+        ConfigureInteger(x => x.Quantity);
+        
+        ConfigureBigInt(x => x.Price);
     }
 }

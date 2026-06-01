@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BuildingBlocks.EFCore.Configurations;
 
@@ -64,6 +65,33 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         if (isRequired) Builder.Property(propertyExpression).IsRequired();
         if (ignoreOnUpdate) Builder.Property(propertyExpression).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
     }
+    
+    protected void ConfigureTypeSafeEnum<TEnum>(
+        Expression<Func<TEntity, TEnum>> propertyExpression,
+        Func<int, TEnum> fromId,
+        Func<TEnum, int> toId, // اضافه کردن یک delegate برای استخراج Id
+        string? columnName = null,
+        bool isRequired = true,
+        bool ignoreOnUpdate = false)
+    {
+        var converter = new ValueConverter<TEnum, int>(
+                                                       value => toId(value),
+                                                       id => fromId(id)
+                                                      );
+
+        var propertyBuilder = Builder.Property(propertyExpression)
+                                     .HasColumnType("integer")
+                                     .HasConversion(converter); // استفاده از کانورتر تعریف شده
+
+        if (!string.IsNullOrWhiteSpace(columnName))
+            propertyBuilder.HasColumnName(columnName);
+
+        if (isRequired)
+            propertyBuilder.IsRequired();
+
+        if (ignoreOnUpdate)
+            propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+    }
 
     protected void ConfigureDate(
         Expression<Func<TEntity, DateTime?>> propertyExpression,
@@ -98,10 +126,18 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     #endregion
     
-    protected void ConfigureGuid(Expression<Func<TEntity, Guid>> propertyExpression, bool isRequired = true)
+    protected void ConfigureGuid(
+        Expression<Func<TEntity, Guid>> propertyExpression,
+        bool isRequired = true,
+        bool generateInDatabase = false)
     {
         var p = Builder.Property(propertyExpression).HasColumnType("uuid");
-        if (isRequired) p.IsRequired();
+
+        if (isRequired)
+            p.IsRequired();
+
+        if (generateInDatabase)
+            p.HasDefaultValueSql("gen_random_uuid()");
     }
     
     protected void ConfigureInteger(Expression<Func<TEntity, int>> propertyExpression, bool isRequired = true)

@@ -1,49 +1,44 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.Domain.Enum;
+using BuildingBlocks.EFCore.Configurations;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Ordering_Infrastructure.Data.Configurations
+namespace Ordering_Infrastructure.Data.Configurations;
+
+public class OrderConfiguration : EntityTypeConfigurationBase<Order>
 {
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public override void Configure(EntityTypeBuilder<Order> builder)
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
-        {
-            builder.ToTable("orders");
+        base.Configure(builder);
 
-            builder.HasKey(x => x.Id);
+        ConfigureTable("orders");
 
-            builder.Property(x => x.Id)
-                   .IsRequired()
-                   .HasColumnType("uuid")
-                   .HasDefaultValueSql("gen_random_uuid()");
+        ConfigurePrimaryKey(x => x.Id);
 
-            builder.Property(x => x.Date)
-                   .IsRequired()
-                   .HasColumnType("timestamptz");
+        ConfigureGuid(x => x.Id, generateInDatabase: true);
+        
+        ConfigureDateTime(x => x.Date, isRequired: true);
+        
+        ConfigureTypeSafeEnum(
+                              x => x.State, 
+                              id => OrderState.FromId(id), 
+                              state => state.Id,
+                              columnName: "order_state_id"
+                             );
 
-            builder.Property(x => x.State)
-                   .IsRequired()
-                   .HasColumnName("order_state_id")
-                   .HasColumnType("integer")
-                   .HasConversion(state => state.Id, id => OrderState.FromId(id));
-            
-            builder.Property(x => x.UserId)
-                   .IsRequired()
-                   .HasColumnType("uuid");
 
-            // ارتباط یک‌به‌چند بین Order و OrderItem
-            builder.HasMany(x => x.Items)
-                   .WithOne(i => i.Order)
-                   .HasForeignKey(i => i.OrderId)
-                   .OnDelete(DeleteBehavior.Cascade);
+        ConfigureGuid(x => x.UserId);
 
-            // پراپرتی محاسباتی ذخیره نمی‌شود
-            builder.Ignore(x => x.TotalPrice);
-            
-            builder.HasIndex(x => x.Date);
-            
-            builder.HasIndex(x => new { x.UserId, x.State });
-        }
+        ConfigureOneToManyCollection(
+                                     x => x.Items,
+                                     i => i.Order,
+                                     i => i.OrderId,
+                                     deleteBehavior: DeleteBehavior.Cascade);
+
+        Ignore(x => x.TotalPrice);
+
+        ConfigureIndex(x => x.Date);
+        ConfigureIndex(x => new { x.UserId, x.State });
     }
 }
