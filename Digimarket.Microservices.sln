@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Application", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Worker", "src\Ordering\Ordering.Worker\Ordering.Worker.csproj", "{841BF8E3-9EF7-4FF9-AE10-27042782FD51}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{4F40E0B8-5FF5-4965-A9B0-94C2E30AC7DE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basketing", "Basketing", "{4F40E0B8-5FF5-4965-A9B0-94C2E30AC7DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{1484FA4C-C096-4F08-A318-DB92CA1C22EC}"
 EndProject
@@ -86,13 +86,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Domain", "src\Iden
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Infrastructure", "src\Identity\Identity.Infrastructure\Identity.Infrastructure.csproj", "{330B46B0-D242-484D-8BB8-0CEB152E3DE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Api", "src\Basketing\Basket.Api\Basket.Api.csproj", "{2C9D974D-58FA-4615-BF71-F14401A1F043}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basketing.Api", "src\Basketing\Basketing.Api\Basketing.Api.csproj", "{2C9D974D-58FA-4615-BF71-F14401A1F043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Application", "src\Basketing\Basket.Application\Basket.Application.csproj", "{3EB487BF-9591-4F91-9F4B-1B4297FF9E23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basketing.Application", "src\Basketing\Basketing.Application\Basketing.Application.csproj", "{3EB487BF-9591-4F91-9F4B-1B4297FF9E23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Domain", "src\Basketing\Basket.Domain\Basket.Domain.csproj", "{D6D4C424-379C-4EB3-900C-2E34CE61F2BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basketing.Domain", "src\Basketing\Basketing.Domain\Basketing.Domain.csproj", "{D6D4C424-379C-4EB3-900C-2E34CE61F2BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Infrastructure", "src\Basketing\Basket.Infrastructure\Basket.Infrastructure.csproj", "{F8DEFD88-1F23-4550-930C-DB4FC710C49C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basketing.Infrastructure", "src\Basketing\Basketing.Infrastructure\Basketing.Infrastructure.csproj", "{F8DEFD88-1F23-4550-930C-DB4FC710C49C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
