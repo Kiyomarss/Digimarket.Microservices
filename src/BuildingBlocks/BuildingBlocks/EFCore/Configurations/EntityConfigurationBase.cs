@@ -11,24 +11,48 @@ namespace BuildingBlocks.EFCore.Configurations;
 public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfiguration<TEntity>
     where TEntity : class
 {
+    #region Fields / Properties
+
     protected EntityTypeBuilder<TEntity> Builder { get; private set; } = default!;
     protected string EntityName => typeof(TEntity).Name;
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    #endregion
+
+    #region Configure Entry Point
 
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {
         Builder = builder ?? throw new ArgumentNullException(nameof(builder));
     }
 
-    #region Key
+    #endregion
+
+    #region Key Configuration
 
     protected void ConfigurePrimaryKey(Expression<Func<TEntity, object>> keyExpression)
     {
         Builder.HasKey(keyExpression);
     }
 
+    protected void ConfigureId(Expression<Func<TEntity, object>> keyExpression)
+    {
+        Builder.HasKey(keyExpression);
+
+        var propertyBuilder = Builder.Property(keyExpression);
+
+        propertyBuilder.HasColumnType("uuid");
+
+        propertyBuilder.IsRequired();
+    }
+
     #endregion
 
-    #region Properties
+    #region Scalar Property Configuration
 
     protected void ConfigureString(
         Expression<Func<TEntity, string>> propertyExpression,
@@ -54,89 +78,6 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
             propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
     }
 
-    protected void ConfigureDateTime(
-        Expression<Func<TEntity, DateTime?>> propertyExpression,
-        bool isRequired = false,
-        bool ignoreOnUpdate = false)
-    {
-        Builder.Property(propertyExpression)
-               .HasColumnType("timestamptz");
-
-        if (isRequired) Builder.Property(propertyExpression).IsRequired();
-        if (ignoreOnUpdate) Builder.Property(propertyExpression).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-    }
-    
-    protected void ConfigureTypeSafeEnum<TEnum>(
-        Expression<Func<TEntity, TEnum>> propertyExpression,
-        Func<int, TEnum> fromId,
-        Func<TEnum, int> toId, // اضافه کردن یک delegate برای استخراج Id
-        string? columnName = null,
-        bool isRequired = true,
-        bool ignoreOnUpdate = false)
-    {
-        var converter = new ValueConverter<TEnum, int>(
-                                                       value => toId(value),
-                                                       id => fromId(id)
-                                                      );
-
-        var propertyBuilder = Builder.Property(propertyExpression)
-                                     .HasColumnType("integer")
-                                     .HasConversion(converter); // استفاده از کانورتر تعریف شده
-
-        if (!string.IsNullOrWhiteSpace(columnName))
-            propertyBuilder.HasColumnName(columnName);
-
-        if (isRequired)
-            propertyBuilder.IsRequired();
-
-        if (ignoreOnUpdate)
-            propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-    }
-
-    protected void ConfigureDate(
-        Expression<Func<TEntity, DateTime?>> propertyExpression,
-        bool isRequired = false)
-    {
-        Builder.Property(propertyExpression)
-               .HasColumnType("date");
-
-        if (isRequired) Builder.Property(propertyExpression).IsRequired();
-    }
-
-    #region ConfigureJsonb
-
-    protected void ConfigureJsonb<TJson>(
-        Expression<Func<TEntity, TJson>> propertyExpression,
-        bool isRequired = false)
-    {
-        var propertyBuilder = Builder.Property(propertyExpression)
-                                     .HasColumnType("jsonb")
-                                     .HasConversion(
-                                                    v => JsonSerializer.Serialize(v, JsonOptions),
-                                                    v => JsonSerializer.Deserialize<TJson>(v, JsonOptions)!);
-
-        if (isRequired)
-            propertyBuilder.IsRequired();
-    }
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
-    #endregion
-
-    protected void ConfigureId(Expression<Func<TEntity, object>> keyExpression)
-    {
-        Builder.HasKey(keyExpression);
-
-        var propertyBuilder = Builder.Property(keyExpression);
-
-        propertyBuilder.HasColumnType("uuid");
-
-        propertyBuilder.IsRequired();
-    }
-    
     protected void ConfigureGuid(
         Expression<Func<TEntity, Guid>> propertyExpression,
         bool isRequired = true)
@@ -146,7 +87,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         if (isRequired)
             p.IsRequired();
     }
-    
+
     protected void ConfigureInteger(Expression<Func<TEntity, int>> propertyExpression, bool isRequired = true)
     {
         var p = Builder.Property(propertyExpression).HasColumnType("integer");
@@ -158,7 +99,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         var p = Builder.Property(propertyExpression).HasColumnType("bigint");
         if (isRequired) p.IsRequired();
     }
-    
+
     protected void ConfigureText(
         Expression<Func<TEntity, string>> propertyExpression,
         bool isRequired = false,
@@ -174,10 +115,81 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
             propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
     }
 
+    protected void ConfigureDateTime(
+        Expression<Func<TEntity, DateTime?>> propertyExpression,
+        bool isRequired = false,
+        bool ignoreOnUpdate = false)
+    {
+        Builder.Property(propertyExpression)
+               .HasColumnType("timestamptz");
+
+        if (isRequired) Builder.Property(propertyExpression).IsRequired();
+        if (ignoreOnUpdate) Builder.Property(propertyExpression).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+    }
+
+    protected void ConfigureDate(
+        Expression<Func<TEntity, DateTime?>> propertyExpression,
+        bool isRequired = false)
+    {
+        Builder.Property(propertyExpression)
+               .HasColumnType("date");
+
+        if (isRequired) Builder.Property(propertyExpression).IsRequired();
+    }
+
     protected void ConfigureTimeSpan(Expression<Func<TEntity, TimeSpan?>> propertyExpression)
     {
         Builder.Property(propertyExpression).HasColumnType("interval");
     }
+
+    #endregion
+
+    #region Advanced Property Configuration
+
+    protected void ConfigureTypeSafeEnum<TEnum>(
+        Expression<Func<TEntity, TEnum>> propertyExpression,
+        Func<int, TEnum> fromId,
+        Func<TEnum, int> toId,
+        string? columnName = null,
+        bool isRequired = true,
+        bool ignoreOnUpdate = false)
+    {
+        var converter = new ValueConverter<TEnum, int>(
+            value => toId(value),
+            id => fromId(id)
+        );
+
+        var propertyBuilder = Builder.Property(propertyExpression)
+                                     .HasColumnType("integer")
+                                     .HasConversion(converter);
+
+        if (!string.IsNullOrWhiteSpace(columnName))
+            propertyBuilder.HasColumnName(columnName);
+
+        if (isRequired)
+            propertyBuilder.IsRequired();
+
+        if (ignoreOnUpdate)
+            propertyBuilder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+    }
+
+    protected void ConfigureJsonb<TJson>(
+        Expression<Func<TEntity, TJson>> propertyExpression,
+        bool isRequired = false)
+    {
+        var propertyBuilder = Builder.Property(propertyExpression)
+                                     .HasColumnType("jsonb")
+                                     .HasConversion(
+                                         v => JsonSerializer.Serialize(v, JsonOptions),
+                                         v => JsonSerializer.Deserialize<TJson>(v, JsonOptions)!);
+
+        if (isRequired)
+            propertyBuilder.IsRequired();
+    }
+
+    #endregion
+
+    #region Ignore Configuration
 
     protected void Ignore(Expression<Func<TEntity, object>> propertyExpression)
     {
@@ -186,7 +198,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     #endregion
 
-    #region Relationships
+    #region Relationship Configuration
 
     protected void ConfigureOneToOne<TRelatedEntity>(
         Expression<Func<TEntity, TRelatedEntity>> navigationExpression,
@@ -244,7 +256,6 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         string? constraintName = null)
         where TRelatedEntity : class
     {
-        // ۱. تنظیم رابطه
         var relation = Builder.HasMany(collectionExpression)
                               .WithOne(inverseNavigationExpression)
                               .HasForeignKey(foreignKeyExpression)
@@ -253,13 +264,13 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
         if (!string.IsNullOrWhiteSpace(constraintName))
             relation.HasConstraintName(constraintName);
 
-        // ۲. شناسایی خودکار نام navigation و تنظیم PropertyAccessMode
         var navigationName = GetMemberName(collectionExpression);
         Builder.Metadata.FindNavigation(navigationName)?.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
+
     #endregion
-    
-    #region Indexes
+
+    #region Index Configuration
 
     protected IndexBuilder<TEntity> ConfigureIndex(
         Expression<Func<TEntity, object>> indexExpression,
@@ -268,12 +279,10 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
     {
         var propertyNames = GetPropertyNames(indexExpression).ToArray();
     
-        // اگر نام ایندکس داده نشده، آن را تولید کن
         indexName ??= BuildIndexName(propertyNames, isUnique);
 
         var indexBuilder = Builder.HasIndex(propertyNames, indexName);
 
-        // تنظیم unique بودن
         if (isUnique)
         {
             indexBuilder.IsUnique();
@@ -281,7 +290,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
         return indexBuilder;
     }
-    
+
     private string BuildIndexName(string[] propertyNames, bool isUnique)
     {
         var prefix = isUnique ? "UQ" : "IX";
@@ -290,7 +299,7 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     #endregion
 
-    #region Table
+    #region Table Configuration
 
     protected void ConfigureTable(string? tableName = null)
     {
@@ -311,6 +320,10 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
 
     protected string BuildUniqueIndexName(IEnumerable<string> propertyNames)
         => $"UQ_{EntityName}_{string.Join("_", propertyNames)}";
+
+    #endregion
+
+    #region Expression Helpers
 
     protected static string GetMemberName<TProperty>(Expression<Func<TEntity, TProperty>> expression)
     {
