@@ -22,7 +22,7 @@ namespace Identity.Infrastructure.Data.DbContext // مسیر دقیق DbContext 
             if (solutionDirectory == null)
                 throw new Exception("Solution directory not found!");
 
-            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Identity2", "Identity.Api");
+            var apiProjectPath = Path.Combine(solutionDirectory, "src", "Identity", "Identity.Api");
 
             if (!Directory.Exists(apiProjectPath))
                 throw new Exception($"Identity.Api project not found at: {apiProjectPath}");

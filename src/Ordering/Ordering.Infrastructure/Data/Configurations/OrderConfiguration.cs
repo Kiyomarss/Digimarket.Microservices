@@ -14,9 +14,7 @@ public class OrderConfiguration : EntityTypeConfigurationBase<Order>
 
         ConfigureTable("orders");
 
-        ConfigurePrimaryKey(x => x.Id);
-
-        ConfigureGuid(x => x.Id, generateInDatabase: true);
+        ConfigureId(x => x.Id);
         
         ConfigureDateTime(x => x.Date, isRequired: true);
         

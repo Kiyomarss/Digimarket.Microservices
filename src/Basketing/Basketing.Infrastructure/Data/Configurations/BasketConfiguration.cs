@@ -12,7 +12,8 @@ namespace Basketing.Infrastructure.Data.Configurations
             base.Configure(builder);
 
             ConfigureTable("baskets");
-            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureId(x => x.Id);
             
             ConfigureGuid(x => x.UserId);
             

@@ -7,7 +7,7 @@ namespace Basketing.Domain.Entities;
 public class BasketItem
 {
     [Key(0)]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.CreateVersion7();
 
     [Key(1)]
     public Guid ProductId { get; set; }

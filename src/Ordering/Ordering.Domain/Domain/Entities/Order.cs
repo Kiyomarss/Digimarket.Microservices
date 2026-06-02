@@ -8,7 +8,7 @@ namespace Ordering_Domain.Domain.Entities;
 
 public class Order : AggregateRoot
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
     public DateTime Date { get; set; }
     public OrderState State { get; set; }
     

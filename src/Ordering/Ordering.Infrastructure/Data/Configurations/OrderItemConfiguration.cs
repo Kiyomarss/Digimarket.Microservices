@@ -12,10 +12,8 @@ public class OrderItemConfiguration : EntityTypeConfigurationBase<OrderItem>
         base.Configure(builder);
 
         ConfigureTable("order_items");
-
-        ConfigurePrimaryKey(x => x.Id);
-
-        ConfigureGuid(x => x.Id, generateInDatabase: true);
+        
+        ConfigureId(x => x.Id);
 
         ConfigureGuid(x => x.OrderId);
         ConfigureGuid(x => x.ProductId);

@@ -22,7 +22,7 @@ public class User
         IsActive = true;
     }
 
-    public Guid Id { get; private set; }
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
 
     public string Email { get; private set; }
 

@@ -12,8 +12,8 @@ namespace Catalog_Infrastructure.Data.Configurations
             base.Configure(builder);
 
             ConfigureTable("products");
-
-            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureId(x => x.Id);
             
             ConfigureString(x => x.Name, maxLength: 200, isRequired: true);
 

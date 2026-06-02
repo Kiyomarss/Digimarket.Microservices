@@ -11,8 +11,8 @@ namespace Identity.Infrastructure.Data.Configurations
             base.Configure(builder);
 
             ConfigureTable("permissions");
-
-            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureId(x => x.Id);
 
             ConfigureString(x => x.Name, maxLength: 200, isRequired: true);
 

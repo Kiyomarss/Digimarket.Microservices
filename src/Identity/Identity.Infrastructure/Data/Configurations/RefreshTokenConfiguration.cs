@@ -12,8 +12,8 @@ namespace Identity.Infrastructure.Data.Configurations
             base.Configure(builder);
 
             ConfigureTable("refresh_tokens");
-
-            ConfigurePrimaryKey(x => x.Id);
+            
+            ConfigureId(x => x.Id);
 
             ConfigureOneToMany(
                                x => x.User, 

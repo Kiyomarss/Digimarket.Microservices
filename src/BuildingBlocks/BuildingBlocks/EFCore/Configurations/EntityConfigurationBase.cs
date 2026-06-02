@@ -125,19 +125,26 @@ public abstract class EntityTypeConfigurationBase<TEntity> : IEntityTypeConfigur
     };
 
     #endregion
+
+    protected void ConfigureId(Expression<Func<TEntity, object>> keyExpression)
+    {
+        Builder.HasKey(keyExpression);
+
+        var propertyBuilder = Builder.Property(keyExpression);
+
+        propertyBuilder.HasColumnType("uuid");
+
+        propertyBuilder.IsRequired();
+    }
     
     protected void ConfigureGuid(
         Expression<Func<TEntity, Guid>> propertyExpression,
-        bool isRequired = true,
-        bool generateInDatabase = false)
+        bool isRequired = true)
     {
         var p = Builder.Property(propertyExpression).HasColumnType("uuid");
 
         if (isRequired)
             p.IsRequired();
-
-        if (generateInDatabase)
-            p.HasDefaultValueSql("gen_random_uuid()");
     }
     
     protected void ConfigureInteger(Expression<Func<TEntity, int>> propertyExpression, bool isRequired = true)

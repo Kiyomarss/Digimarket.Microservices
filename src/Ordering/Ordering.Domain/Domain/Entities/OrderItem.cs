@@ -13,13 +13,12 @@ public class OrderItem
 
     public OrderItem() { }
 
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
     public Guid OrderId { get; set; }   
     public Order Order { get; set; } = default!;
     public Guid ProductId { get; set; } = default!;
     public int Quantity { get; set; } = default!;
     
-    [Required]
     public long Price { get; set; } = default!;
     
     public static OrderItem Create(

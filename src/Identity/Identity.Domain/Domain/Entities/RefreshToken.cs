@@ -13,7 +13,7 @@ public class RefreshToken
         CreatedAt = DateTime.UtcNow;
     }
 
-    public Guid Id { get; private set; }
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
 
     public Guid UserId { get; private set; }
     

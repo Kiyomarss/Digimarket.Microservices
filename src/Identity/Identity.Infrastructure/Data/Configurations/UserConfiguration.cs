@@ -12,7 +12,8 @@ public class UserConfiguration : EntityTypeConfigurationBase<User>
         base.Configure(builder);
 
         ConfigureTable("users");
-        ConfigurePrimaryKey(x => x.Id);
+        
+        ConfigureId(x => x.Id);
         
         Builder.Property(x => x.Id).ValueGeneratedNever();
 
