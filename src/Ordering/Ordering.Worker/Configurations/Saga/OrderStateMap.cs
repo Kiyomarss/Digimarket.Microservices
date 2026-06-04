@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ordering.Worker.Configurations.Saga;
 
-//TODO: کاربرد کد زیر چیست؟ چرا دیگر پراپرتی ها به کد زیر اضافه نشده؟
 public class OrderStateMap :
     SagaClassMap<OrderState>
 {
@@ -15,3 +14,7 @@ public class OrderStateMap :
         entity.Property(x => x.Date);
     }
 }
+
+/*این کلاس دقیقاً معادل IEntityTypeConfiguration<T> در EF Core است (Fluent API).
+ MassTransit از طریق کلاس SagaClassMap<T> به شما اجازه می‌دهد
+نحوه تبدیل شدن کلاس OrderState به جدول دیتابیس را مدیریت کنید.*/
