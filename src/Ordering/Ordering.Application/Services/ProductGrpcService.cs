@@ -1,5 +1,6 @@
 ﻿// src/Ordering.Application/Services/ProductGrpcService.cs
 
+using Ordering.Application.ServiceContracts;
 using ProductGrpc;
 
 namespace Ordering.Application.Services;

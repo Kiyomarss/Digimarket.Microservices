@@ -9,6 +9,7 @@ using ProductGrpc;
 using BuildingBlocks.UnitOfWork;
 using Ordering.Application.Orders.Commands.CreateOrder;
 using Ordering.Application.RepositoryContracts;
+using Ordering.Application.ServiceContracts;
 using Ordering.Application.Services;
 using Shared;
 

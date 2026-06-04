@@ -5,6 +5,7 @@ using BuildingBlocks.UnitOfWork;
 using Ordering_Domain.Domain.Entities;
 using Ordering_Domain.ValueObjects;
 using Ordering.Application.RepositoryContracts;
+using Ordering.Application.ServiceContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
 using OrderItem = ProductGrpc.OrderItem;

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Ordering_Infrastructure.Data.DbContext;
 using Ordering_Infrastructure.Repositories;
 using Ordering.Application.RepositoryContracts;
+using Ordering.Application.ServiceContracts;
 using Ordering.Application.Services;
 using ProductGrpc;
 

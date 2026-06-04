@@ -2,7 +2,7 @@
 
 using ProductGrpc;
 
-namespace Ordering.Application.Services;
+namespace Ordering.Application.ServiceContracts;
 
 public interface IProductService
 {
