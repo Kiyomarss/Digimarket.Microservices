@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BuildingBlocks.Controllers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Api.Contracts;
 using Ordering.Application.Orders.Queries;
@@ -17,6 +18,7 @@ namespace Ordering.Api.Controllers
             _sender = sender;
         }
         
+        [Authorize]
         [HttpGet(ApiEndpoints.Orders.GetCurrentUserOrders)]
         public async Task<IActionResult> GetCurrentUserOrders([FromQuery] [Required] string state)
         {
