@@ -41,6 +41,18 @@ services:
       - jaeger
       - rabbitmq
 
+  gateway-api:
+    image: gateway/api
+    build:
+      context: ./src
+      dockerfile: Dockerfile.Gateway.api
+    environment:
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:80
+
+    ports:
+      - "1000:80"
+
   basketing-api:
     image: basketing/api
     build:

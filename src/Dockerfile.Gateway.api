@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# فقط csprojها را کپی کن
+COPY ["Gateway/ApiGateway/ApiGateway.csproj", "Gateway/ApiGateway/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+
+# Restore (بدون دانلود مجدد)
+RUN dotnet restore "Gateway/ApiGateway/ApiGateway.csproj"
+
+# حالا کل سورس پروژه را کپی کن
+COPY . .
+
+# Build و Publish
+RUN dotnet publish "Gateway/ApiGateway/ApiGateway.csproj" -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "ApiGateway.dll"]
