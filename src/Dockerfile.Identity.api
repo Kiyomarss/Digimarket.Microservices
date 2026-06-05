@@ -9,16 +9,18 @@ COPY ["Identity/Identity.Infrastructure/Identity.Infrastructure.csproj", "Identi
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 
-# Restore (بدون دانلود مجدد)
-RUN dotnet restore "Identity/Identity.Api/Identity.Api.csproj"
+# به جای restore معمولی، از کشِ اختصاصی Nuget استفاده می‌کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore "Identity/Identity.Api/Identity.Api.csproj"
 
-# حالا کل سورس پروژه را کپی کن
 COPY . .
 
 # Build و Publish
-RUN dotnet publish "Identity/Identity.Api/Identity.Api.csproj" -c Release -o /app
+RUN dotnet publish "Identity/Identity.Api/Identity.Api.csproj" -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
 COPY --from=build /app .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "Identity.Api.dll"]

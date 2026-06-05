@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# فقط csprojها را کپی کن
+# کپی کردن فایل‌های پروژه
 COPY ["Basketing/Basketing.Api/Basketing.Api.csproj", "Basketing/Basketing.Api/"]
 COPY ["Basketing/Basketing.Application/Basketing.Application.csproj", "Basketing/Basketing.Application/"]
 COPY ["Basketing/Basketing.Domain/Basketing.Domain.csproj", "Basketing/Basketing.Domain/"]
@@ -10,16 +10,19 @@ COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/Bui
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/OrderGrpcContracts/OrderGrpcContracts.csproj", "BuildingBlocks/Protos/OrderGrpcContracts/"]
 
-# Restore (بدون دانلود مجدد)
-RUN dotnet restore "Basketing/Basketing.Api/Basketing.Api.csproj"
+# به جای restore معمولی، از کشِ اختصاصی Nuget استفاده می‌کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore "Basketing/Basketing.Api/Basketing.Api.csproj"
 
-# حالا کل سورس پروژه را کپی کن
 COPY . .
 
-# Build و Publish
-RUN dotnet publish "Basketing/Basketing.Api/Basketing.Api.csproj" -c Release -o /app
+# 🚀 اینجا هم می‌توانیم برای سرعت بیشتر از کش استفاده کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet publish "Basketing/Basketing.Api/Basketing.Api.csproj" -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
 COPY --from=build /app .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "Basketing.Api.dll"]

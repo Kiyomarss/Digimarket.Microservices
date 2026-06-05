@@ -7,12 +7,19 @@ COPY ["Catalog/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Catalog/C
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/ProductGrpcContracts/ProductGrpcContracts.csproj", "BuildingBlocks/Protos/ProductGrpcContracts/"]
-RUN dotnet restore "Catalog/Catalog.Api/Catalog.Api.csproj"
+
+# به جای restore معمولی، از کشِ اختصاصی Nuget استفاده می‌کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore "Catalog/Catalog.Api/Catalog.Api.csproj"
 
 COPY . .
-RUN dotnet publish -c Release -o /app Catalog/Catalog.Api/Catalog.Api.csproj
+
+# Build و Publish
+RUN dotnet publish "Catalog/Catalog.Api/Catalog.Api.csproj" -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
-COPY --from=build /app ./
+COPY --from=build /app .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "Catalog.Api.dll"]

@@ -5,16 +5,18 @@ WORKDIR /src
 COPY ["Gateway/ApiGateway/ApiGateway.csproj", "Gateway/ApiGateway/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 
-# Restore (بدون دانلود مجدد)
-RUN dotnet restore "Gateway/ApiGateway/ApiGateway.csproj"
+# به جای restore معمولی، از کشِ اختصاصی Nuget استفاده می‌کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore "Gateway/ApiGateway/ApiGateway.csproj"
 
-# حالا کل سورس پروژه را کپی کن
 COPY . .
 
 # Build و Publish
-RUN dotnet publish "Gateway/ApiGateway/ApiGateway.csproj" -c Release -o /app
+RUN dotnet publish "Gateway/ApiGateway/ApiGateway.csproj" -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
 COPY --from=build /app .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]

@@ -8,12 +8,19 @@ COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/Bui
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/OrderGrpcContracts/OrderGrpcContracts.csproj", "BuildingBlocks/Protos/OrderGrpcContracts/"]
 COPY ["BuildingBlocks/Protos/ProductGrpcContracts/ProductGrpcContracts.csproj", "BuildingBlocks/Protos/ProductGrpcContracts/"]
-RUN dotnet restore "Ordering/Ordering.Api/Ordering.Api.csproj"
+
+# به جای restore معمولی، از کشِ اختصاصی Nuget استفاده می‌کنیم
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore "Ordering/Ordering.Api/Ordering.Api.csproj"
 
 COPY . .
-RUN dotnet publish -c Release -o /app Ordering/Ordering.Api/Ordering.Api.csproj
+
+# Build و Publish
+RUN dotnet publish "Ordering/Ordering.Api/Ordering.Api.csproj" -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
-COPY --from=build /app ./
+COPY --from=build /app .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "Ordering.Api.dll"]
