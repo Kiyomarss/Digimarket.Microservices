@@ -2,25 +2,24 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # فقط csprojها را کپی کن
-COPY ["Basket/Basket.Api/Basket.Api.csproj", "Basket/Basket.Api/"]
-COPY ["Basket/Basket.Application/Basket.Application.csproj", "Basket/Basket.Application/"]
-COPY ["Basket/Basket.Domain/Basket.Domain.csproj", "Basket/Basket.Domain/"]
-COPY ["Basket/Basket.Infrastructure/Basket.Infrastructure.csproj", "Basket/Basket.Infrastructure/"]
+COPY ["Basketing/Basketing.Api/Basketing.Api.csproj", "Basketing/Basketing.Api/"]
+COPY ["Basketing/Basketing.Application/Basketing.Application.csproj", "Basketing/Basketing.Application/"]
+COPY ["Basketing/Basketing.Domain/Basketing.Domain.csproj", "Basketing/Basketing.Domain/"]
+COPY ["Basketing/Basketing.Infrastructure/Basketing.Infrastructure.csproj", "Basketing/Basketing.Infrastructure/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["BuildingBlocks/Protos/OrderGrpcContracts/OrderGrpcContracts.csproj", "BuildingBlocks/Protos/OrderGrpcContracts/"]
-COPY ["Shared/IntegrationEvents/IntegrationEvents.csproj", "Shared/IntegrationEvents/IntegrationEvents/"]
 
 # Restore (بدون دانلود مجدد)
-RUN dotnet restore "Basket/Basket.Api/Basket.Api.csproj"
+RUN dotnet restore "Basketing/Basketing.Api/Basketing.Api.csproj"
 
 # حالا کل سورس پروژه را کپی کن
 COPY . .
 
 # Build و Publish
-RUN dotnet publish "Basket/Basket.Api/Basket.Api.csproj" -c Release -o /app
+RUN dotnet publish "Basketing/Basketing.Api/Basketing.Api.csproj" -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "Basket.Api.dll"]
+ENTRYPOINT ["dotnet", "Basketing.Api.dll"]

@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F702A1B5
 		docker-compose.yml = docker-compose.yml
 		src\Dockerfile.Ordering.api = src\Dockerfile.Ordering.api
 		src\Dockerfile.Ordering.worker = src\Dockerfile.Ordering.worker
-		src\Dockerfile.Basket.api = src\Dockerfile.Basket.api
+		src\Dockerfile.Basketing.api = src\Dockerfile.Basketing.api
 		src\Dockerfile.Catalog.api = src\Dockerfile.Catalog.api
 	EndProjectSection
 EndProject

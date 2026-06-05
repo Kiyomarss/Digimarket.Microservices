@@ -23,11 +23,11 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
 
-  basket-api:
-    image: basket/api
+  basketing-api:
+    image: basketing/api
     build:
       context: ./src
-      dockerfile: Dockerfile.Basket.api
+      dockerfile: Dockerfile.Basketing.api
     environment:
       <<: *dotnet-env
       ASPNETCORE_URLS: http://+:80
