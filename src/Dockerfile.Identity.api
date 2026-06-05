@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# فقط csprojها را کپی کن
+COPY ["Identity/Identity.Api/Identity.Api.csproj", "Identity/Identity.Api/"]
+COPY ["Identity/Identity.Application/Identity.Application.csproj", "Identity/Identity.Application/"]
+COPY ["Identity/Identity.Domain/Identity.Domain.csproj", "Identity/Identity.Domain/"]
+COPY ["Identity/Identity.Infrastructure/Identity.Infrastructure.csproj", "Identity/Identity.Infrastructure/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
+
+# Restore (بدون دانلود مجدد)
+RUN dotnet restore "Identity/Identity.Api/Identity.Api.csproj"
+
+# حالا کل سورس پروژه را کپی کن
+COPY . .
+
+# Build و Publish
+RUN dotnet publish "Identity/Identity.Api/Identity.Api.csproj" -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Identity.Api.dll"]

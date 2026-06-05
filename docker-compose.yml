@@ -23,6 +23,24 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
 
+  identity-api:
+    image: identity/api
+    build:
+      context: ./src
+      dockerfile: Dockerfile.Identity.api
+    environment:
+      <<: *dotnet-env
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=IdentityDb
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: guest
+      RabbitMq__Password: guest
+    ports:
+      - "2000:80"
+    depends_on:
+      - jaeger
+      - rabbitmq
+
   basketing-api:
     image: basketing/api
     build:

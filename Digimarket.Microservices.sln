@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F702A1B5
 		src\Dockerfile.Ordering.api = src\Dockerfile.Ordering.api
 		src\Dockerfile.Ordering.worker = src\Dockerfile.Ordering.worker
 		src\Dockerfile.Basketing.api = src\Dockerfile.Basketing.api
+		src\Dockerfile.Identity.api = src\Dockerfile.Identity.api
 		src\Dockerfile.Catalog.api = src\Dockerfile.Catalog.api
 	EndProjectSection
 EndProject
