@@ -4,7 +4,6 @@ using Basketing.Infrastructure.Data.DbContext;
 using BuildingBlocks.Extensions;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Services;
-using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +32,8 @@ builder.Services.AddConfiguredMassTransit<BasketDbContext>(builder.Configuration
 builder.Services.AddGatewayCors();
 
 var app = builder.Build();
+
+app.MigrateDatabase<BasketDbContext>();
 
 app.UseCors(CorsExtensions.GatewayCorsPolicyName);
 

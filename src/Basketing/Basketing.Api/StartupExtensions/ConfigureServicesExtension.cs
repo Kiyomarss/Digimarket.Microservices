@@ -28,7 +28,7 @@ public static class ConfigureServicesExtension
 
             x.UseNpgsql(connectionString, options =>
             {
-                options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+                options.MigrationsAssembly(typeof(BasketDbContext).Assembly.GetName().Name);
                 options.MigrationsHistoryTable($"__{nameof(BasketDbContext)}");
 
                 options.EnableRetryOnFailure(5);

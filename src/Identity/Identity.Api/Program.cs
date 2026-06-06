@@ -104,6 +104,8 @@ builder.Services.AddGatewayCors();
 
 var app = builder.Build();
 
+app.MigrateDatabase<IdentityDbContext>();
+
 app.UseHttpsRedirection();
 
 // ----------------------------

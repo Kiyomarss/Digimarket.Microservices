@@ -22,7 +22,7 @@ public static class ConfigureServicesExtension
 
             x.UseNpgsql(connectionString, options =>
             {
-                options.MigrationsAssembly("Catalog.Infrastructure");
+                options.MigrationsAssembly(typeof(CatalogDbContext).Assembly.GetName().Name);
                 options.MigrationsHistoryTable($"__{nameof(CatalogDbContext)}");
 
                 options.EnableRetryOnFailure(5);
