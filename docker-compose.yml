@@ -5,6 +5,17 @@ x-common-dotnet-env: &dotnet-env
   ASPNETCORE_ENVIRONMENT: Development
 
 services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     environment:
@@ -59,9 +70,10 @@ services:
       context: ./src
       dockerfile: Dockerfile.Basketing.api
     environment:
-      <<: *dotnet-env
       ASPNETCORE_URLS: http://+:80
-      ConnectionStrings__Default: host=host.docker.internal;user id=postgres;password=123;database=BasketDb
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=BasketDb;Username=postgres;Password=123
+      ConnectionStrings__Redis: redis:6379
+      GrpcSettings__OrderUrl: https://order-api:5001
       RabbitMq__Host: rabbitmq
       RabbitMq__Username: guest
       RabbitMq__Password: guest
@@ -69,6 +81,7 @@ services:
       - "7000:80"
     depends_on:
       - jaeger
+      - postgres
       - rabbitmq
 
   catalog-api:
@@ -121,3 +134,6 @@ services:
     depends_on:
       - jaeger
       - rabbitmq
+
+volumes:
+  postgres_data:
