@@ -29,7 +29,7 @@ public static class ConfigureServicesExtension
             x.UseNpgsql(connectionString, options =>
             {
                 options.MigrationsAssembly(typeof(BasketDbContext).Assembly.GetName().Name);
-                options.MigrationsHistoryTable($"__{nameof(BasketDbContext)}");
+                options.MigrationsHistoryTable("__EFMigrationsHistory");
 
                 options.EnableRetryOnFailure(5);
                 options.MinBatchSize(1);

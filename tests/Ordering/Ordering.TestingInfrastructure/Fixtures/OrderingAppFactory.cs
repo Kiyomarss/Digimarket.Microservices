@@ -78,7 +78,7 @@ public class OrderingAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
                 options.UseNpgsql(_connectionString, sqlOptions =>
                 {
                     sqlOptions.MigrationsAssembly(typeof(OrderingDbContext).Assembly.GetName().Name);
-                    sqlOptions.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
+                    sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory");
                 });
             });
             

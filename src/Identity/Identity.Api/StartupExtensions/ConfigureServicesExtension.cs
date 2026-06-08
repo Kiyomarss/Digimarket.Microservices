@@ -26,8 +26,7 @@ public static class ConfigureServicesExtension
             {
                 npgsqlOptions.MigrationsAssembly("Identity.Infrastructure");
 
-                npgsqlOptions.MigrationsHistoryTable(
-                                                     $"__{nameof(IdentityDbContext)}");
+                npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory");
 
                 npgsqlOptions.EnableRetryOnFailure(5);
 

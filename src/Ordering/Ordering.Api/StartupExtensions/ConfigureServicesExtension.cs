@@ -24,7 +24,7 @@ public static class ConfigureServicesExtension
             x.UseNpgsql(connectionString, options =>
             {
                 options.MigrationsAssembly(typeof(OrderingDbContext).Assembly.GetName().Name);
-                options.MigrationsHistoryTable($"__{nameof(OrderingDbContext)}");
+                options.MigrationsHistoryTable("__EFMigrationsHistory");
 
                 options.EnableRetryOnFailure(5);
                 options.MinBatchSize(1);
