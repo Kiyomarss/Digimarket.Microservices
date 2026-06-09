@@ -70,7 +70,6 @@ builder.Services.AddOpenIddict()
            options.UseAspNetCore()
                   .EnableTokenEndpointPassthrough()
                   .EnableAuthorizationEndpointPassthrough()
-                  .EnableTokenEndpointPassthrough()
                   .EnableStatusCodePagesIntegration();
 
        })
