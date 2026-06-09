@@ -39,7 +39,11 @@ builder.Services.AddOpenIddict()
        })
        .AddServer(options =>
        {
-           options.SetIssuer(new Uri("https://localhost:2001"));
+           var issuer = builder.Configuration["Jwt:Issuer"];
+           if (!string.IsNullOrEmpty(issuer))
+           {
+               options.SetIssuer(new Uri(issuer));
+           }
 
            // Endpoints
            options.SetTokenEndpointUris("/connect/token");

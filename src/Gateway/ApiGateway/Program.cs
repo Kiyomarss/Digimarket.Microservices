@@ -14,7 +14,7 @@ builder.Services
     .AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "https://localhost:2001";
+        options.Authority = builder.Configuration["Jwt:Authority"];
         options.RequireHttpsMetadata = false;
     });
 
