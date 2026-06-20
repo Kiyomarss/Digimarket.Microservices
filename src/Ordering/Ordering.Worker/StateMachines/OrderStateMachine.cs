@@ -1,8 +1,8 @@
-    using BuildingBlocks.IntegrationEvents;
     using BuildingBlocks.IntegrationEvents.Order;
     using MassTransit;
     using Ordering.Worker.Configurations.Saga;
     using Ordering.Worker.StateMachines.Activities.Cancel;
+    using Ordering.Worker.StateMachines.Activities.CancelledAfterPayment;
     using Ordering.Worker.StateMachines.Activities.Initialize;
     using Ordering.Worker.StateMachines.Activities.Payment;
     using Ordering.Worker.StateMachines.Activities.Processing;
@@ -18,6 +18,7 @@
 
                 Event(() => OrderInitiated, x => { x.CorrelateById(m => m.Message.Id); x.SelectId(m => m.Message.Id); });
                 Event(() => PaymentCompleted, x => x.CorrelateById(m => m.Message.CorrelationId));
+                Event(() => OrderCancelledAfterPayment, x => x.CorrelateById(m => m.Message.Id));
                 Event(() => InventoryReduced, x => x.CorrelateById(m => m.Message.Id));
                 Event(() => BasketRemoved, x => x.CorrelateById(m => m.Message.Id));
                 Event(() => SendReminder, x => x.CorrelateById(m => m.Message.Id));
@@ -49,15 +50,23 @@
                            .Activity(x => x.OfType<PublishOrderPaidActivity>())
                            .TransitionTo(Processing)
                       );
+                
+                During(WaitingForProcessing,
+                       When(OrderCancelledAfterPayment)
+                           .Activity(x => x.OfType<ReleaseInventoryActivity>())
+                           .TransitionTo(CancelledAfterPayment)
+                      );
             }
             
             public State WaitingForPayment { get; private set; } = null!;
             public State WaitingForProcessing { get; private set; } = null!;
             public State Processing { get; private set; } = null!;
             public State Canceled { get; private set; } = null!;
+            public State CancelledAfterPayment { get; private set; } = null!;
 
             public Event<OrderInitiated> OrderInitiated { get; private set; } = null!;
             public Event<PaymentCompleted> PaymentCompleted { get; private set; } = null!;
+            public Event<OrderCancelledAfterPayment> OrderCancelledAfterPayment { get; private set; } = null!;
             public Event<InventoryReduced> InventoryReduced { get; private set; } = null!;
             private Event<BasketRemoved> BasketRemoved { get; set; } = null!;
             public Event<SendReminder> SendReminder { get; private set; } = null!;

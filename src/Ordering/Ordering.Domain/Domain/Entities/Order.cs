@@ -23,7 +23,22 @@
         private void ChangeStateInternal(OrderState newState) => State = newState;
         
         public void Canceled() => ChangeStateInternal(OrderState.Canceled);
+        
+        public void CancelAfterPayment()
+        {
+            if (State != OrderState.Processing)
+                throw new DomainException("Only processing orders can be cancelled after payment");
+    
+            ChangeStateInternal(OrderState.CancelledAfterPayment);
 
+            AddDomainEvent(new OrderCancelledAfterPaymentDomainEvent(
+                                                                     Id,
+                                                                     _items.Select(i => new OrderCancelledAfterPaymentDomainEvent.OrderItemSnapshot(
+                                                                                                                                                    i.ProductId,
+                                                                                                                                                    i.Quantity)).ToList()
+                                                                    ));
+        }
+        
         public void Paid() => ChangeStateInternal(OrderState.Paid);
 
         public void AddItem(

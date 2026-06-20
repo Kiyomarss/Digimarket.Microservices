@@ -23,6 +23,7 @@ namespace Ordering.Worker.StateMachines.Activities.Initialize
             await Task.WhenAll(
                                context.Publish(new ReduceInventory(items)),
                                context.Publish(new RemoveBasket(context.Message.UserId))
+                               //,context.Publish(new PaymentCompleted(context.Message.Id))
                               );
 
             await next.Execute(context);

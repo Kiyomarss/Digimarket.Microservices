@@ -8,5 +8,8 @@ public static class ApiEndpoints
 
         public const string GetCurrentUserOrders =
             $"{Base}/current";
+        
+        public const string CancelledAfterPayment =
+            $"{Base}/CancelledAfterPayment";
     }
 }

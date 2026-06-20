@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Api.Contracts;
+using Ordering.Application.Orders.Commands.CancelledAfterPayment;
 using Ordering.Application.Orders.Queries;
 
 namespace Ordering.Api.Controllers
@@ -27,6 +28,17 @@ namespace Ordering.Api.Controllers
             var result = await _sender.Send(command);
 
             return Ok(result);
+        }
+        
+        [Authorize]
+        [HttpPost(ApiEndpoints.Orders.CancelledAfterPayment)]
+        public async Task<IActionResult> CancelledAfterPayment([FromQuery] [Required] Guid id)
+        {
+            var command = new CancelledAfterPaymentCommand(id);
+
+            await _sender.Send(command);
+
+            return Ok();
         }
     }
 }
